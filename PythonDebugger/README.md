@@ -1,4 +1,4 @@
-# PythonDebugger Sample Article: How to use the Python debugger
+# How to use the Python debugger
 
 Even if you write small Python programs, you will find out soon enough than tricks like this are not enough to debug a program:
 
