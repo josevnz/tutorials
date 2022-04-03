@@ -215,6 +215,7 @@ python3 simple_diagram.py --workers -3 my_airflow2.png
 ```
 
 This produces a weird image, no celery workers!:
+
 ![](my_airflow2.png)
 
 This *was unexpected*. Let's use the debugger to understand what happened here and also come up with a way to prevent this from happening (right away we ask to see the full source code with *ll*)
