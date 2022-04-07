@@ -31,7 +31,7 @@ Instead, you can take advantage of the Python debugger ([pdb](https://docs.pytho
 * Curiosity how you can troubleshoot your scripts in real time
 * A machine that can run Python 3 (for example I'm using Fedora Linux)
 
-*Note*: We will cover only a modern version of Python (3.7+), but you can find about the old syntax for some of the operations in the official documentation.
+*Note*: We will cover only a modern version of Python (3.7+), but you can find about the old syntax for some of the operations [in the official documentation](https://docs.python.org/3/library/pdb.html).
 
 ## Case of study: Simple script that generate a network diagram
 
