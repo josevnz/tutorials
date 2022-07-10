@@ -1,4 +1,4 @@
-# 6 replacements for common tools on linux
+# 6 replacements for common tools on Linux
 
 You finally mastered a tool on Linux; That hard to earned knowledge comes at the cost of repeated usage, reading the manual pages or using a search engine (trying to avoid the bad examples that exist out there).
 
