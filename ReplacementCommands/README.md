@@ -20,7 +20,7 @@ Also for obvious reasons this article doesn't cover every available tool out the
 * Some of these tools may not be on the system and will require to elevated privileges to install (with tools like [RPM](https://www.redhat.com/sysadmin/package-linux-applications-rpm), [apt-get](https://wiki.debian.org/apt-get), etc.)
 * And some actually may be better installed under your user instead of system-wide, with tools like [pip](https://www.redhat.com/sysadmin/packaging-applications-python).
 
-OK, let's, move a and try some tools.
+OK, let's, move on and try some tools.
 
 ## Better than top: htop, glances
 
