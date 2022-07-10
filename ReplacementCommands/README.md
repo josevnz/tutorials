@@ -12,7 +12,7 @@ By the end of this article you should have tried few new tools that are very int
 
 One last thing: The topic of "replacement tools" is always controversial, be open-minded and give them a try. There is nothing tool with the original tools that will be mention on the article.
 
-Also for obvious reasons this article doesn't cover every available tool out there, consider it a start point.
+Also, for obvious reasons this article doesn't cover every available tool out there, consider it a start point.
 
 ## What do you need before trying any of these tools
 
@@ -24,7 +24,7 @@ OK, let's, move on and try some tools.
 
 ## Better than top: htop, glances
 
-[top](https://www.redhat.com/sysadmin/customize-top-command) is without a doubt, one of the best swiss knifes of the resource monitoring tools on Linux. It has nice features like the ability to save stats into a file, sort columns by criteria.
+[top](https://www.redhat.com/sysadmin/customize-top-command) is without a doubt, one of the best general purpose tools for resource monitoring tools on Linux. It has nice features like the ability to save stats into a file, sort columns by criteria.
 
 ### Htop
 
