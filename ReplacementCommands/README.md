@@ -10,7 +10,9 @@ So what incentive you have to learn or try new tools?; I can give you a few reas
 
 By the end of this article you should have tried few new tools that are very interesting, and you should consider using; As usual you consider the community around the tools, easy to use and functionality you need.
 
-One last thing: The topic of "replacement tools" is always controversial, be open-minded and give them a try. There is nothing tool with the original tools that will be mention on the article, they do offer the same functionality and in some cases are faster than the "replaced" tools.
+One last thing: The topic of "replacement tools" is always controversial, be open-minded and give them a try. There is nothing tool with the original tools that will be mention on the article.
+
+Also for obvious reasons this article doesn't cover every available tool out there, consider it a start point.
 
 ## What do you need before trying any of these tools
 
