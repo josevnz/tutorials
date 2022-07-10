@@ -188,7 +188,7 @@ Distribution maintainers and application developers have probably more compellin
 * Some distributions like ArchLinux called for [dns-tools removal](https://archlinux.org/todo/dnsutils-to-ldns-migration/), and use instead ldns [because of dependency management and bugs](https://lists.archlinux.org/pipermail/arch-dev-public/2013-March/024588.html).
 * ldns has nice bindings for Python3
 
-Let's see in action a small program that can query the list of the MX records for a given list of domains:
+Let's see in action [a small program](https://github.com/josevnz/tutorials/blob/main/ReplacementCommands/mx_list.py) that can query the list of the MX records for a given list of domains:
 
 [![asciicast](https://asciinema.org/a/507605.svg)](https://asciinema.org/a/507605)
 
@@ -201,7 +201,6 @@ Ubuntu steps:
 ```shell
 sudo apt-get -y install ldnsutils python3-ldns
 ```
-
 
 ## One CLI to render all formats: rich-cli
 
