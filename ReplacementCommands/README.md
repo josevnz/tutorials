@@ -30,15 +30,9 @@ OK, let's, move on and try some tools.
 
 On the same spirit, the [htop](https://github.com/hishamhm/htop) command shows you more content (like how hard each CPU core is working). Below is a simple session showing how you can filter, s[ort and search processes](https://www.redhat.com/sysadmin/process-management-htop) using htop:
 
-[![asciicast](https://asciinema.org/a/507515.svg)](https://asciinema.org/a/507515)
+[![asciicast](https://asciinema.org/a/508374.svg)](https://asciinema.org/a/508374)
 
 So what makes this tool stand apart? The user interface gives you access to powerful operations, with ease.
-
-To install on Ubuntu:
-
-```shell=
-sudo apt-get install htop
-```
 
 Or RPM based distribution:
 
@@ -50,7 +44,7 @@ sudo dnf install -y htop
 
 Glances is another tool that will give you lots of information about your system, similar to htop:
 
-[![asciicast](https://asciinema.org/a/507522.svg)](https://asciinema.org/a/507522)
+[![asciicast](https://asciinema.org/a/508375.svg)](https://asciinema.org/a/508375)
 
 Why another tool like htop? Well, [glances](https://github.com/nicolargo/glances) has _key_ features that may make it interesting to you:
 
@@ -70,15 +64,9 @@ top, htop and glances give you a full array of details about your server, but wh
 
 [smem](https://github.com/kwkroeger/smem) is probably a great tool for that:
 
-[![asciicast](https://asciinema.org/a/507535.svg)](https://asciinema.org/a/507535)
+[![asciicast](https://asciinema.org/a/508377.svg)](https://asciinema.org/a/508377)
 
 It is possible to filter by user, show totals, group usage by users and even create plots with Mathlib.
-
-To install it on Ubuntu:
-
-```shell
-sudo apt-get install smem
-```
 
 Or Fedora Linux:
 
@@ -140,11 +128,6 @@ If you are interested, you can install on Fedora Linux:
 sudo dnf install ripgrep
 ```
 
-Or if you have Ubuntu:
-```shell
-sudo apt install -y ripgrep
-```
-
 ## drill (ldns) instead of dig, nslookup
 
 Once again, if you were trying to find the IP address of a given DNS record you probably ended using dig or nslookup to do the task; These commands have been around for a long time
@@ -197,11 +180,6 @@ Let's see in action [a small program](https://github.com/josevnz/tutorials/blob/
 Installation on Fedora Linux can be done like this:
 ```shell
 sudo dnf install -y python3-ldns ldns-utils ldns
-```
-
-Ubuntu steps:
-```shell
-sudo apt-get -y install ldnsutils python3-ldns
 ```
 
 ## One CLI to render all formats: rich-cli
