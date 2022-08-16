@@ -1,2 +1,2 @@
-# tutorials
-Tutorials that use other code repositories. Enable Sysadmin
+# Tutorials
+Tutorials for code published in Enable Sysadmin, FreeCodeCamp, Medium.
