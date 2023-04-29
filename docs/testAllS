@@ -1,0 +1,25 @@
+#!/bin/bash -x
+:<<DOC
+Wrapper for NPB common tests
+Author: kodegeek.com@protonmail.com
+DOC
+if [ -z "$JAVA_HOME" ]; then
+    export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-4.fc33.x86_64"
+fi
+if [ -z "$NPB_CLASSPATH" ]; then
+    export NPB_CLASSPATH="/usr/lib64/NPB3.0-JAV.jar"
+fi
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.MG -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.MG -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.CG -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.CG -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.BT -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.BT -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.SP -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.SP -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.LU -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.LU -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.FT -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.FT -np2 CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.IS -serial CLASS=S
+$JAVA_HOME/bin/java -classpath $NPB_CLASSPATH NPB3_0_JAV.IS -np2 CLASS=S

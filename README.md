@@ -1,7 +1,11 @@
-# Tutorials
-Tutorials for code published in Enable Sysadmin, FreeCodeCamp, Medium:
+# Tutorials by KodeGeek
 
-* [10 articles to sharpen your command line skills](10-articles-to-sharpen-your-command-line-skills.md)
-* [Deprecated Commands](DeprecatedCommandsTutorial.md)
-* [20 single line commands you would not be able to live without on Linux](20-single-line-commands-you-would-not-be-able-to-live-without-on-Linux.md)
-* [Packaging your software using RPM](Packaging_your_software_using_RPM.md)
+This repository has links to all the [tutorials](docs/README.md) I have written for Enable Sysadmin, MyFreeCodeCamp, Medium and others.
+
+The layout follows a format that is compatible with both GitPages and my own Blog at kodegeek.com.
+
+## License
+
+All code is Open Source, same as the tutorials. If you find any issues, please report it and I will fix them as soon as I can.
+
+Or even better, submit a patch.

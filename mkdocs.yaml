@@ -1,0 +1,14 @@
+# I used this mkdocs descriptor to create the main http://kodegeek.com
+# For GitHub, I use GitPages.
+#
+#
+#
+---
+site_name: KodeGeek
+site_url: http://kodegeek.com/
+theme: readthedocs
+site_description: Tutorials with code demonstrations
+site_author: Jose Vicente Nunez <@josevnz@fosstodon.org>
+plugins:
+    - search:
+        indexing: 'full'
