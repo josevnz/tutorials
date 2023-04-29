@@ -1,4 +1,5 @@
-# Tutorials
+# Kodegeek.com Tutorials
+
 Tutorials for code published in Enable Sysadmin, FreeCodeCamp, Medium.
 
 I tried my best to group them by categories
@@ -54,3 +55,7 @@ I tried my best to group them by categories
 
 * [nyrr](nyrr/README.md)
 * [grafana](grafana/README.md)
+
+## Blog En Español
+
+Mi [bitácora original](http://kodegeek.com/blog). El formato es mas relajado, con pedazos de código y el contenido no es necesariamente de tecnología.
