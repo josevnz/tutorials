@@ -43,8 +43,6 @@ I tried my best to group them by categories
 
 * [home_nmap](home_nmap/README.md)
 * [kismet_home](kismet_home/README.md)
-* [influxdb_intro](influxdb_intro/README.md)
-* [influxdb_datasets](influxdb_datasets/README.md)
 * [rpm_query](rpm_query/README.md)
 * [insecure_protocol_tutorial](insecure_protocol_tutorial/README.md)
 * [SuricataLog](SuricataLog/README.md)
@@ -55,6 +53,8 @@ I tried my best to group them by categories
 
 * [nyrr](nyrr/README.md)
 * [grafana](grafana/README.md)
+* [influxdb_intro](influxdb_intro/README.md)
+* [influxdb_datasets](influxdb_datasets/README.md)
 
 ## Blog En Español
 

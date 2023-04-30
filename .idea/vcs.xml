@@ -2,5 +2,29 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/BashError" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/BashHere" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/BashResources" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/Covid19Informer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/DatesAndComplexInBash" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/DebuggingApplications" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/EnableSysadminRssReader" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/ExtendingAnsibleWithPython" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/Falco" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/InteractiveBashScript" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/Nexus3OnOrangePI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/OracleCloudHomeLab" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/StopUsingTelnetToTestPorts" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/SuricataLog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/grafana" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/home_nmap" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/influxdb_datasets" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/influxdb_intro" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/insecure_protocol_tutorial" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/kismet_home" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/linktester" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/nyrr" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/rpm_query" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/yafd" vcs="Git" />
   </component>
 </project>
