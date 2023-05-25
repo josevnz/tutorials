@@ -18,6 +18,7 @@ I tried my best to group them by categories
 * [InteractiveBashScript](InteractiveBashScript/README.md)
 * [DatesAndComplexInBash](DatesAndComplexInBash/README.md)
 * [BashResources](BashResources/README.md)
+* [Command line tips and tricks](CommandLineTipsAndTricks/README.md)
 
 ### Automation
 
