@@ -26,6 +26,7 @@ submodules=(
 "Covid19Informer"
 "Falco"
 "linktester"
+"CommandLineTipsAndTricks"
 )
 
 for module in ${submodules[*]}; do
