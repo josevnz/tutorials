@@ -1,5 +1,7 @@
 # Tutorials by KodeGeek
 
+![](raspberry_pi4.png)
+
 This repository has links to all the [tutorials](docs/README.md) I have written for [Enable Sysadmin](https://www.redhat.com/sysadmin/users/jose-vicente-nunez), [MyFreeCodeCamp](https://www.freecodecamp.org/news/author/jose-vicente-nunez/), 
 [Medium](https://medium.com/@kodegeek-com) and others.
 
