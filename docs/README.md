@@ -1,7 +1,5 @@
 # Kodegeek.com Tutorials
 
-![](raspberry_pi4.png)
-
 Over the years I wrote several tutorials with Open Source code, here is a summary of them.
 
 I tried my best to group them by categories.
