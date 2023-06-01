@@ -1,5 +1,7 @@
 # 20 single line commands you would not be able to live without on Linux
 
+![](linux_cmd.png)
+
 > Every Linux user has their favorite one line command. In this article we will share 20 of them with you
 
 (By Ricardo Gerardi, Roberto Nozaki, Anthony Critelli and Jose Nunez)

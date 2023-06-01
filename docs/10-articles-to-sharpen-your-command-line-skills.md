@@ -1,5 +1,7 @@
 # 10 articles to sharpen your command line skills
 
+![](linux_cmd.png)
+
 The command line interface (also known as the CLI) is probably the most powerful and yet itimidating aspect of Linux as it gives you unparalleled power and complete access to what the operating system can do for you.
 
 Linux inherited UNIX design and its ability to compose more complex commands from simple tools. For the sake of example, you can combine the disk usage (du) tool and the sort tool (sort) to get the size of the items on the current directory:

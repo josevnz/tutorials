@@ -1,5 +1,7 @@
 # Packaging applications your software using RPM
 
+![](../gift.png)
+
 If you use RedHat or Fedora you will quickly find out yourself using 'dnf' (or yum) to install software packages. RPM is the most important software management tool on this Linux distributions and you will see shortly how you can take advantage of this framework to distribute your own software.
 
 Hopefully you got a chance to read a previously written article on the [same subject](https://www.redhat.com/sysadmin/create-rpm-package) by Valentin Bajrami. I will repeat some of the same concepts here but will ilustrate a few issues you may find on the way when you package. Also will use a 2 more complex examples and a few issues you may find when packaging native applications.

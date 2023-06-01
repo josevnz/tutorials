@@ -1,5 +1,7 @@
 # Several deprecated commands and the replacements you should be using
 
+![](linux_cmd.png)
+
 Software development is a field where things change at incredible speed; changes are made all the time due improvements in hardware and the surge of new environments.
 
 For the same reason tools change, and sometimes they do not adapt well but eventually fade and get replaced by other tools (with the debatable point of the new tools being better than the previous ones).
