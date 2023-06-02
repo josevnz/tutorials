@@ -11,7 +11,7 @@ show you how you can replace some tedious packaging of third party applications.
 * A Linux distribution (I used Fedora but this works with anything)
 * Elevated privileges (if you want to install your own packages)
 
-## When my <insert name here> is not enough
+## When my package manager is not simple enough
 
 Many times we want to have the ultimate control how we package an application, but there are
 a few occasions when this may be overkill:
@@ -182,7 +182,7 @@ It is not terrible, specially if you plan to make updates but can we do this _ea
 
 ## Installing FPM
 
-The [getting started](https://fpm.readthedocs.io/en/latest/getting-started.html) document is a good way to start.
+The [getting started](https://fpm.readthedocs.io/en/latest/getting-started.html) document the simplest reference you need.
 
 First some dependencies, for example in Fedora
 ```shell
