@@ -28,6 +28,7 @@ I tried my best to group them by categories.
 * [Nexus 3 On OrangePI, with Ansible](Nexus3OnOrangePI/README.md)
 * [Stop Using Telnet To Test Ports](StopUsingTelnetToTestPorts/README.md)
 * [Oracle Cloud Home Lab provisioning with Ansible](OracleCloudHomeLab/README.md)
+* [Getting started with FPM - Multi format package manager](GettingStartedWithFpm.md)
 
 ### Python
 
