@@ -35,7 +35,7 @@ So let's see how this project, [jdumpertools](ttps://github.com/josevnz/jdumpert
 
 First take a look at the spec file:
 
-```ini
+```
 Name:           jdumpertools
 # TODO: Figure out a better way to update version here and on Makefile
 %global major 0
@@ -346,6 +346,8 @@ Eclipse Temurin is the name of the OpenJDK distribution from Adoptium
 ```
 
 ## What is next?
+
+We covered some important use cases, but the tool has much more to offer:
 
 * FPM has [many other usages](https://fpm.readthedocs.io/en/latest/cli-reference.html), including transforming existing packages.
 * FPM also supports [configuration files](https://fpm.readthedocs.io/en/latest/getting-started.html). If you are using it often then you should next to it.
