@@ -25,9 +25,6 @@
 [submodule "docs/ExtendingAnsibleWithPython"]
 	path = docs/ExtendingAnsibleWithPython
 	url = https://github.com/josevnz/ExtendingAnsibleWithPython.git
-[submodule "docs/grafana"]
-	path = docs/grafana
-	url = https://github.com/josevnz/grafana.git
 [submodule "docs/insecure_protocol_tutorial"]
 	path = docs/insecure_protocol_tutorial
 	url = https://github.com/josevnz/insecure_protocol_tutorial.git
