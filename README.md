@@ -12,3 +12,18 @@ The layout follows a format that is compatible with both GitPages and my own Blo
 All code is Open Source, same as the tutorials. If you find any issues, please report it and I will fix them as soon as I can.
 
 Or even better, submit a patch.
+
+## Checking out this repository
+
+```shell
+https://github.com/josevnz/tutorials.git
+cd tutorials
+git submodule update --init --recursive
+```
+
+
+If you want to refresh it with the latest changes
+
+```shell
+git submodule update --recursive --remote
+```
