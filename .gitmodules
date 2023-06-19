@@ -73,3 +73,6 @@
 [submodule "docs/grafana"]
 	path = docs/grafana
 	url = https://github.com/josevnz/grafana.git
+[submodule "docs/CLIWithClickAndTrogon"]
+	path = docs/CLIWithClickAndTrogon
+	url = https://github.com/josevnz/CLIWithClickAndTrogon.git
