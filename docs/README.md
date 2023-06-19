@@ -36,6 +36,7 @@ I tried my best to group them by categories.
 * [Debugging Applications, multiple techniques](DebuggingApplications/README.md)
 * [Extending Ansible With Python](ExtendingAnsibleWithPython/README.md)
 * [Enable Sysadmin Rss Reader, a TUI written with Python and Rich](EnableSysadminRssReader/README.md)
+* [TUI applications with Click and Trogon](CLIWithClickAndTrogon/README.md)
 
 ### Java 
 
