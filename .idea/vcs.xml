@@ -5,6 +5,7 @@
     <mapping directory="$PROJECT_DIR$/docs/BashError" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docs/BashHere" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docs/BashResources" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/CLIWithClickAndTrogon" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docs/CommandLineTipsAndTricks" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docs/Covid19Informer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/docs/DatesAndComplexInBash" vcs="Git" />
