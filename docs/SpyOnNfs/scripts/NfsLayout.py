@@ -19,13 +19,13 @@ if not shutil.which("dot"):
 
 def diagram(diagram_name: str):
     with Diagram("NFS server and clients", filename=diagram_name, show=False):
-        with Cluster("Clients"):
-            clients = [
-                RedHat("Dmaf5 (client)"),
-                Raspbian("Raspberrypi (client)"),
+        with Cluster("Servers"):
+            servers = [
+                Raspbian("Raspberry PI 4 - /suricatalog"),
+                Raspbian("Orange PI 5 - /data")
             ]
-        server = Raspbian("OrangePI (server)")
-        server << clients
+        client = RedHat("Dmaf5 AMD")
+        servers << client
 
 
 if __name__ == "__main__":
