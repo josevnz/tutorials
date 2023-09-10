@@ -50,7 +50,6 @@ root@orangepi5:~# sudo exportfs -ra
 root@orangepi5:~# sudo showmount -e
 Export list for orangepi5:
 /data raspberrypi,dmaf5
-
 ```
 
 ### Client configuration
