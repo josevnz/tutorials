@@ -1,6 +1,3 @@
-[submodule "docs/home_nmap"]
-	path = docs/home_nmap
-	url = https://github.com/josevnz/home_nmap.git
 [submodule "docs/kismet_home"]
 	path = docs/kismet_home
 	url = https://github.com/josevnz/kismet_home.git
