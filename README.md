@@ -16,14 +16,16 @@ Or even better, submit a patch.
 ## Checking out this repository
 
 ```shell
-https://github.com/josevnz/tutorials.git
-cd tutorials
-git submodule update --init --recursive
+https://github.com/josevnz/tutorials.git && \
+cd tutorials && \
+bin/git submodule sync --recursive
+git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
 ```
 
 
 If you want to refresh it with the latest changes
 
 ```shell
-git submodule update --recursive --remote
+bin/git submodule sync --recursive && \
+git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
 ```
