@@ -73,3 +73,6 @@
 [submodule "docs/CLIWithClickAndTrogon"]
 	path = docs/CLIWithClickAndTrogon
 	url = https://github.com/josevnz/CLIWithClickAndTrogon.git
+[submodule "docs/home_nmap"]
+	path = docs/home_nmap
+	url = https://github.com/josevnz/home_nmap.git
