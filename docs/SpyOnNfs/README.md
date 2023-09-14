@@ -404,9 +404,82 @@ Before finishing up let's look at one more tool.
 
 ### BPF probe
 
+Originally Berkeley Packet Filter, is a kernel and user-space observability scheme for Linux.
 
+The BPF is a [very powerful tool](https://www.linuxjournal.com/content/bpf-observability-getting-started-quickly), and this short article won't even scratch the surface.
+
+Yes, **this is huge**. I'm learning this myself and found than the [bcc](https://github.com/iovisor/bcc) repository has lots of ready to use scripts that we could use to track our NFS access, even check for performance (more examples [here](https://github.com/iovisor/bpftrace), and on the [BPF Performance Book repository](https://github.com/brendangregg/bpf-perf-tools-book/tree/master)).
+
+But more interesting is how you can write tools yourself to monitor pretty much anything you want. For this tutorial I will use some ready to use programs that use the traces to capture useful information.
+
+As a first step, we will need to install a high level interpreter for our scripts. Again, on my Fedora Linux machine:
+
+```shell
+[josevnz@dmaf5 ~]$ sudo dnf install -y bpftrace.x86_64 bcc-tools.x86_64
+# And check if the kernel has btf enabled
+[josevnz@dmaf5 ~]$ ls -la /sys/kernel/btf/vmlinux
+-r--r--r--. 1 root root 5635179 Sep 12 04:21 /sys/kernel/btf/vmlinux
+```
+
+Then we can check what probes are available:
+
+```shell
+sudo bpftrace -l 'tracepoint:syscalls:sys_enter_*'
+```
+
+On a separate terminal run again the NFS test script:
+```shell
+. ~/virtualenv/tutorials/bin/activate
+cd SpyOnNfs/
+./scripts/test_script.py --quick_read /misc/data/nexus/log/jvm.log --follow /misc/suricata/eve.json --verbose
+```
+
+You can trace all the files opened by a program, like top:
+
+```shell
+18:59:20 loadavg: 1.20 1.00 0.74 1/1175 28520
+
+TID     COMM             READS  WRITES R_Kb    W_Kb    T FILE
+28520   clear            2      0      60      0       R xterm-256color
+28203   python           7      0      56      0       R eve.json
+28347   filetop          2      0      15      0       R loadavg
+824     systemd-oomd     2      0      8       0       R memory.swap.current
+824     systemd-oomd     2      0      8       0       R memory.low
+...
+```
+
+But it doesn't print the full path. More useful is to ask a NFS snoop and see if one of our files show up:
+
+```shell
+[josevnz@dmaf5 SuricataLog]$ sudo /usr/share/bcc/tools/nfsslower 1
+# Commented out some warnings ...
+Tracing NFS operations that are slower than 1 ms... Ctrl-C to quit
+TIME     COMM           PID    T BYTES   OFF_KB   LAT(ms) FILENAME
+19:02:25 python         28202  R 1460    62150       1.96 eve.json
+19:02:28 python         28202  R 2446    62151       2.09 eve.json
+19:02:31 python         28202  R 970     62154       1.99 eve.json
+19:02:34 python         28202  R 3335    62155       2.43 eve.json
+19:02:37 python         28202  R 4564    62158       1.84 eve.json
+19:02:40 python         28202  R 5876    62162       1.89 eve.json
+19:02:43 python         28202  R 4504    62168       1.61 eve.json
+19:02:46 python         28202  R 3131    62173       1.92 eve.json
+```
+This is much better. Also, we can see than the latency is almost 2 milliseconds.
+
+We can also monitor mount/ umount operations:
+
+```shell
+[josevnz@dmaf5 SuricataLog]$ sudo /usr/share/bcc/tools/mountsnoop 
+# Commented out some warnings ...
+2 warnings generated.
+COMM             PID     TID     MNT_NS      CALL
+mount.nfs        29012   29012   4026531841  mount("orangepi5:/data", "/misc/data", "nfs", MS_RDONLY, "sloppy,soft,rsize=16384,wsize=16384,vers=4.2,addr=192.168.68.59,clientaddr=192.168.68.68") = 0
+```
+
+This is good as well, we can see the activity we wanted to track here as well.
 
 ## What is next?
 
 * You learned several tools and as you may have guessed, you can use them to snoop on more than just opened files on NFS
-* It is always useful to know more than one tool. Sysdig has a special mention for being very versatile.
+* It is always useful to know more than one tool. Sysdig has a special mention for being very versatile, powerful and yet easy to use.
+* BPF is another alternative and will give you incredible access to the kernel calls. Be prepared to spend time reading and learning how to use the tools.
