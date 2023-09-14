@@ -468,10 +468,10 @@ COMM             PID     TID     MNT_NS      CALL
 mount.nfs        29012   29012   4026531841  mount("orangepi5:/data", "/misc/data", "nfs", MS_RDONLY, "sloppy,soft,rsize=16384,wsize=16384,vers=4.2,addr=192.168.68.59,clientaddr=192.168.68.68") = 0
 ```
 
-This is good as well, we can see the activity we wanted to track here as well.
+This is good as well, we can see the activity over NFS we wanted to confirm.
 
 ## What is next?
 
 * You learned several tools and as you may have guessed, you can use them to snoop on more than just opened files on NFS
-* It is always useful to know more than one tool. Sysdig has a special mention for being very versatile, powerful and yet easy to use.
+* It is always useful to know more than one tool. Sysdig has a special mention for being very versatile, powerful and yet easy to use. Also can we extended with scripts written in the LUA language.
 * BPF is another alternative and will give you incredible access to the kernel calls. Be prepared to spend time reading and learning how to use the tools.
