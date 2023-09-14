@@ -421,12 +421,6 @@ As a first step, we will need to install a high level interpreter for our script
 -r--r--r--. 1 root root 5635179 Sep 12 04:21 /sys/kernel/btf/vmlinux
 ```
 
-Then we can check what probes are available:
-
-```shell
-sudo bpftrace -l 'tracepoint:syscalls:sys_enter_*'
-```
-
 On a separate terminal run again the NFS test script:
 ```shell
 . ~/virtualenv/tutorials/bin/activate
