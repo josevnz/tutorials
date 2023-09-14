@@ -391,8 +391,6 @@ python              75840   75841   josevnz 3       file        /misc/suricata/e
 python              75840   75842   josevnz 3       file        /misc/suricata/eve.json
 ```
 
-So let's write ourselves a NFS capture script in LUA.
-
 What I liked about this tool:
 
 * Can work with older kernels (like 4.xx)
