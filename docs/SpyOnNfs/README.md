@@ -142,7 +142,7 @@ For our example, we want to determine if a python application is reading data fr
 * We are not familiar with the code, and will see we don't need to
 * Also don't know what mount points are being accessed, expect we want to inspect NFS access.
 
-Here is how our test script looks like:
+Here is how our [test script](test_script.py) looks like:
 
 ```shell
 ./scripts/test_script.py \
