@@ -15,8 +15,8 @@ My lab setup has one NFS server and 2 clients:
 
 ![](NfsLayout.png)
 
-On my setup I will have 3 computers talking to each other, one of them will be the NFS server and the other 2 will be 
-a client.
+On my setup I will have 3 computers on the same network, one of them will be the NFS client and the other 2 will be 
+NFS servers.
 
 | Machine     | OS                               | Hardware                                      | Mode                     |
 |-------------|----------------------------------|-----------------------------------------------|--------------------------|
