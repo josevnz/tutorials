@@ -415,7 +415,7 @@ There is an easier way to do this? Sysdig may offer some answers.
 
 While trying to find the elusive mount points, I stumbled into [Sysdig](https://github.com/draios/sysdig):
 
-Sysdig instruments your physical and virtual machines at the OS level by installing into the Linux kernel and capturing system calls and other OS events. 
+Sysdig instruments your physical and virtual machines at the OS level by installing into the Linux kernel and capturing system calls and other OS events. Sysdig uses [DTrace](https://en.wikipedia.org/wiki/DTrace) underneat.
 
 Sysdig also makes it possible to create trace files for system activity, similarly to what you can do for networks with tools like tcpdump and Wireshark. 
 
