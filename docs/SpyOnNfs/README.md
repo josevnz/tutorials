@@ -1,3 +1,5 @@
+![](article-raspberrypi-cover.jpg)
+
 I was tasked recently to find which of our processes was accessing a [NFS share](https://en.wikipedia.org/wiki/Network_File_System). During this process, I found that some tools are better adapted than others for the task.
 
 In this article, I want to share with you my findings. The whole process was fun and gave me ideas on how to use these tools to tackle similar problems in the future.
