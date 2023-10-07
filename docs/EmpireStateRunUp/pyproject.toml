@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mypackage"
+name = "EmpireStateRunUp"
 version = "0.0.1"
 dependencies = [
     "pandas",
