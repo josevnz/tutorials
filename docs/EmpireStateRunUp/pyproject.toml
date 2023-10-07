@@ -1,0 +1,17 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+  "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mypackage"
+version = "0.0.1"
+dependencies = [
+    "pandas",
+    'importlib-metadata; python_version<"3.8"',
+]
+
+[project.scripts]
+es_normalizer = "scripts.data_normalizer:main"
