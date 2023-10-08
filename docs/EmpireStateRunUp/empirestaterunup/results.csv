@@ -53,7 +53,7 @@ Full Course,Gabriel Zuardo,M,338,Ny,USA,ORANGE,53,43,43,1:19:55,15:59,Staten isl
 Full Course,Alex Curiel,M,376,Ny,USA,ORANGE,54,44,44,1:19:55,15:59,Brooklyn,30
 Full Course,Christopher Olsen,M,103,Ny,USA,SPONSORS,55,45,45,1:20:40,16:08,Brooklyn,25
 Full Course,Tricia O'Hara,F,38,Ca,USA,ELITEWOMEN,56,11,11,1:20:40,16:08,San francisco,57
-Full Course,Thomas Edwards,M,90,,USA,ELITEWOMEN,57,46,46,1:20:55,16:11,,-1
+Full Course,Thomas Edwards,M,90,,USA,ELITEWOMEN,57,46,46,1:20:55,16:11,,NaN
 Full Course,IGNACIO MANRIQUE,M,563,México,MEX,GOLD,58,47,47,1:21:15,16:15,Mexico,63
 Full Course,Grace Norman,F,243,In,USA,GREEN,59,12,12,1:21:30,16:18,Bloomington,25
 Full Course,Nancy Tantone,F,637,Ny,USA,BLACK,60,13,13,1:21:35,16:19,West islip,58
@@ -105,7 +105,7 @@ Full Course,Changbin Tian,M,553,Ny,USA,GOLD,105,83,83,1:33:00,18:36,Hartsdale,50
 Full Course,Dean Kouroupas,M,465,Nj,USA,GREY,106,84,84,1:33:15,18:39,Hoboken,27
 Full Course,Jordan Brodie,M,370,Ny,USA,ORANGE,107,85,85,1:33:20,18:40,New york,26
 Full Course,Elizabeth Knopf,F,443,Ny,USA,GREY,108,23,23,1:33:35,18:43,Brooklyn,29
-Full Course,Sean Stafford,M,93,,USA,GREY,109,86,86,1:33:40,18:44,,-1
+Full Course,Sean Stafford,M,93,,USA,GREY,109,86,86,1:33:40,18:44,,NaN
 Full Course,Marcelo Motta,M,449,-,URY,GREY,110,87,87,1:33:50,18:46,Montevideo,39
 Full Course,Bunny Zaidel,F,69,Nj,USA,SPECIALTY,111,24,24,1:33:50,18:46,Lavallettela,54
 Full Course,Matt Comite,M,405,Fl,USA,GREY,112,88,88,1:34:10,18:50,Miami,33
@@ -115,9 +115,9 @@ Full Course,Justin Tworek,M,332,Nj,USA,ORANGE,115,91,91,1:34:25,18:53,Cherry hil
 Full Course,Peter Stone,M,208,Ny,USA,GREEN,116,92,92,1:34:25,18:53,Tuckahoe,53
 Full Course,Nadine Keßler,F,560,Nordrhein-westfalen,DEU,GOLD,117,25,25,1:34:30,18:54,Arnsberg,35
 Full Course,Jordan Ruttenberg,M,327,Ny,USA,ORANGE,118,93,93,1:34:35,18:55,New york,30
-Full Course,Michael Sabo,M,100,,USA,ORANGE,119,94,94,1:34:40,18:56,,-1
+Full Course,Michael Sabo,M,100,,USA,ORANGE,119,94,94,1:34:40,18:56,,NaN
 Full Course,Jessica Schumann,F,652,Baden-württemberg,DEU,BLACK,120,26,26,1:34:45,18:57,Horb,45
-Full Course,Felipe Rogério,M,98,,USA,BLACK,121,95,95,1:34:50,18:58,,-1
+Full Course,Felipe Rogério,M,98,,USA,BLACK,121,95,95,1:34:50,18:58,,NaN
 Full Course,Meagan Tworek,F,333,Nj,USA,ORANGE,122,27,27,1:34:55,18:59,Cherry hill,32
 Full Course,Yossi Hanstater,M,230,-,ISR,GREEN,123,96,96,1:34:55,18:59,Raanana,38
 Full Course,Talia McKinney,F,58,Ny,USA,SPECIALTY,124,28,28,1:35:15,19:03,New york,39
@@ -167,7 +167,7 @@ Full Course,Brett Conti,M,105,Ny,USA,SPONSORS,167,129,129,1:42:35,20:31,New york
 Full Course,Martha Ways,F,234,Wa,USA,GREEN,168,39,39,1:42:40,20:32,Seattle,65
 Full Course,Lisa Zeigel,F,649,Ca,USA,BLACK,169,40,40,1:43:05,20:37,Pasadena,65
 Full Course,Anna Lubischer,F,530,Nj,USA,GOLD,170,41,41,1:43:10,20:38,Colts neck,38
-Full Course,Andrew Kile,U,526,Ny,USA,GOLD,171,-1,171,1:43:20,20:40,Sunnyside,39
+Full Course,Andrew Kile,U,526,Ny,USA,GOLD,171,NaN,171,1:43:20,20:40,Sunnyside,39
 Full Course,Eduardo Urdaneta,M,446,Fl,USA,GREY,172,130,130,1:43:40,20:44,Key biscayne,55
 Full Course,Emma Meyers,F,236,Fl,USA,GREEN,173,42,42,1:43:40,20:44,Pensacola,17
 Full Course,Ben Penrod,M,427,Mn,USA,GREY,174,131,131,1:43:45,20:45,Bloomington,40
@@ -226,7 +226,7 @@ Full Course,Peter Francis,M,513,Co,USA,GOLD,226,165,165,1:54:15,22:51,Denver,75
 Full Course,Julia Meyer,F,559,Hessen,DEU,GOLD,227,61,61,1:54:25,22:53,Rockenberg,47
 Full Course,Hadith Narine,F,59,Ny,USA,SPECIALTY,228,62,62,1:54:30,22:54,New york,34
 Full Course,Randi Mann,F,85,Ontario,CAN,SPECIALTY,229,63,63,1:54:35,22:55,Toronto,34
-Full Course,Robert Kirkland,M,89,,USA,SPECIALTY,230,166,166,1:54:50,22:58,,-1
+Full Course,Robert Kirkland,M,89,,USA,SPECIALTY,230,166,166,1:54:50,22:58,,NaN
 Full Course,Harriet Green,F,409,Ny,USA,GREY,231,64,64,1:55:00,23:00,Long island city,35
 Full Course,Will Downey,M,116,Ny,USA,SPONSORS,232,167,167,1:55:15,23:03,Breezy point,48
 Full Course,Ellen Golden,F,518,Ct,USA,GOLD,233,65,65,1:55:15,23:03,Greenwich,59
@@ -262,7 +262,7 @@ Full Course,Bethany Mousseau,F,223,Ma,USA,GREEN,262,77,77,2:01:10,24:14,Mansfiel
 Full Course,Meredith Abraham,F,301,Ny,USA,ORANGE,263,78,78,2:01:20,24:16,Syosset,51
 Full Course,Lucio Romero,M,455,Ny,USA,GREY,264,185,185,2:01:25,24:17,New york,51
 Full Course,Vikki Hon,F,658,Nj,USA,BLACK,265,79,79,2:01:30,24:18,Parsippany,32
-Full Course,Sarah Mackay,F,101,,USA,BLACK,266,80,80,2:01:40,24:20,,-1
+Full Course,Sarah Mackay,F,101,,USA,BLACK,266,80,80,2:01:40,24:20,,NaN
 Full Course,Stephanie Werther,F,336,Ny,USA,ORANGE,267,81,81,2:01:40,24:20,New york,58
 Full Course,Osvvaldo Gonzalez,M,519,Ny,USA,GOLD,268,186,186,2:02:00,24:24,Bronx,49
 Full Course,Matt Guernier,M,354,Ny,USA,ORANGE,269,187,187,2:02:05,24:25,Brooklyn,23
@@ -277,12 +277,12 @@ Full Course,Kostas Tzigizis,M,355,Ma,USA,ORANGE,277,192,192,2:03:25,24:41,Roslin
 Full Course,Julie Taylor,F,541,Or,USA,GOLD,278,85,85,2:04:10,24:50,Hood river,45
 Full Course,Felipe Das Neves,M,350,Ny,USA,ORANGE,279,193,193,2:04:40,24:56,New york,37
 Full Course,Stephen Andrews,M,302,Ny,USA,ORANGE,280,194,194,2:05:10,25:02,Brooklyn,37
-Full Course,Sean Derr,M,104,,USA,ORANGE,281,195,195,2:05:40,25:08,,-1
+Full Course,Sean Derr,M,104,,USA,ORANGE,281,195,195,2:05:40,25:08,,NaN
 Full Course,Brigette Lepe,F,414,Ny,USA,GREY,282,86,86,2:06:05,25:13,Middleburgh,40
-Full Course,Pierre Daniel,M,110,,USA,GREY,283,196,196,2:06:10,25:14,,-1
+Full Course,Pierre Daniel,M,110,,USA,GREY,283,196,196,2:06:10,25:14,,NaN
 Full Course,Denise Fletcher,F,235,Bridgend [pen-y-bont ar ogwr gb-pog],GBR,GREEN,284,87,87,2:06:20,25:16,Pen-y-bont ar ogwr,61
 Full Course,Julie Ricevuto,F,82,Ny,USA,SPECIALTY,285,88,88,2:06:30,25:18,New york,31
-Full Course,Sheikh Mohammed,M,111,,USA,SPECIALTY,286,197,197,2:06:35,25:19,,-1
+Full Course,Sheikh Mohammed,M,111,,USA,SPECIALTY,286,197,197,2:06:35,25:19,,NaN
 Full Course,Sandra Valdivia,F,239,Wa,USA,GREEN,287,89,89,2:06:55,25:23,Seattle,53
 Full Course,John Cavoores,M,340,Ny,USA,ORANGE,288,198,198,2:07:25,25:29,New york,30
 Full Course,Tom Grant,M,520,Ky,USA,GOLD,289,199,199,2:07:25,25:29,Louisville,72
@@ -303,7 +303,7 @@ Full Course,Tali Chazan,F,507,Ny,USA,GOLD,303,97,97,2:15:55,27:11,New york,45
 Full Course,Daniela Marte,F,318,Nj,USA,ORANGE,304,98,98,2:16:10,27:14,Bloomfield,30
 Full Course,Zalman Medalie,M,533,Fl,USA,GOLD,305,206,206,2:16:25,27:17,Miami beach,35
 Full Course,Kristin Canchola,F,504,Md,USA,GOLD,306,99,99,2:17:05,27:25,Gaithersburg,46
-Full Course,Kristie Carney,F,97,,USA,GOLD,307,100,100,2:17:35,27:31,,-1
+Full Course,Kristie Carney,F,97,,USA,GOLD,307,100,100,2:17:35,27:31,,NaN
 Full Course,William Best,M,574,Ny,USA,GOLD,308,207,207,2:18:10,27:38,New york,74
 Full Course,Ari Rabban,M,324,Ny,USA,ORANGE,309,208,208,2:19:05,27:49,New york,46
 Full Course,Liz Ghandakly,F,661,Oh,USA,BLACK,310,101,101,2:21:30,28:18,Lakewood,39
@@ -357,20 +357,20 @@ Full Course,Mary Kelly,F,246,Ny,USA,GREEN,357,132,132,3:09:50,37:58,New york,65
 Full Course,Stacey Hyman,F,619,Nj,USA,BLACK,358,133,133,3:10:10,38:02,Maplewood,45
 Full Course,Gisela Perez,F,70,Ny,USA,SPECIALTY,359,134,134,3:17:35,39:31,Bronx,70
 Full Course,Sarika Sandhu-Sethi,F,432,Ny,USA,GREY,360,135,135,3:19:25,39:53,Hicksville,35
-Full Course,Mikayla Klein,F,99,,USA,GREY,361,136,136,3:21:50,40:22,,-1
+Full Course,Mikayla Klein,F,99,,USA,GREY,361,136,136,3:21:50,40:22,,NaN
 Full Course,MARSHA O'LOUGHLIN,F,626,Tx,USA,BLACK,362,137,137,3:23:10,40:38,Denton,78
 Full Course,Sherry Ali,F,665,Ny,USA,BLACK,363,138,138,3:32:45,42:33,New york,51
-Full Course,Morsell Durani,F,96,,USA,BLACK,364,139,139,3:32:55,42:35,,-1
+Full Course,Morsell Durani,F,96,,USA,BLACK,364,139,139,3:32:55,42:35,,NaN
 Full Course,Helen Cosme,F,508,Ny,USA,GOLD,365,140,140,3:34:25,42:53,Thiells,51
 Full Course,Kevin Bull,M,610,Nj,USA,BLACK,366,225,225,3:35:20,43:04,Union,40
 Full Course,Raphael Canchola,M,503,Md,USA,GOLD,367,226,226,3:44:25,44:53,Gaithersburg,46
 Full Course,Kristine Torres,F,88,Ny,USA,SPECIALTY,368,141,141,3:48:30,45:42,Bronx,31
-Full Course,Amanda Pinski,F,94,,USA,SPECIALTY,369,142,142,3:54:45,46:57,,-1
-Full Course,Zach Zimmerman,U,253,Ny,USA,GREEN,370,-1,370,3:55:15,47:03,Brooklyn,35
-Full Course,Jessica Valentine,F,95,,USA,GREEN,371,143,143,3:56:40,47:20,,-1
+Full Course,Amanda Pinski,F,94,,USA,SPECIALTY,369,142,142,3:54:45,46:57,,NaN
+Full Course,Zach Zimmerman,U,253,Ny,USA,GREEN,370,NaN,370,3:55:15,47:03,Brooklyn,35
+Full Course,Jessica Valentine,F,95,,USA,GREEN,371,143,143,3:56:40,47:20,,NaN
 Full Course,Caroline Edwards,F,555,Leicestershire,GBR,GOLD,372,144,144,4:36:25,55:17,Ashby de la zouch,47
 Full Course,Sarah Preston,F,557,Derbyshire,GBR,GOLD,373,145,145,4:36:50,55:22,Swadlincote,34
 Full Course,Christopher Winkler,M,544,Ny,USA,GOLD,374,227,227,5:00:50,1:00:10,Massapequa,40
-Full Course,Jay Winkler,U,545,Ny,USA,GOLD,375,-1,375,5:26:35,1:05:19,Massapequa,33
+Full Course,Jay Winkler,U,545,Ny,USA,GOLD,375,NaN,375,5:26:35,1:05:19,Massapequa,33
 Full Course,Dana Zajko,F,646,Va,USA,BLACK,376,146,146,5:34:00,1:06:48,Alexandria,38
 20th Floor,HARPREET Sethi,M,434,Ny,USA,GREY,369,227,227,2:51:15,6:51,Hicksville,35

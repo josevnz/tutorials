@@ -14,7 +14,7 @@ from pathlib import Path
 from argparse import ArgumentParser
 import logging
 
-from empirestaterunup.data import quick_read
+from empirestaterunup.data import raw_read, FIELD_NAMES
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.DEBUG)
 
@@ -41,11 +41,9 @@ def main():
     OPTIONS = PARSER.parse_args()
     try:
         with open(OPTIONS.reportfile, 'w', newline='') as csvfile:
-            fieldnames = ['level', 'name', 'gender', 'bib', 'state', 'country', 'wave', 'overall position',
-                          'gender position', 'division position', 'pace', 'time', 'city', 'age']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
             writer.writeheader()
-            for row in quick_read(OPTIONS.rawfile):
+            for row in raw_read(OPTIONS.rawfile):
                 try:
                     writer.writerow(row)
                     if OPTIONS.verbose:

@@ -1,21 +1,74 @@
+import datetime
 import re
+from enum import Enum
 from pathlib import Path
 from typing import Iterable, Any, Dict
 
-from empirestaterunup import Waves
+import pandas
+from pandas import DataFrame
+
+"""
+Runners started on waves, but for basic analysis we will assume all runners were able to run
+at the same time.
+"""
+BASE_RACE_DATETIME = datetime.datetime(
+    year=2023,
+    month=9,
+    day=4,
+    hour=20,
+    minute=0,
+    second=0,
+    microsecond=0
+)
+
+
+class Waves(Enum):
+    """
+    22 Elite male
+    17 Elite female
+    There are some holes, so either some runners did not show up or there was spare capacity.
+    https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-4
+    https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-5
+    I guessed who went on which category, based on the BIB numbers I saw that day
+    """
+    EliteMen = ["Elite Men", [1, 25], BASE_RACE_DATETIME]
+    EliteWomen = ["Elite Women", [26, 49], BASE_RACE_DATETIME + datetime.timedelta(minutes=2)]
+    Purple = ["Specialty", [100, 199], BASE_RACE_DATETIME + datetime.timedelta(minutes=10)]
+    Green = ["Sponsors", [200, 299], BASE_RACE_DATETIME + datetime.timedelta(minutes=20)]
+    """
+    The date people applied for the lottery determined the colors?. Let's assume that
+    General Lottery Open: 7/17 9AM- 7/28 11:59PM
+    General Lottery Draw Date: 8/1
+    """
+    Orange = ["Tenants", [300, 399], BASE_RACE_DATETIME + datetime.timedelta(minutes=30)]
+    Grey = ["General 1", [400, 499], BASE_RACE_DATETIME + datetime.timedelta(minutes=40)]
+    Gold = ["General 2", [500, 599], BASE_RACE_DATETIME + datetime.timedelta(minutes=50)]
+    Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
+
+
+FIELD_NAMES = ['level', 'name', 'gender', 'bib', 'state', 'country', 'wave', 'overall position',
+               'gender position', 'division position', 'pace', 'time', 'city', 'age']
 
 
 def get_wave_from_bib(bib: int) -> Waves:
     for wave in Waves:
-        (lower, upper) = wave.value
+        (lower, upper) = wave.value[1]
         if lower <= bib <= upper:
             return wave
     return Waves.Black
 
 
-def quick_read(raw_file: Path, verbose: bool = False) -> Iterable[Dict[str, Any]]:
+def get_description_for_wave(wave: Waves) -> str:
+    return wave.value[0]
+
+
+def get_wave_start_time(wave: Waves) -> datetime:
+    return wave.value[2]
+
+
+def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
-    Read the whole file, return a normalized version
+    Read the whole RAW file, return a normalized version
     Each record looks like this (copy and paste from the website):
 
     NAME
@@ -37,7 +90,6 @@ def quick_read(raw_file: Path, verbose: bool = False) -> Iterable[Dict[str, Any]
     MIN/MI
     10:36
     ```
-    :param verbose:
     :param raw_file:
     :return:
     """
@@ -108,3 +160,15 @@ def quick_read(raw_file: Path, verbose: bool = False) -> Iterable[Dict[str, Any]
                     yield record
             except ValueError as ve:
                 raise ValueError(f"ln_cnt={ln_cnt}, tk_cnt={tk_cnt},{record}", ve)
+
+
+class CourseRecords(Enum):
+    Male = ('Paul Crake', 'Australia', 2003, '9:33')
+    Female = ('Andrea Mayr', 'Austria', 2006, '11:23')
+
+
+RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
+
+
+def load_data(data_file: Path = RACE_RESULTS) -> DataFrame:
+    return pandas.read_csv(data_file)

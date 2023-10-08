@@ -1345,7 +1345,7 @@ MIN/MI
 Andrew Kile
 U 39Bib 526Sunnyside, NY, USA
 171
--1
+NaN
 171
 1:43:20
 MIN/MI
@@ -2937,7 +2937,7 @@ MIN/MI
 Zach Zimmerman
 U 35Bib 253Brooklyn, NY, USA
 370
--1
+NaN
 370
 3:55:15
 MIN/MI
@@ -2977,7 +2977,7 @@ MIN/MI
 Jay Winkler
 U 33Bib 545Massapequa, NY, USA
 375
--1
+NaN
 375
 5:26:35
 MIN/MI
