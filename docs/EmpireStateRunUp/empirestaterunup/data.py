@@ -73,7 +73,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     Each record looks like this (copy and paste from the website):
 
     NAME
-    SEX BIB CITY,STATE,COUNTRY
+    GENDER BIB CITY,STATE,COUNTRY
     OVERALL_POSITION
     GENDER_POSITION
     DIVISION_POSITION
@@ -156,7 +156,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     try:
                         record['gender position'] = int(line.strip())
                     except ValueError:
-                        record['gender position'] = math.nan  # If sex is not specified the position is missing.
+                        record['gender position'] = math.nan  # If GENDER is not specified the position is missing.
                 elif tk_cnt == 5:
                     record['division position'] = int(line.strip())
                 elif tk_cnt == 6:

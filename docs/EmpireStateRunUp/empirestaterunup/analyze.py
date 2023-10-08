@@ -1,7 +1,7 @@
 from pandas import DataFrame
 
+SUMMARY_METRICS = ('age', 'time', 'pace')
+
 
 def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
-    if criteria == 'bib':
-        return DataFrame()
     return data[criteria].describe()
