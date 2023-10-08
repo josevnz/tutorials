@@ -9,6 +9,20 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "EmpireStateRunUp"
 version = "0.0.1"
+authors = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
+]
+description = "Collection of scripts to analyze the results of the 2023 Empire State Run Up race"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["running", "race"]
+classifiers = [
+    "Environment :: Console",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Utilities"
+]
 dependencies = [
     "pandas",
     "textual",
@@ -17,4 +31,4 @@ dependencies = [
 
 [project.scripts]
 es_normalizer = "scripts.data_normalizer:main"
-five_number = "empirestaterunup.apps:run_5_number"
+five_numbers = "empirestaterunup.apps:run_5_number"
