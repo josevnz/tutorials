@@ -4,7 +4,9 @@
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
 > Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
 
-## Normalizing the data
+## For developers
+
+### Normalizing the data
 
 Data is not ready to be used (like CSV) so I saved it into a TXT one page at the time, and then did some massaging:
 
@@ -12,7 +14,7 @@ Data is not ready to be used (like CSV) so I saved it into a TXT one page at the
 es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results.csv
 ```
 
-## Running the code in developer mode
+### Running the code in developer mode
 
 ```shell
 python3 -m venv ~/virtualenv/EmpireStateRunUp
@@ -23,7 +25,7 @@ pip install --upgrade wheel
 pip install --editable 
 ```
 
-## Packaging 
+### Packaging 
 
 ```shell
 python3 -m venv ~/virtualenv/EmpireStateRunUp

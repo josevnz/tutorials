@@ -187,10 +187,11 @@ class CourseRecords(Enum):
 RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
 
 
-def load_data(data_file: Path = RACE_RESULTS) -> DataFrame:
+def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFrame:
     """
     level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
     Full Course,Wai Ching Soh,M,19,-,MYS,ELITEMEN,1,1,1,53:00,10:36,Kuala lumpur,29
+    The code remove by default the DNF runners to avoid distortion on the results.
     """
     df = pandas.read_csv(
         data_file,
@@ -198,4 +199,6 @@ def load_data(data_file: Path = RACE_RESULTS) -> DataFrame:
     )
     df['pace'] = pandas.to_timedelta(df['pace'])
     df['time'] = pandas.to_timedelta(df['time'])
+    if remove_dnf:
+        df.drop(df[df.level == 'DNF'].index, inplace=True)
     return df

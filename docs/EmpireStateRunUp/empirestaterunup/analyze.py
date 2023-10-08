@@ -17,3 +17,7 @@ def count_by_gender(data: DataFrame) -> tuple[DataFrame, tuple]:
 
 def count_by_wave(data: DataFrame) -> tuple[DataFrame, tuple]:
     return data.groupby('wave')['wave'].count(), ('Wave', 'Count')
+
+
+def dt_to_sorted_dict(df: DataFrame) -> dict:
+    return {k: v for k, v in sorted(df.to_dict().items(), key=lambda item: item[1], reverse=True)}
