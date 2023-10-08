@@ -18,4 +18,3 @@ dependencies = [
 [project.scripts]
 es_normalizer = "scripts.data_normalizer:main"
 five_number = "empirestaterunup.apps:run_5_number"
-table_app = "empirestaterunup.table:main"
