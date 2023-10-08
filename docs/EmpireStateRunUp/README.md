@@ -4,6 +4,19 @@
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
 > Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
 
+## Analyzing the data
+
+### Running summary reports
+
+This application will provide details about the following:
+
+* count, std, mean, min, max 45%, 50% and 75% for age, time, and pace
+* Group and count distribution for Age,  Wave and Gender
+
+```shell
+five_numbers
+```
+
 ## For developers
 
 ### Normalizing the data
