@@ -43,7 +43,3 @@ def run_5_number():
     app.title = f"Five Number Summary".title()
     app.sub_title = f"Runners: {FiveNumberApp.DF.shape[0]}"
     app.run()
-
-
-if __name__ == "__main__":
-    run_5_number()
