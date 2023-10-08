@@ -1,8 +1,8 @@
 from textual.app import ComposeResult, App
-from textual.widgets import DataTable, Footer, Header
+from textual.widgets import DataTable, Footer, Header, Log
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number
-from empirestaterunup.data import load_data
+from empirestaterunup.data import load_data, RACE_RESULTS
 
 
 class FiveNumberApp(App):
@@ -14,12 +14,16 @@ class FiveNumberApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
-        yield Header()
-        yield DataTable()
+        yield Header(show_clock=True)
+        yield DataTable(id='summary')
+        yield Log(id='log')
         yield Footer()
 
     def on_mount(self) -> None:
-        summary_table = self.query_one(DataTable)
+        log = self.query_one(Log)
+        summary_table = self.get_widget_by_id('summary', expect_type=DataTable)
+        summary_table.zebra_stripes = True
+        summary_table.cursor_type = 'row'
         columns = [x.title() for x in FiveNumberApp.FIVE_NUMBER_FIELDS]
         columns.insert(0, 'Summary')
         summary_table.add_columns(*columns)
@@ -30,11 +34,14 @@ class FiveNumberApp(App):
             row.insert(0, metric.title())
             summary_table.add_row(*row)
 
+        log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
+
 
 def run_5_number():
     app = FiveNumberApp()
     FiveNumberApp.DF = load_data()
-    app.title = f"Five Number Summary. Runners: {FiveNumberApp.DF.shape[0]}".title()
+    app.title = f"Five Number Summary".title()
+    app.sub_title = f"Runners: {FiveNumberApp.DF.shape[0]}"
     app.run()
 
 
