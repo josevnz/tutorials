@@ -97,9 +97,10 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     with open(raw_file, 'r') as file_data:
         tk_cnt = 0
         ln_cnt = 0
-        record = {'level': "Full Course"}
+        record = {}
         info_pattern = re.compile("([A-Z]) (\\d+)Bib (\\d*)(.*)")
         info_pattern2 = re.compile("([A-Z]+)Bib (\\d+)-, (.*)")
+        DNF_BIB = [434]
         for line in file_data:
             try:
                 tk_cnt += 1
@@ -116,6 +117,10 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record['gender'] = matcher.group(1).upper()
                         record['age'] = int(matcher.group(2))
                         record['bib'] = int(matcher.group(3))
+                        if record['bib'] in DNF_BIB:
+                            record['level'] = "DNF"  # Interested only in people who completed the 86 floors
+                        else:
+                            record['level'] = "Full Course"
                         location = matcher.group(4).split(',')
                         if len(location) == 3:
                             record['city'] = location[0].strip().capitalize()
@@ -138,7 +143,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         matcher = info_pattern2.search(line.strip())
                         if matcher:
                             record['gender'] = matcher.group(1).upper()
-                            record['age'] = -1
+                            record['age'] = math.nan
                             record['bib'] = int(matcher.group(2))
                             record['city'] = ""
                             record['state'] = ""

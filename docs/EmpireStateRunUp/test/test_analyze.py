@@ -18,6 +18,7 @@ class AnalyzeTestCase(unittest.TestCase):
         for key in FIELD_NAMES:
             ndf = get_5_number(criteria=key, data=AnalyzeTestCase.df)
             self.assertIsNotNone(ndf)
+            print()
             print(ndf)
 
 
