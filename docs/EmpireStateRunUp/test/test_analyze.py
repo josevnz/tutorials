@@ -3,7 +3,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict
+    dt_to_sorted_dict, get_zscore
 from empirestaterunup.data import load_data
 
 
@@ -36,6 +36,12 @@ class AnalyzeTestCase(unittest.TestCase):
         ndf_dict = dt_to_sorted_dict(ndf)
         self.assertIsNotNone(ndf_dict)
         self.assertLess(0, len(ndf_dict))
+
+    def test_get_zscore(self):
+        # print(AnalyzeTestCase.df)
+        z_score = get_zscore(AnalyzeTestCase.df)
+        self.assertIsNotNone(z_score)
+        print(z_score)
 
 
 if __name__ == '__main__':

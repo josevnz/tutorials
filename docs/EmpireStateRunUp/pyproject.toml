@@ -26,6 +26,7 @@ classifiers = [
 dependencies = [
     "pandas",
     "textual",
+    "scipy",
     'importlib-metadata; python_version<"3.8"',
 ]
 

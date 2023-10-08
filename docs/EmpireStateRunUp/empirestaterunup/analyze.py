@@ -21,3 +21,22 @@ def count_by_wave(data: DataFrame) -> tuple[DataFrame, tuple]:
 
 def dt_to_sorted_dict(df: DataFrame) -> dict:
     return {k: v for k, v in sorted(df.to_dict().items(), key=lambda item: item[1], reverse=True)}
+
+
+def get_zscore(df: DataFrame):
+    filtered = df.drop(
+        [
+            'name',
+            'level',
+            'gender',
+            'city',
+            'state',
+            'country',
+            'wave',
+            'overall position',
+            'gender position',
+            'division position'
+        ],
+        axis=1
+    )
+    return filtered.sub(filtered.mean()).div(filtered.std(ddof=0))
