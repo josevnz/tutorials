@@ -1,4 +1,5 @@
 import datetime
+import math
 import re
 from enum import Enum
 from pathlib import Path
@@ -147,16 +148,27 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                 elif tk_cnt == 3:
                     record['overall position'] = int(line.strip())
                 elif tk_cnt == 4:
-                    record['gender position'] = int(line.strip())
+                    try:
+                        record['gender position'] = int(line.strip())
+                    except ValueError:
+                        record['gender position'] = math.nan  # If sex is not specified the position is missing.
                 elif tk_cnt == 5:
                     record['division position'] = int(line.strip())
                 elif tk_cnt == 6:
-                    record['pace'] = line.strip()
+                    parts = line.strip().split(':')
+                    if len(parts) == 3:
+                        record['pace'] = F"0{line.strip()}"
+                    else:
+                        record['pace'] = f"00:{line.strip()}"
                 elif tk_cnt == 7:
                     pass  # Always MIN/MI
                 elif tk_cnt == 8:
                     tk_cnt = 0
-                    record['time'] = line.strip()
+                    parts = line.strip().split(':')
+                    if len(parts) == 3:
+                        record['time'] = line.strip()
+                    else:
+                        record['time'] = f"00:{line.strip()}"
                     yield record
             except ValueError as ve:
                 raise ValueError(f"ln_cnt={ln_cnt}, tk_cnt={tk_cnt},{record}", ve)
@@ -171,4 +183,14 @@ RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
 
 
 def load_data(data_file: Path = RACE_RESULTS) -> DataFrame:
-    return pandas.read_csv(data_file)
+    """
+    level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
+    Full Course,Wai Ching Soh,M,19,-,MYS,ELITEMEN,1,1,1,53:00,10:36,Kuala lumpur,29
+    """
+    df = pandas.read_csv(
+        data_file,
+        index_col=3
+    )
+    df['pace'] = pandas.to_timedelta(df['pace'])
+    df['time'] = pandas.to_timedelta(df['time'])
+    return df
