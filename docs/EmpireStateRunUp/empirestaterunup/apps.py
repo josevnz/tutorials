@@ -1,7 +1,8 @@
-from textual.app import ComposeResult, App
-from textual.widgets import DataTable, Footer, Header, Log
 
-from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number
+from textual.app import ComposeResult, App
+from textual.widgets import DataTable, Footer, Header, Log, Rule
+
+from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave
 from empirestaterunup.data import load_data, RACE_RESULTS
 
 
@@ -16,6 +17,13 @@ class FiveNumberApp(App):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield DataTable(id='summary')
+        yield Rule()
+        yield DataTable(id='age_cnt')
+        yield Rule()
+        yield DataTable(id='wave_cnt')
+        yield Rule()
+        yield DataTable(id='gender_cnt')
+        yield Rule()
         yield Log(id='log')
         yield Footer()
 
@@ -33,6 +41,30 @@ class FiveNumberApp(App):
             row[0] = int(row[0])
             row.insert(0, metric.title())
             summary_table.add_row(*row)
+
+        age_table = self.get_widget_by_id('age_cnt', expect_type=DataTable)
+        age_table.zebra_stripes = True
+        age_table.cursor_type = 'row'
+        adf, age_header = count_by_age(FiveNumberApp.DF)
+        age_table.add_columns(*age_header)
+        age_dict = {k: v for k, v in sorted(adf.to_dict().items(), key=lambda item: item[1], reverse=True)}
+        age_table.add_rows(age_dict.items())
+
+        gender_table = self.get_widget_by_id('gender_cnt', expect_type=DataTable)
+        gender_table.zebra_stripes = True
+        gender_table.cursor_type = 'row'
+        gdf, gender_header = count_by_gender(FiveNumberApp.DF)
+        gender_table.add_columns(*gender_header)
+        gdf_dict = {k: v for k, v in sorted(gdf.to_dict().items(), key=lambda item: item[1], reverse=True)}
+        gender_table.add_rows(gdf_dict.items())
+
+        wave_table = self.get_widget_by_id('wave_cnt', expect_type=DataTable)
+        wave_table.zebra_stripes = True
+        wave_table.cursor_type = 'row'
+        wdf, wave_header = count_by_wave(FiveNumberApp.DF)
+        wave_table.add_columns(*wave_header)
+        wdf_dict = {k: v for k, v in sorted(wdf.to_dict().items(), key=lambda item: item[1], reverse=True)}
+        wave_table.add_rows(wdf_dict.items())
 
         log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
 
