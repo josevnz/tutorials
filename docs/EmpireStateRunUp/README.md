@@ -14,7 +14,15 @@ This application will provide details about the following:
 * Group and count distribution for Age,  Wave and Gender
 
 ```shell
-five_numbers
+esru_numbers
+```
+
+### Finding outliers
+
+This application uses the Z-score to find the outliers for several metrics for this race
+
+```shell
+esru_outlier
 ```
 
 ## For developers

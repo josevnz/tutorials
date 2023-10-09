@@ -32,4 +32,5 @@ dependencies = [
 
 [project.scripts]
 es_normalizer = "scripts.data_normalizer:main"
-five_numbers = "empirestaterunup.apps:run_5_number"
+esru_numbers = "empirestaterunup.apps:run_5_number"
+esru_outlier = "empirestaterunup.apps:run_outlier"

@@ -3,7 +3,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_zscore
+    dt_to_sorted_dict, get_zscore, get_outliers
 from empirestaterunup.data import load_data
 
 
@@ -38,10 +38,15 @@ class AnalyzeTestCase(unittest.TestCase):
         self.assertLess(0, len(ndf_dict))
 
     def test_get_zscore(self):
-        # print(AnalyzeTestCase.df)
         z_score = get_zscore(AnalyzeTestCase.df)
         self.assertIsNotNone(z_score)
-        print(z_score)
+
+    def test_get_outliers(self):
+        for column in SUMMARY_METRICS:
+            outliers = get_outliers(df=AnalyzeTestCase.df, column=column, std_threshold=3)
+            self.assertIsNotNone(outliers)
+            self.assertLess(0, outliers.shape[0])
+            print(outliers)
 
 
 if __name__ == '__main__':
