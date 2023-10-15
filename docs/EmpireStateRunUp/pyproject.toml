@@ -27,6 +27,7 @@ dependencies = [
     "pandas",
     "textual",
     "numpy",
+    "matplotlib",
     'importlib-metadata; python_version<"3.8"',
 ]
 
@@ -34,3 +35,4 @@ dependencies = [
 es_normalizer = "scripts.data_normalizer:main"
 esru_numbers = "empirestaterunup.apps:run_5_number"
 esru_outlier = "empirestaterunup.apps:run_outlier"
+plot_age = "empirestaterunup.apps:plot_age"

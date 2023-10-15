@@ -1,7 +1,7 @@
-
+from argparse import ArgumentParser
 from textual.app import ComposeResult, App
 from textual.widgets import DataTable, Footer, Header, Log, Rule, Label
-
+import matplotlib.pyplot as plt
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers
 from empirestaterunup.data import load_data, RACE_RESULTS
@@ -107,3 +107,27 @@ def run_outlier():
     app.title = f"Outliers Summary".title()
     app.sub_title = f"Runners: {OutlierApp.DF.shape[0]}"
     app.run()
+
+
+class Plotter:
+
+    def __init__(self):
+        self.df = load_data()
+
+    def plot_age(self, gtype: str):
+        self.df.age.plot(kind=gtype, title="Age details", grid=True)
+
+
+def plot_age():
+    parser = ArgumentParser(description="Different plots for ESRU")
+    parser.add_argument(
+        "--type",
+        action="store",
+        default="box",
+        choices=["box", "hist"],
+        help="Plot type"
+    )
+    options = parser.parse_args()
+    pzs = Plotter()
+    pzs.plot_age(options.type)
+    plt.show()
