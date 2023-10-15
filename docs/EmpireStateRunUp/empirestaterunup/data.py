@@ -189,16 +189,24 @@ RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
 
 def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFrame:
     """
+    ```csv
     level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
     Full Course,Wai Ching Soh,M,19,-,MYS,ELITEMEN,1,1,1,53:00,10:36,Kuala lumpur,29
-    The code remove by default the DNF runners to avoid distortion on the results.
+    ```
+    * The code remove by default the DNF runners to avoid distortion on the results.
+    * Replace unknown ages with the median, to make analysis easier and avoid distortions
     """
     df = pandas.read_csv(
-        data_file,
-        index_col=3
+        data_file
     )
     df['pace'] = pandas.to_timedelta(df['pace'])
     df['time'] = pandas.to_timedelta(df['time'])
+    df['finishtimestamp'] = BASE_RACE_DATETIME + df['time']
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)
+    median_age = df['age'].median()
+    df['age'].fillna(median_age, inplace=True)
+    df['age'] = df['age'].astype(int)
+    df['bib'] = df['bib'].astype(int)
+    df.set_index('bib', inplace=True)
     return df
