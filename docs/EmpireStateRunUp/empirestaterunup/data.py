@@ -204,9 +204,19 @@ def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFr
     df['finishtimestamp'] = BASE_RACE_DATETIME + df['time']
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)
+    # Normalize Age
     median_age = df['age'].median()
     df['age'].fillna(median_age, inplace=True)
     df['age'] = df['age'].astype(int)
+    # Normalize state and city
+    df.replace({'state': {'-': ''}}, inplace=True)
+    df['state'].fillna('', inplace=True)
+    df['city'].fillna('', inplace=True)
+    # Normalize gender position
+    median_gender_pos = df['gender position'].median()
+    df['gender position'].fillna(median_gender_pos, inplace=True)
+    df['gender position'] = df['gender position'].astype(int)
+    # Normalize BIB and make it the index
     df['bib'] = df['bib'].astype(int)
     df.set_index('bib', inplace=True)
     return df
