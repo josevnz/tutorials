@@ -119,7 +119,7 @@ class Plotter:
 
 
 def plot_age():
-    parser = ArgumentParser(description="Different plots for ESRU")
+    parser = ArgumentParser(description="Different Age plots for ESRU")
     parser.add_argument(
         "--type",
         action="store",
