@@ -43,7 +43,7 @@ python3 -m venv ~/virtualenv/EmpireStateRunUp
 pip install --upgrade pip
 pip install --upgrade build
 pip install --upgrade wheel
-pip install --editable 
+pip install --editable .
 ```
 
 ### Packaging 
