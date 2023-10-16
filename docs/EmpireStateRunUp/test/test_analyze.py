@@ -3,7 +3,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_zscore, get_outliers
+    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins
 from empirestaterunup.data import load_data
 
 
@@ -47,6 +47,30 @@ class AnalyzeTestCase(unittest.TestCase):
             self.assertIsNotNone(outliers)
             self.assertLess(0, outliers.shape[0])
             print(outliers)
+
+    def test_get_fastest(self):
+        fastest = get_fastest(df=AnalyzeTestCase.df)
+        self.assertIsNotNone(fastest)
+        self.assertEqual(20, fastest.shape[0])
+        print(fastest)
+
+    def test_age_bins(self):
+        cat, _ = age_bins(df=AnalyzeTestCase.df)
+        self.assertIsNotNone(cat)
+        val_counts = cat.value_counts()
+        self.assertIsNotNone(val_counts)
+        for category, count in val_counts.items():
+            self.assertIsNotNone(category)
+            self.assertIsNotNone(count)
+
+    def test_time_bins(self):
+        cat, _ = time_bins(df=AnalyzeTestCase.df)
+        self.assertIsNotNone(cat)
+        val_counts = cat.value_counts()
+        self.assertIsNotNone(val_counts)
+        for category, count in val_counts.items():
+            self.assertIsNotNone(category)
+            self.assertIsNotNone(count)
 
 
 if __name__ == '__main__':
