@@ -46,6 +46,15 @@ pip install --upgrade wheel
 pip install --editable .
 ```
 
+#### Modifying the layout without restarting the apps
+
+For example, playing with the 'esru_outlier' application:
+
+```shell
+pip install textual-dev
+textual run --dev empirestaterunup.apps:run_outlier 
+```
+
 ### Packaging 
 
 ```shell

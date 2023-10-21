@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from textual.app import ComposeResult, App
+from textual.containers import Vertical
 from textual.widgets import DataTable, Footer, Header, Log, Rule, Label
 import matplotlib.pyplot as plt
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
@@ -11,6 +12,7 @@ class FiveNumberApp(App):
     DF = None
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
+    CSS_PATH = "five_numbers.tcss"
     TABLE_ID = ['Summary', 'Age Count', 'Wave Count', 'Gender Count', 'Age Bucket', 'Time Bucket']
 
     def action_quit_app(self):
@@ -86,18 +88,20 @@ def run_5_number():
 class OutlierApp(App):
     DF = None
     BINDINGS = [("q", "quit_app", "Quit")]
+    CSS_PATH = "outliers.tcss"
 
     def action_quit_app(self):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
-        for column in SUMMARY_METRICS:
-            yield Label(f"{column} outliers".title())
-            yield DataTable(id=f'{column}_outlier')
-            yield Rule()
-        yield Log(id='log')
-        yield Footer()
+        with Vertical():
+            yield Header(show_clock=True)
+            for column in SUMMARY_METRICS:
+                yield Label(f"{column} outliers".title())
+                yield DataTable(id=f'{column}_outlier')
+                yield Rule()
+            yield Log(id='log')
+            yield Footer()
 
     def on_mount(self) -> None:
         log = self.query_one(Log)
