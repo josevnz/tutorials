@@ -14,7 +14,7 @@ authors = [
 ]
 description = "Collection of scripts to analyze the results of the 2023 Empire State Run Up race"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 keywords = ["running", "race"]
 classifiers = [
     "Environment :: Console",
@@ -28,11 +28,11 @@ dependencies = [
     "textual",
     "numpy",
     "matplotlib",
-    'importlib-metadata; python_version<"3.8"',
+    'importlib-metadata; python_version>"3.8"',
 ]
 
 [project.scripts]
-es_normalizer = "scripts.data_normalizer:main"
+es_normalizer = "empirestaterunup.data_normalizer:main"
 esru_numbers = "empirestaterunup.apps:run_5_number"
 esru_outlier = "empirestaterunup.apps:run_outlier"
 plot_age = "empirestaterunup.apps:plot_age"
