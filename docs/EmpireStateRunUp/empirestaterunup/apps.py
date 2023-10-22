@@ -1,11 +1,25 @@
 from argparse import ArgumentParser
 from textual.app import ComposeResult, App
 from textual.containers import HorizontalScroll, VerticalScroll
-from textual.widgets import DataTable, Footer, Header, Log, Rule, Label
+from textual.widgets import DataTable, Footer, Header, Log, Label
 import matplotlib.pyplot as plt
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
 from empirestaterunup.data import load_data, RACE_RESULTS
+
+
+class FiveNumberColumn(VerticalScroll):
+
+    def __init__(self):
+        super().__init__()
+        self.column = None
+
+    def compose(self) -> ComposeResult:
+        yield Label(f"{self.column}:".title())
+        table = DataTable(id=f'{self.column}')
+        table.cursor_type = 'row'
+        table.zebra_stripes = True
+        yield table
 
 
 class FiveNumberApp(App):
@@ -13,26 +27,20 @@ class FiveNumberApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
-    TABLE_ID = ['Summary', 'Age Count', 'Wave Count', 'Gender Count', 'Age Bucket', 'Time Bucket']
+    TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket']
 
     def action_quit_app(self):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        for table_id in FiveNumberApp.TABLE_ID:
-            if table_id == 'Age Bucket':
-                yield Label(f"{table_id.title()} (years)")
-            elif table_id == 'Time Bucket':
-                yield Label(f"{table_id.title()} (years)")
-            else:
-                yield Label(f"{table_id.title()}")
-            tbl = DataTable(id=table_id)
-            tbl.zebra_stripes = True
-            tbl.cursor_type = 'row'
-            yield tbl
-            yield Rule()
-        yield Log(id='log')
+        with HorizontalScroll():
+            for table_id in FiveNumberApp.TABLE_ID:
+                column = FiveNumberColumn()
+                column.column = table_id
+                yield column
+        with HorizontalScroll():
+            yield Log(id='log')
         yield Footer()
 
     def on_mount(self) -> None:
@@ -49,17 +57,17 @@ class FiveNumberApp(App):
             row.insert(0, metric.title())
             summary_table.add_row(*row)
 
-        age_table = self.get_widget_by_id('Age Count', expect_type=DataTable)
+        age_table = self.get_widget_by_id('Count By Age', expect_type=DataTable)
         adf, age_header = count_by_age(FiveNumberApp.DF)
         age_table.add_columns(*age_header)
         age_table.add_rows(dt_to_sorted_dict(adf).items())
 
-        gender_table = self.get_widget_by_id('Gender Count', expect_type=DataTable)
+        gender_table = self.get_widget_by_id('Gender Bucket', expect_type=DataTable)
         gdf, gender_header = count_by_gender(FiveNumberApp.DF)
         gender_table.add_columns(*gender_header)
         gender_table.add_rows(dt_to_sorted_dict(gdf).items())
 
-        wave_table = self.get_widget_by_id('Wave Count', expect_type=DataTable)
+        wave_table = self.get_widget_by_id('Wave Bucket', expect_type=DataTable)
         wdf, wave_header = count_by_wave(FiveNumberApp.DF)
         wave_table.add_columns(*wave_header)
         wave_table.add_rows(dt_to_sorted_dict(wdf).items())
@@ -92,6 +100,7 @@ class OutlierColumn(VerticalScroll):
         self.column = None
 
     def compose(self) -> ComposeResult:
+        yield Label(f"{self.column} outliers:".title())
         table = DataTable(id=f'{self.column}_outlier')
         table.cursor_type = 'row'
         table.zebra_stripes = True

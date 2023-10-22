@@ -8,6 +8,11 @@ Footer {
         dock: bottom;
 }
 
+Label {
+        width: 100%;
+        margin: 0 0;
+}
+
 DataTable {
         height: 1fr;
         width: 100%;
