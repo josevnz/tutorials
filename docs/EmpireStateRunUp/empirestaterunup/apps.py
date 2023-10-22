@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from pathlib import Path
 
 from pandas import DataFrame
 from textual import on
@@ -166,8 +167,8 @@ def run_outlier():
 
 class Plotter:
 
-    def __init__(self):
-        self.df = load_data()
+    def __init__(self, data_file: Path = None):
+        self.df = load_data(data_file)
 
     def plot_age(self, gtype: str):
         self.df.age.plot(kind=gtype, title="Age details", grid=True)
@@ -182,8 +183,18 @@ def plot_age():
         choices=["box", "hist"],
         help="Plot type"
     )
+    parser.add_argument(
+        "results",
+        action="store",
+        type=Path,
+        nargs="*",
+        help="Race results."
+    )
     options = parser.parse_args()
-    pzs = Plotter()
+    if options.results:
+        pzs = Plotter(options.results[0])
+    else:
+        pzs = Plotter()
     pzs.plot_age(options.type)
     plt.show()
 
@@ -218,8 +229,20 @@ class BrowserApp(App):
 
 
 def run_browser():
+    parser = ArgumentParser(description="Browse user results")
+    parser.add_argument(
+        "results",
+        action="store",
+        type=Path,
+        nargs="*",
+        help="Race results."
+    )
     app = BrowserApp()
-    BrowserApp.DF = load_data()
+    options = parser.parse_args()
+    if options.results:
+        BrowserApp.DF = load_data(options.results[0])
+    else:
+        BrowserApp.DF = load_data()
     app.title = f"Race runners".title()
     app.sub_title = f"Browse details: {BrowserApp.DF.shape[0]}"
     app.run()

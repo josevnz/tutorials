@@ -187,7 +187,7 @@ class CourseRecords(Enum):
 RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
 
 
-def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFrame:
+def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     """
     ```csv
     level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
@@ -196,8 +196,12 @@ def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFr
     * The code remove by default the DNF runners to avoid distortion on the results.
     * Replace unknown ages with the median, to make analysis easier and avoid distortions
     """
+    if data_file:
+        def_file = data_file
+    else:
+        def_file = RACE_RESULTS
     df = pandas.read_csv(
-        data_file
+        def_file
     )
     df['pace'] = pandas.to_timedelta(df['pace'])
     df['time'] = pandas.to_timedelta(df['time'])
