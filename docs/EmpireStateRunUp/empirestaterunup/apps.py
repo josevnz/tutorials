@@ -191,6 +191,7 @@ class BrowserApp(App):
         for column in columns_raw:
             table.add_column(column.title(), key=column)
         table.add_rows(rows)
+        table.sort('overall position')
 
 
 def run_browser():
