@@ -99,6 +99,7 @@ class FiveNumberApp(App):
         if table.id != 'Summary':  # Not supported yet
             table.sort(event.column_key)
 
+
 def run_5_number():
     app = FiveNumberApp()
     FiveNumberApp.DF = load_data()
