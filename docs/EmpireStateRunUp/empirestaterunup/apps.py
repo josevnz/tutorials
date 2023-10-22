@@ -1,11 +1,13 @@
 from argparse import ArgumentParser
+
+from pandas import DataFrame
 from textual.app import ComposeResult, App
 from textual.containers import HorizontalScroll, VerticalScroll
 from textual.widgets import DataTable, Footer, Header, Log, Label
 import matplotlib.pyplot as plt
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, RACE_RESULTS
+from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples
 
 
 class FiveNumberColumn(VerticalScroll):
@@ -23,7 +25,7 @@ class FiveNumberColumn(VerticalScroll):
 
 
 class FiveNumberApp(App):
-    DF = None
+    DF: DataFrame = None
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
@@ -108,7 +110,7 @@ class OutlierColumn(VerticalScroll):
 
 
 class OutlierApp(App):
-    DF = None
+    DF: DataFrame = None
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "outliers.tcss"
 
@@ -166,3 +168,32 @@ def plot_age():
     pzs = Plotter()
     pzs.plot_age(options.type)
     plt.show()
+
+
+class BrowserApp(App):
+    DF: DataFrame = None
+    BINDINGS = [("q", "quit_app", "Quit")]
+    CSS_PATH = "browser.tcss"
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+        yield DataTable(id='runners')
+        yield Footer()
+
+    def on_mount(self) -> None:
+        table = self.get_widget_by_id(f'runners', expect_type=DataTable)
+        columns_raw, rows = to_list_of_tuples(BrowserApp.DF)
+        for column in columns_raw:
+            table.add_column(column.title(), key=column)
+        table.add_rows(rows)
+
+
+def run_browser():
+    app = BrowserApp()
+    BrowserApp.DF = load_data()
+    app.title = f"Race runners".title()
+    app.sub_title = f"Browse details: {BrowserApp.DF.shape[0]}"
+    app.run()

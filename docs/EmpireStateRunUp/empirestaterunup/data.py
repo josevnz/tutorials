@@ -3,7 +3,7 @@ import math
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, Any, Dict
+from typing import Iterable, Any, Dict, Tuple, Union
 
 import pandas
 from pandas import DataFrame
@@ -220,3 +220,28 @@ def load_data(data_file: Path = RACE_RESULTS, remove_dnf: bool = True) -> DataFr
     df['bib'] = df['bib'].astype(int)
     df.set_index('bib', inplace=True)
     return df
+
+
+def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
+    bib_as_column = df.reset_index(level=0, inplace=False)
+    if not bibs:
+        filtered = bib_as_column
+    else:
+        filtered = bib_as_column[bib_as_column['bib'].isin(bibs)]
+    rows = [(
+        r.level,
+        r['name'],
+        r.gender,
+        r.bib,
+        r.state,
+        r.country,
+        r.wave,
+        r['overall position'],
+        r['gender position'],
+        r['division position'],
+        r.pace,
+        r.time,
+        r.city,
+        r.age
+    ) for _, r in filtered.iterrows()]
+    return tuple(FIELD_NAMES), rows
