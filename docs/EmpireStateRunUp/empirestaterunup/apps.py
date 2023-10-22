@@ -124,7 +124,6 @@ class OutlierApp(App):
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
-
         log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
 
 
