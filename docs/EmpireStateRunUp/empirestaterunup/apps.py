@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from textual.app import ComposeResult, App
-from textual.containers import Vertical
+from textual.containers import HorizontalScroll, VerticalScroll
 from textual.widgets import DataTable, Footer, Header, Log, Rule, Label
 import matplotlib.pyplot as plt
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
@@ -85,6 +85,19 @@ def run_5_number():
     app.run()
 
 
+class OutlierColumn(VerticalScroll):
+
+    def __init__(self):
+        super().__init__()
+        self.column = None
+
+    def compose(self) -> ComposeResult:
+        table = DataTable(id=f'{self.column}_outlier')
+        table.cursor_type = 'row'
+        table.zebra_stripes = True
+        yield table
+
+
 class OutlierApp(App):
     DF = None
     BINDINGS = [("q", "quit_app", "Quit")]
@@ -94,14 +107,15 @@ class OutlierApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
-        with Vertical():
-            yield Header(show_clock=True)
-            for column in SUMMARY_METRICS:
-                yield Label(f"{column} outliers".title())
-                yield DataTable(id=f'{column}_outlier')
-                yield Rule()
+        yield Header(show_clock=True)
+        with HorizontalScroll():
+            for column_name in SUMMARY_METRICS:
+                column = OutlierColumn()
+                column.column = column_name
+                yield column
+        with HorizontalScroll():
             yield Log(id='log')
-            yield Footer()
+        yield Footer()
 
     def on_mount(self) -> None:
         log = self.query_one(Log)
@@ -109,8 +123,6 @@ class OutlierApp(App):
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
-            table.cursor_type = 'row'
-            table.zebra_stripes = True
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
 
         log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
