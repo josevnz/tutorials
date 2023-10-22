@@ -102,8 +102,20 @@ class FiveNumberApp(App):
 
 
 def run_5_number():
+    parser = ArgumentParser(description="5 key indicators report")
+    parser.add_argument(
+        "results",
+        action="store",
+        type=Path,
+        nargs="*",
+        help="Race results."
+    )
+    options = parser.parse_args()
     app = FiveNumberApp()
-    FiveNumberApp.DF = load_data()
+    if options.results:
+        FiveNumberApp.DF = load_data(options.results[0])
+    else:
+        FiveNumberApp.DF = load_data()
     app.title = f"Five Number Summary".title()
     app.sub_title = f"Runners: {FiveNumberApp.DF.shape[0]}"
     app.run()
@@ -158,8 +170,20 @@ class OutlierApp(App):
 
 
 def run_outlier():
+    parser = ArgumentParser(description="Show race outliers")
+    parser.add_argument(
+        "results",
+        action="store",
+        type=Path,
+        nargs="*",
+        help="Race results."
+    )
+    options = parser.parse_args()
+    if options.results:
+        OutlierApp.DF = load_data(options.results[0])
+    else:
+        OutlierApp.DF = load_data()
     app = OutlierApp()
-    OutlierApp.DF = load_data()
     app.title = f"Outliers Summary".title()
     app.sub_title = f"Runners: {OutlierApp.DF.shape[0]}"
     app.run()
