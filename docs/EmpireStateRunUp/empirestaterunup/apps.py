@@ -63,31 +63,41 @@ class FiveNumberApp(App):
 
         age_table = self.get_widget_by_id('Count By Age', expect_type=DataTable)
         adf, age_header = count_by_age(FiveNumberApp.DF)
-        age_table.add_columns(*age_header)
+        for column in age_header:
+            age_table.add_column(column, key=column)
         age_table.add_rows(dt_to_sorted_dict(adf).items())
 
         gender_table = self.get_widget_by_id('Gender Bucket', expect_type=DataTable)
         gdf, gender_header = count_by_gender(FiveNumberApp.DF)
-        gender_table.add_columns(*gender_header)
+        for column in gender_header:
+            gender_table.add_column(column, key=column)
         gender_table.add_rows(dt_to_sorted_dict(gdf).items())
 
         wave_table = self.get_widget_by_id('Wave Bucket', expect_type=DataTable)
         wdf, wave_header = count_by_wave(FiveNumberApp.DF)
-        wave_table.add_columns(*wave_header)
+        for column in wave_header:
+            wave_table.add_column(column, key=column)
         wave_table.add_rows(dt_to_sorted_dict(wdf).items())
 
         age_bucket_table = self.get_widget_by_id('Age Bucket', expect_type=DataTable)
         age_categories, age_cols_head = age_bins(FiveNumberApp.DF)
-        age_bucket_table.add_columns(*age_cols_head)
+        for column in age_cols_head:
+            age_bucket_table.add_column(column, key=column)
         age_bucket_table.add_rows(dt_to_sorted_dict(age_categories.value_counts()).items())
 
         time_bucket_table = self.get_widget_by_id('Time Bucket', expect_type=DataTable)
         time_categories, time_cols_head = time_bins(FiveNumberApp.DF)
-        time_bucket_table.add_columns(*time_cols_head)
+        for column in time_cols_head:
+            time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
 
         log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
 
+    @on(DataTable.HeaderSelected)
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        table = event.data_table
+        if table.id != 'Summary':  # Not supported yet
+            table.sort(event.column_key)
 
 def run_5_number():
     app = FiveNumberApp()
