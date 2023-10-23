@@ -5,7 +5,8 @@ from pandas import DataFrame
 from textual import on
 from textual.app import ComposeResult, App
 from textual.containers import HorizontalScroll, VerticalScroll
-from textual.widgets import DataTable, Footer, Header, Log, Label
+from textual.screen import ModalScreen
+from textual.widgets import DataTable, Footer, Header, Log, Label, Button, Static
 import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
@@ -33,6 +34,7 @@ class FiveNumberApp(App):
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
     TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket']
+    ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
         self.exit(0)
@@ -121,6 +123,39 @@ def run_5_number():
     app.run()
 
 
+class RunnerDetailScreen(ModalScreen):
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = "runner_details.tcss"
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            detail: DataTable.RowSelected = None,
+            df: DataFrame = None
+    ):
+        super().__init__(name, ident, classes)
+        self.detail = detail
+        self.df = df
+
+    def compose(self) -> ComposeResult:
+        table = self.detail.data_table
+        row = table.get_row(self.detail.row_key)
+        bibs = [row[0]]
+        columns, details = to_list_of_tuples(self.df, bibs)
+        self.log.info(f"Columns: {columns}")
+        self.log.info(f"Details: {details}")
+        for i in range(0, len(columns)):
+            yield Static(f"{columns[i].title()}:", classes="label")
+            yield Static(f"{details[0][i]}", classes="box")
+        yield Button("Close", variant="primary", id="close")
+
+    @on(Button.Pressed, "#close")
+    def on_button_pressed(self, _) -> None:
+        self.app.pop_screen()
+
+
 class OutlierColumn(VerticalScroll):
 
     def __init__(self):
@@ -137,8 +172,11 @@ class OutlierColumn(VerticalScroll):
 
 class OutlierApp(App):
     DF: DataFrame = None
-    BINDINGS = [("q", "quit_app", "Quit")]
+    BINDINGS = [
+        ("q", "quit_app", "Quit"),
+    ]
     CSS_PATH = "outliers.tcss"
+    ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
         self.exit(0)
@@ -167,6 +205,11 @@ class OutlierApp(App):
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
+
+    @on(DataTable.RowSelected)
+    def on_row_clicked(self, event: DataTable.RowSelected) -> None:
+        runner_detail = RunnerDetailScreen(df=OutlierApp.DF, detail=event)
+        self.push_screen(runner_detail)
 
 
 def run_outlier():
@@ -224,6 +267,7 @@ def plot_age():
 
 
 class BrowserApp(App):
+    ENABLE_COMMAND_PALETTE = False
     DF: DataFrame = None
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "browser.tcss"

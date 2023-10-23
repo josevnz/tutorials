@@ -1,0 +1,25 @@
+RunnerDetailScreen {
+    layout: grid;
+    grid-size: 2;
+    grid-columns: auto auto;
+    grid-rows: 12%;
+    grid-gutter: 0;
+}
+
+.label {
+    height: auto;
+    content-align: right top;
+    border: solid green;
+}
+
+.box {
+    height: auto;
+    content-align: left top;
+    border: solid green;
+}
+
+Button {
+    dock: bottom;
+    width: 100%;
+    height: auto;
+}
