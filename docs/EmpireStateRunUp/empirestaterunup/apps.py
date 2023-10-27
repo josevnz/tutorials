@@ -1,3 +1,4 @@
+import textwrap
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -6,7 +7,7 @@ from textual import on
 from textual.app import ComposeResult, App
 from textual.containers import HorizontalScroll, VerticalScroll
 from textual.screen import ModalScreen
-from textual.widgets import DataTable, Footer, Header, Log, Label, Button, Static
+from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
 import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
@@ -146,9 +147,12 @@ class RunnerDetailScreen(ModalScreen):
         columns, details = to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
+        row_markdown = ""
         for i in range(0, len(columns)):
-            yield Static(f"{columns[i].title()}:", classes="label")
-            yield Static(f"{details[0][i]}", classes="box")
+            row_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
+        yield MarkdownViewer(textwrap.dedent(f"""# Runner details        
+        {row_markdown}
+        """))
         yield Button("Close", variant="primary", id="close")
 
     @on(Button.Pressed, "#close")
