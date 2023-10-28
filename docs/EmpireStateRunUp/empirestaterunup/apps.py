@@ -1,18 +1,20 @@
 import textwrap
 from argparse import ArgumentParser
 from pathlib import Path
+from typing import Type
 
 from pandas import DataFrame
 from textual import on
-from textual.app import ComposeResult, App
+from textual.app import ComposeResult, App, CSSPathType
 from textual.containers import HorizontalScroll, VerticalScroll
+from textual.driver import Driver
 from textual.screen import ModalScreen
 from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
 import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples
+from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples, load_country_details
 
 
 class FiveNumberColumn(VerticalScroll):
@@ -134,11 +136,16 @@ class RunnerDetailScreen(ModalScreen):
             ident: str | None = None,
             classes: str | None = None,
             detail: DataTable.RowSelected = None,
-            df: DataFrame = None
+            df: DataFrame = None,
+            country_df: DataFrame = None
     ):
         super().__init__(name, ident, classes)
         self.detail = detail
         self.df = df
+        if not country_df:
+            self.country_df = load_country_details()
+        else:
+            self.country_df = country_df
 
     def compose(self) -> ComposeResult:
         table = self.detail.data_table
@@ -276,6 +283,19 @@ class BrowserApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "browser.tcss"
 
+    def __init__(
+            self,
+            driver_class: Type[Driver] | None = None,
+            css_path: CSSPathType | None = None,
+            watch_css: bool = False,
+            country_data: DataFrame = None
+    ):
+        super().__init__(driver_class, css_path, watch_css)
+        if not country_data:
+            self.country_data = load_country_details()
+        else:
+            self.country_data = country_data
+
     def action_quit_app(self):
         self.exit(0)
 
@@ -302,6 +322,13 @@ class BrowserApp(App):
 
 def run_browser():
     parser = ArgumentParser(description="Browse user results")
+    parser.add_argument(
+        "--country",
+        action="store",
+        type=Path,
+        required=False,
+        help="Country details"
+    )
     parser.add_argument(
         "results",
         action="store",

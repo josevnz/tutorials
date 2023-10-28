@@ -185,6 +185,7 @@ class CourseRecords(Enum):
 
 
 RACE_RESULTS = Path(__file__).parent.joinpath("results.csv")
+COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
 
 
 def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
@@ -220,6 +221,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     median_gender_pos = df['gender position'].median()
     df['gender position'].fillna(median_gender_pos, inplace=True)
     df['gender position'] = df['gender position'].astype(int)
+
     # Normalize BIB and make it the index
     df['bib'] = df['bib'].astype(int)
     df.set_index('bib', inplace=True)
@@ -249,3 +251,42 @@ def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | li
         r.age
     ) for _, r in filtered.iterrows()]
     return tuple(FIELD_NAMES), rows
+
+
+def load_country_details(data_file: Path = None) -> DataFrame:
+    """
+    ```csv
+    name,alpha-2,alpha-3,country-code,iso_3166-2,region,sub-region,intermediate-region,region-code,sub-region-code,intermediate-region-code
+    United States of America,US,USA,840,ISO 3166-2:US,Americas,Northern America,"",019,021,""
+    """
+    if data_file:
+        def_file = data_file
+    else:
+        def_file = COUNTRY_DETAILS
+    df = pandas.read_csv(
+        def_file
+    )
+    return df
+
+
+class CountryColumns(Enum):
+    name = "name"
+    alpha_2 = "alpha-2"
+    alpha_3 = "alpha-3"
+    country_code = "country-code"
+    iso_3166_2 = "iso_3166-2"
+    region = "region"
+    sub_region = "sub-region"
+    intermediate_region = "intermediate-region"
+    region_code = "region-code"
+    sub_region_code = "sub-region-code"
+    intermediate_region_code = "intermediate-region-code"
+
+
+COUNTRY_COLUMNS = [country.value for country in CountryColumns]
+
+
+def lookup_country_by_code(df: DataFrame, three_letter_code: str) -> DataFrame:
+    if len(three_letter_code) != 3:
+        raise ValueError(f"Invalid three letter country code: {three_letter_code}")
+    return df.loc[df['alpha-3'] == three_letter_code]

@@ -1,7 +1,7 @@
 import unittest
 
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
-    to_list_of_tuples
+    to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS
 
 
 class DataTestCase(unittest.TestCase):
@@ -45,6 +45,30 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(0, len(rows))
+
+    def test_load_country_details(self):
+        data = load_country_details()
+        self.assertIsNotNone(data)
+        countries = data['name']
+        self.assertIsNotNone(countries)
+        for idx, country in data.iterrows():
+            self.assertIsNotNone(country.iloc[2])
+
+    def test_country_lookup(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+        country_data = load_country_details()
+        self.assertIsNotNone(country_data)
+        header, rows = to_list_of_tuples(run_data)
+        for row in rows:
+            country_code = row[5]
+            country_df = lookup_country_by_code(
+                df=country_data,
+                three_letter_code=country_code
+            )
+            self.assertIsNotNone(country_df)
+            for column in COUNTRY_COLUMNS:
+                self.assertIsNotNone(country_df[column])
 
 
 if __name__ == '__main__':
