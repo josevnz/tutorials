@@ -47,8 +47,24 @@ class Waves(Enum):
     Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
 
 
-FIELD_NAMES = ['level', 'name', 'gender', 'bib', 'state', 'country', 'wave', 'overall position',
-               'gender position', 'division position', 'pace', 'time', 'city', 'age']
+class RaceFields(Enum):
+    level = "level"
+    name = "name"
+    gender = "gender"
+    bib = "bib"
+    state = "state"
+    country = "country"
+    wave = "wave"
+    overall_position = "overall position"
+    gender_position = "gender position"
+    division_position = "division position"
+    pace = "pace"
+    time = "time"
+    city = "city"
+    age = "age"
+    
+
+FIELD_NAMES = [x.value for x in RaceFields]
 
 
 def get_wave_from_bib(bib: int) -> Waves:
@@ -106,7 +122,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                 tk_cnt += 1
                 ln_cnt += 1
                 if tk_cnt == 1:
-                    record['name'] = line.strip()
+                    record[RaceFields.name.value] = line.strip()
                 elif tk_cnt == 2:
                     """
                     M 29Bib 19Kuala Lumpur, -, MYS
@@ -114,66 +130,66 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     """
                     matcher = info_pattern.search(line.strip())
                     if matcher:
-                        record['gender'] = matcher.group(1).upper()
-                        record['age'] = int(matcher.group(2))
-                        record['bib'] = int(matcher.group(3))
-                        if record['bib'] in DNF_BIB:
-                            record['level'] = "DNF"  # Interested only in people who completed the 86 floors
+                        record[RaceFields.gender.value] = matcher.group(1).upper()
+                        record[RaceFields.age.value] = int(matcher.group(2))
+                        record[RaceFields.bib.value] = int(matcher.group(3))
+                        if record[RaceFields.bib.value] in DNF_BIB:
+                            record[RaceFields.level.value] = "DNF"  # Interested only in people who completed the 86 floors
                         else:
-                            record['level'] = "Full Course"
+                            record[RaceFields.level.value] = "Full Course"
                         location = matcher.group(4).split(',')
                         if len(location) == 3:
-                            record['city'] = location[0].strip().capitalize()
-                            record['state'] = location[1].strip().capitalize()
-                            record['country'] = location[2].strip().upper()
+                            record[RaceFields.city.value] = location[0].strip().capitalize()
+                            record[RaceFields.state.value] = location[1].strip().capitalize()
+                            record[RaceFields.country.value] = location[2].strip().upper()
                         elif len(location) == 2:
-                            record['city'] = ""
-                            record['state'] = location[0].strip().capitalize()
-                            record['country'] = location[1].strip().upper()
+                            record[RaceFields.city.value] = ""
+                            record[RaceFields.state.value] = location[0].strip().capitalize()
+                            record[RaceFields.country.value] = location[1].strip().upper()
                         elif len(location) == 1:
-                            record['city'] = ""
-                            record['state'] = ""
-                            record['country'] = location[0].strip().upper()
+                            record[RaceFields.city.value] = ""
+                            record[RaceFields.state.value] = ""
+                            record[RaceFields.country.value] = location[0].strip().upper()
                         else:  # This should not happen
-                            record['city'] = ""
-                            record['state'] = ""
-                            record['country'] = ""
-                        record['wave'] = get_wave_from_bib(record['bib']).name.upper()
+                            record[RaceFields.city.value] = ""
+                            record[RaceFields.state.value] = ""
+                            record[RaceFields.country.value] = ""
+                        record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).name.upper()
                     else:
                         matcher = info_pattern2.search(line.strip())
                         if matcher:
-                            record['gender'] = matcher.group(1).upper()
-                            record['age'] = math.nan
-                            record['bib'] = int(matcher.group(2))
-                            record['city'] = ""
-                            record['state'] = ""
-                            record['country'] = matcher.group(3).upper()
+                            record[RaceFields.gender.value] = matcher.group(1).upper()
+                            record[RaceFields.age.value] = math.nan
+                            record[RaceFields.bib.value] = int(matcher.group(2))
+                            record[RaceFields.city.value] = ""
+                            record[RaceFields.state.value] = ""
+                            record[RaceFields.country.value] = matcher.group(3).upper()
                         else:
                             raise ValueError(f"Regexp failed for {line.strip()}")
                 elif tk_cnt == 3:
-                    record['overall position'] = int(line.strip())
+                    record[RaceFields.overall_position.value] = int(line.strip())
                 elif tk_cnt == 4:
                     try:
-                        record['gender position'] = int(line.strip())
+                        record[RaceFields.gender_position.value] = int(line.strip())
                     except ValueError:
-                        record['gender position'] = math.nan  # If GENDER is not specified the position is missing.
+                        record[RaceFields.gender_position.value] = math.nan  # If GENDER is not specified the position is missing.
                 elif tk_cnt == 5:
-                    record['division position'] = int(line.strip())
+                    record[RaceFields.division_position.value] = int(line.strip())
                 elif tk_cnt == 6:
                     parts = line.strip().split(':')
                     if len(parts) == 3:
-                        record['pace'] = F"0{line.strip()}"
+                        record[RaceFields.pace.value] = F"0{line.strip()}"
                     else:
-                        record['pace'] = f"00:{line.strip()}"
+                        record[RaceFields.pace.value] = f"00:{line.strip()}"
                 elif tk_cnt == 7:
                     pass  # Always MIN/MI
                 elif tk_cnt == 8:
                     tk_cnt = 0
                     parts = line.strip().split(':')
                     if len(parts) == 3:
-                        record['time'] = line.strip()
+                        record[RaceFields.time.value] = line.strip()
                     else:
-                        record['time'] = f"00:{line.strip()}"
+                        record[RaceFields.time.value] = f"00:{line.strip()}"
                     yield record
             except ValueError as ve:
                 raise ValueError(f"ln_cnt={ln_cnt}, tk_cnt={tk_cnt},{record}", ve)
@@ -204,27 +220,27 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df = pandas.read_csv(
         def_file
     )
-    df['pace'] = pandas.to_timedelta(df['pace'])
-    df['time'] = pandas.to_timedelta(df['time'])
-    df['finishtimestamp'] = BASE_RACE_DATETIME + df['time']
+    df[RaceFields.pace.value] = pandas.to_timedelta(df[RaceFields.pace.value])
+    df[RaceFields.time.value] = pandas.to_timedelta(df[RaceFields.time.value])
+    df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)
     # Normalize Age
-    median_age = df['age'].median()
-    df['age'].fillna(median_age, inplace=True)
-    df['age'] = df['age'].astype(int)
+    median_age = df[RaceFields.age.value].median()
+    df[RaceFields.age.value].fillna(median_age, inplace=True)
+    df[RaceFields.age.value] = df[RaceFields.age.value].astype(int)
     # Normalize state and city
-    df.replace({'state': {'-': ''}}, inplace=True)
-    df['state'].fillna('', inplace=True)
-    df['city'].fillna('', inplace=True)
+    df.replace({RaceFields.state.value: {'-': ''}}, inplace=True)
+    df[RaceFields.state.value].fillna('', inplace=True)
+    df[RaceFields.city.value].fillna('', inplace=True)
     # Normalize gender position
-    median_gender_pos = df['gender position'].median()
-    df['gender position'].fillna(median_gender_pos, inplace=True)
-    df['gender position'] = df['gender position'].astype(int)
+    median_gender_pos = df[RaceFields.gender_position.value].median()
+    df[RaceFields.gender_position.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.gender_position.value] = df[RaceFields.gender_position.value].astype(int)
 
     # Normalize BIB and make it the index
-    df['bib'] = df['bib'].astype(int)
-    df.set_index('bib', inplace=True)
+    df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
+    df.set_index(RaceFields.bib.value, inplace=True)
     return df
 
 
@@ -233,18 +249,18 @@ def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | li
     if not bibs:
         filtered = bib_as_column
     else:
-        filtered = bib_as_column[bib_as_column['bib'].isin(bibs)]
+        filtered = bib_as_column[bib_as_column[RaceFields.bib.value].isin(bibs)]
     rows = [(
         r.level,
-        r['name'],
+        r[RaceFields.name.value],
         r.gender,
         r.bib,
         r.state,
         r.country,
         r.wave,
-        r['overall position'],
-        r['gender position'],
-        r['division position'],
+        r[RaceFields.overall_position.value],
+        r[RaceFields.gender_position.value],
+        r[RaceFields.division_position.value],
         r.pace,
         r.time,
         r.city,
@@ -287,6 +303,8 @@ COUNTRY_COLUMNS = [country.value for country in CountryColumns]
 
 
 def lookup_country_by_code(df: DataFrame, three_letter_code: str) -> DataFrame:
+    if not isinstance(three_letter_code, str):
+        raise ValueError(f"Invalid type for three letter country code: '{three_letter_code}'")
     if len(three_letter_code) != 3:
-        raise ValueError(f"Invalid three letter country code: {three_letter_code}")
-    return df.loc[df['alpha-3'] == three_letter_code]
+        raise ValueError(f"Invalid three letter country code: '{three_letter_code}'")
+    return df.loc[df[CountryColumns.alpha_3.value] == three_letter_code]

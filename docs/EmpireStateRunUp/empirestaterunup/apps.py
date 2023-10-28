@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples, load_country_details
+from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples, load_country_details, \
+    lookup_country_by_code, CountryColumns, RaceFields
 
 
 class FiveNumberColumn(VerticalScroll):
@@ -279,7 +280,6 @@ def plot_age():
 
 class BrowserApp(App):
     ENABLE_COMMAND_PALETTE = False
-    DF: DataFrame = None
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "browser.tcss"
 
@@ -288,13 +288,31 @@ class BrowserApp(App):
             driver_class: Type[Driver] | None = None,
             css_path: CSSPathType | None = None,
             watch_css: bool = False,
-            country_data: DataFrame = None
+            country_data: DataFrame = None,
+            df: DataFrame = None
     ):
         super().__init__(driver_class, css_path, watch_css)
         if not country_data:
             self.country_data = load_country_details()
         else:
             self.country_data = country_data
+        if df:
+            self.df = df
+        else:
+            self.df = load_data()
+        for three_letter_code in set(self.df[RaceFields.country.value].tolist()):
+            filtered_country = lookup_country_by_code(
+                df=self.country_data,
+                three_letter_code=three_letter_code
+            )
+            country_name: str = three_letter_code
+            if CountryColumns.name.value in filtered_country.columns:
+                country_name = filtered_country[CountryColumns.name.value].values[0]
+            filtered = self.df[RaceFields.country.value] == three_letter_code
+            self.df.loc[
+                filtered,
+                [RaceFields.country.value]
+            ] = [country_name.strip().title()]
 
     def action_quit_app(self):
         self.exit(0)
@@ -308,7 +326,7 @@ class BrowserApp(App):
         table = self.get_widget_by_id(f'runners', expect_type=DataTable)
         table.zebra_stripes = True
         table.cursor_type = 'row'
-        columns_raw, rows = to_list_of_tuples(BrowserApp.DF)
+        columns_raw, rows = to_list_of_tuples(self.df)
         for column in columns_raw:
             table.add_column(column.title(), key=column)
         table.add_rows(rows)
@@ -336,12 +354,17 @@ def run_browser():
         nargs="*",
         help="Race results."
     )
-    app = BrowserApp()
     options = parser.parse_args()
+    df = None
+    country_df = None
     if options.results:
-        BrowserApp.DF = load_data(options.results[0])
-    else:
-        BrowserApp.DF = load_data()
+        df = load_data(options.results[0])
+    if options.country:
+        country_df = load_country_details(options.country)
+    app = BrowserApp(
+        df=df,
+        country_data=country_df
+    )
     app.title = f"Race runners".title()
-    app.sub_title = f"Browse details: {BrowserApp.DF.shape[0]}"
+    app.sub_title = f"Browse details: {app.df.shape[0]}"
     app.run()
