@@ -62,7 +62,7 @@ class RaceFields(Enum):
     time = "time"
     city = "city"
     age = "age"
-    
+
 
 FIELD_NAMES = [x.value for x in RaceFields]
 
@@ -134,7 +134,8 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.age.value] = int(matcher.group(2))
                         record[RaceFields.bib.value] = int(matcher.group(3))
                         if record[RaceFields.bib.value] in DNF_BIB:
-                            record[RaceFields.level.value] = "DNF"  # Interested only in people who completed the 86 floors
+                            record[
+                                RaceFields.level.value] = "DNF"  # Interested only in people who completed the 86 floors
                         else:
                             record[RaceFields.level.value] = "Full Course"
                         location = matcher.group(4).split(',')
@@ -172,7 +173,8 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     try:
                         record[RaceFields.gender_position.value] = int(line.strip())
                     except ValueError:
-                        record[RaceFields.gender_position.value] = math.nan  # If GENDER is not specified the position is missing.
+                        record[
+                            RaceFields.gender_position.value] = math.nan  # If GENDER is not specified the position is missing.
                 elif tk_cnt == 5:
                     record[RaceFields.division_position.value] = int(line.strip())
                 elif tk_cnt == 6:
@@ -308,3 +310,15 @@ def lookup_country_by_code(df: DataFrame, three_letter_code: str) -> DataFrame:
     if len(three_letter_code) != 3:
         raise ValueError(f"Invalid three letter country code: '{three_letter_code}'")
     return df.loc[df[CountryColumns.alpha_3.value] == three_letter_code]
+
+
+def get_times(df: DataFrame) -> DataFrame:
+    return df.select_dtypes(include=['timedelta64', 'datetime64'])
+
+
+def get_positions(df: DataFrame) -> DataFrame:
+    return df.select_dtypes(include=['int64'])
+
+
+def get_categories(df: DataFrame) -> DataFrame:
+    return df.select_dtypes(include=['object'])

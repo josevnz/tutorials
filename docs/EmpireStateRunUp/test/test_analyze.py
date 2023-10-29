@@ -3,7 +3,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins
+    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins, outliers_forest
 from empirestaterunup.data import load_data
 
 

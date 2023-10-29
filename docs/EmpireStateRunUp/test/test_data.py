@@ -1,7 +1,8 @@
 import unittest
 
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
-    to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS
+    to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
+    get_categories
 
 
 class DataTestCase(unittest.TestCase):
@@ -69,6 +70,27 @@ class DataTestCase(unittest.TestCase):
             self.assertIsNotNone(country_df)
             for column in COUNTRY_COLUMNS:
                 self.assertIsNotNone(country_df[column])
+
+    def test_get_times(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+        df = get_times(run_data)
+        self.assertIsNotNone(df)
+        self.assertEqual(374, df.shape[0])
+
+    def test_get_positions(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+        df = get_positions(run_data)
+        self.assertIsNotNone(df)
+        self.assertEqual(374, df.shape[0])
+
+    def test_get_categories(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+        df = get_categories(run_data)
+        self.assertIsNotNone(df)
+        self.assertEqual(374, df.shape[0])
 
 
 if __name__ == '__main__':

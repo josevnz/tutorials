@@ -66,7 +66,7 @@ def age_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     Group ages into age buckets
     """
     ages = [r * 10 for r in range(1, 11)]
-    labels = [f"[{age} - {age+10}]" for age in ages[:-1]]
+    labels = [f"[{age} - {age + 10}]" for age in ages[:-1]]
     categories: Categorical = pandas.cut(df['age'], ages, labels=labels)
     return categories, ('Age', 'Count')
 
@@ -76,6 +76,6 @@ def time_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     Group finish times into time buckets
     """
     times = [timedelta(minutes=r * 10) for r in range(1, 13)]
-    labels = [f"[{r * 10} - {(r+1)*10}]" for r in range(1, 12)]
+    labels = [f"[{r * 10} - {(r + 1) * 10}]" for r in range(1, 12)]
     categories: Categorical = pandas.cut(df['time'], times, labels=labels)
     return categories, ('Time', 'Count')
