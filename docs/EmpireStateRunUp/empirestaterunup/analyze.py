@@ -89,7 +89,7 @@ def time_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     return categories, ('Time', 'Count')
 
 
-def get_country_counts(df: DataFrame, max_participants: int = 5) -> Tuple[Series, DataFrame]:
+def get_country_counts(df: DataFrame, max_participants: int = 5) -> Tuple[Series, Series]:
     """
     Gen interesting country counts
     :param df DataFrame to query
@@ -98,8 +98,8 @@ def get_country_counts(df: DataFrame, max_participants: int = 5) -> Tuple[Series
     """
     countries = df[RaceFields.country.value]
     countries_counts = countries.value_counts()
-    countries.loc[countries.isin(countries_counts[countries_counts <= max_participants].index)] = 'Others'
-    return countries_counts, countries
+    country_filter = countries_counts[countries_counts.values > max_participants]
+    return countries_counts, country_filter
 
 
 def better_than_median_waves(df: DataFrame) -> Tuple[float, Series]:
