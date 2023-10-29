@@ -3,7 +3,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins, outliers_forest
+    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins, get_country_counts
 from empirestaterunup.data import load_data
 
 
@@ -71,6 +71,13 @@ class AnalyzeTestCase(unittest.TestCase):
         for category, count in val_counts.items():
             self.assertIsNotNone(category)
             self.assertIsNotNone(count)
+
+    def test_get_country_counts(self):
+        country_counts, countries = get_country_counts(df=AnalyzeTestCase.df)
+        self.assertIsNotNone(country_counts)
+        self.assertEqual(2, country_counts['JPN'])
+        self.assertIsNotNone(countries)
+        self.assertEqual(9, country_counts['OTHER'])
 
 
 if __name__ == '__main__':

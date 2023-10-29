@@ -1,8 +1,9 @@
 import unittest
 
+from empirestaterunup.analyze import better_than_median_waves
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories
+    get_categories, RaceFields
 
 
 class DataTestCase(unittest.TestCase):
@@ -91,6 +92,13 @@ class DataTestCase(unittest.TestCase):
         df = get_categories(run_data)
         self.assertIsNotNone(df)
         self.assertEqual(374, df.shape[0])
+
+    def test_better_than_median_waves(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+        median_time, wave_series = better_than_median_waves(run_data)
+        self.assertIsNotNone(median_time)
+        self.assertEqual(42, wave_series.iloc[0])
 
 
 if __name__ == '__main__':

@@ -1,9 +1,11 @@
-from typing import Union
+from typing import Union, Tuple
 
 import numpy as np
 import pandas
 from pandas import DataFrame, Categorical, Series
 from datetime import timedelta
+
+from empirestaterunup.data import RaceFields
 
 SUMMARY_METRICS = ('age', 'time', 'pace')
 Z_FILTER = [
@@ -25,15 +27,15 @@ def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
 
 
 def count_by_age(data: DataFrame) -> tuple[DataFrame, tuple]:
-    return data.groupby('age')['age'].count(), ('Age', 'Count')
+    return data.groupby(RaceFields.age.value)[RaceFields.age.value].count(), ('Age', 'Count')
 
 
 def count_by_gender(data: DataFrame) -> tuple[DataFrame, tuple]:
-    return data.groupby('gender')['gender'].count(), ('Gender', 'Count')
+    return data.groupby(RaceFields.gender.value)[RaceFields.gender.value].count(), ('Gender', 'Count')
 
 
 def count_by_wave(data: DataFrame) -> tuple[DataFrame, tuple]:
-    return data.groupby('wave')['wave'].count(), ('Wave', 'Count')
+    return data.groupby(RaceFields.wave.value)[RaceFields.wave.value].count(), ('Wave', 'Count')
 
 
 def dt_to_sorted_dict(df: Union[DataFrame | Series]) -> dict:
@@ -58,7 +60,13 @@ def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFram
 
 
 def get_fastest(df: DataFrame, limit: int = 20) -> DataFrame:
-    return df[['time', 'age', 'gender', 'country']].groupby('time').value_counts().nlargest(limit)
+    return df[
+        [RaceFields.time.value,
+         RaceFields.age.value,
+         RaceFields.gender.value,
+         RaceFields.country.value
+         ]
+    ].groupby(RaceFields.time.value).value_counts().nlargest(limit)
 
 
 def age_bins(df: DataFrame) -> tuple[Categorical, tuple]:
@@ -67,7 +75,7 @@ def age_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     """
     ages = [r * 10 for r in range(1, 11)]
     labels = [f"[{age} - {age + 10}]" for age in ages[:-1]]
-    categories: Categorical = pandas.cut(df['age'], ages, labels=labels)
+    categories: Categorical = pandas.cut(df[RaceFields.age.value], ages, labels=labels)
     return categories, ('Age', 'Count')
 
 
@@ -77,5 +85,27 @@ def time_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     """
     times = [timedelta(minutes=r * 10) for r in range(1, 13)]
     labels = [f"[{r * 10} - {(r + 1) * 10}]" for r in range(1, 12)]
-    categories: Categorical = pandas.cut(df['time'], times, labels=labels)
+    categories: Categorical = pandas.cut(df[RaceFields.time.value], times, labels=labels)
     return categories, ('Time', 'Count')
+
+
+def get_country_counts(df: DataFrame, max_participants: int = 5) -> Tuple[Series, DataFrame]:
+    """
+    Gen interesting country counts
+    :param df DataFrame to query
+    :param max_participants Maximum number of participants, filter out above this value
+    :return country counts (unfiltered), countries, which countries with less than max_participants grouped under 'Others'
+    """
+    countries = df[RaceFields.country.value]
+    countries_counts = countries.value_counts()
+    countries.loc[countries.isin(countries_counts[countries_counts <= max_participants].index)] = 'Others'
+    return countries_counts, countries
+
+
+def better_than_median_waves(df: DataFrame) -> Tuple[float, Series]:
+    """
+    :param df Dataframe to analyze
+    :return Tuple of median run time, Wave value counts series for values smaller than the median
+    """
+    median = df[RaceFields.time.value].median()
+    return median, df[df[RaceFields.time.value].values <= median][RaceFields.wave.value].value_counts()
