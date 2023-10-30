@@ -250,17 +250,53 @@ class Plotter:
         self.df = load_data(data_file)
 
     def plot_age(self, gtype: str):
-        self.df.age.plot(kind=gtype, title="Age details", grid=True)
+        if gtype == 'box':
+            self.df[RaceFields.age.value].plot.box(
+                title="Age details",
+                grid=True,
+                color={
+                    "boxes": "DarkGreen",
+                    "whiskers": "DarkOrange",
+                    "medians": "DarkBlue",
+                    "caps": "Gray",
+                }
+            )
+        elif gtype == 'hist':
+            self.df[RaceFields.age.value].plot.hist(
+                title="Age details",
+                grid=True,
+                color='k'
+            )
+
+    def plot_country(self):
+        self.df[RaceFields.country.value].value_counts().plot.barh(
+            title="Participants per country",
+            stacked=True
+        )
+
+    def plot_gender(self):
+        self.df[RaceFields.gender.value].value_counts().plot.pie(
+            title="Gender participation",
+            subplots=True,
+            autopct="%.2f"
+        )
 
 
-def plot_age():
+def simple_plot():
     parser = ArgumentParser(description="Different Age plots for Empire State RunUp")
     parser.add_argument(
         "--type",
         action="store",
         default="box",
         choices=["box", "hist"],
-        help="Plot type"
+        help="Plot type. Not all reports honor this choice (like country)"
+    )
+    parser.add_argument(
+        "--report",
+        action="store",
+        default="age",
+        choices=["age", "country", "gender"],
+        help="Report type"
     )
     parser.add_argument(
         "results",
@@ -274,7 +310,12 @@ def plot_age():
         pzs = Plotter(options.results[0])
     else:
         pzs = Plotter()
-    pzs.plot_age(options.type)
+    if options.report == 'age':
+        pzs.plot_age(options.type)
+    elif options.report == 'country':
+        pzs.plot_country()
+    elif options.report == 'gender':
+        pzs.plot_gender()
     plt.show()
 
 
