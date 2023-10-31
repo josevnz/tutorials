@@ -54,6 +54,14 @@
 
 ## Analyzing the data
 
+### Browsing through the data
+
+The 'esru_browser' is a simple browser that lets you navigate through the race raw data.
+
+```shell
+esru_browser
+```
+
 ### Running summary reports
 
 This application will provide details about the following:
@@ -72,6 +80,26 @@ This application uses the Z-score to find the outliers for several metrics for t
 ```shell
 esru_outlier
 ```
+
+### A few plot graphics for you
+
+The `simple_plot` application offers a few plot graphics to help you visualize the data.
+
+#### Age plots
+
+The program can generate two flavors
+
+![](age_plot.png)
+
+![](age_histogram.png)
+
+#### Participants per country plot
+
+![](participants_per_country.png)
+
+#### Gender distribution
+
+![](gender_distribution.png)
 
 ## For developers
 
