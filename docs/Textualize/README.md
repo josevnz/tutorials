@@ -29,3 +29,6 @@ textual console
 . ~/virtualenv/Textualize/bin/activate
 textual run --dev table_with_detail_screen.py
 ```
+
+## Log details from an external Linux command
+
