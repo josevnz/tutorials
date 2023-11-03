@@ -30,7 +30,7 @@ textual console
 textual run --dev $PWD/table_with_detail_screen.py
 ```
 
-## Log details from an external Linux command
+## [Log details from an external Linux command](log_scroller.py)
 
 This example runs an external command and uses async and workers to display
 the output on near realtime back to the GUI
