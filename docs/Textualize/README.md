@@ -27,8 +27,14 @@ textual console
 ```shell
 # Terminal 2
 . ~/virtualenv/Textualize/bin/activate
-textual run --dev table_with_detail_screen.py
+textual run --dev $PWD/table_with_detail_screen.py
 ```
 
 ## Log details from an external Linux command
 
+This example runs an external command and uses async and workers to display
+the output on near realtime back to the GUI
+
+```shell
+textual run --dev --command $PWD/log_scroller.py
+```
