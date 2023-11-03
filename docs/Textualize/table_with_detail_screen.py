@@ -101,9 +101,12 @@ class MyApp(App):
 
     def on_mount(self) -> None:
         table = self.get_widget_by_id(f'table_myapp', expect_type=DataTable)
+        table.loading = True
         columns = [x.title() for x in MY_DATA[0]]
         table.add_columns(*columns)
         table.add_rows(MY_DATA[1:])
+        table.loading = False
+        table.tooltip = "Select a row to get more details"
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
