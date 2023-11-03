@@ -74,7 +74,6 @@ class LogScreen(ModalScreen):
         yield button
 
     async def on_mount(self) -> None:
-        button = self.query_one('#close', Button)
         event_log = self.query_one('#event_log', Log)
         event_log.clear()
         lst = '\n'.join(self.selections)
@@ -85,7 +84,6 @@ class LogScreen(ModalScreen):
             command = ' '.join(["/usr/bin/curl", "--verbose", "--location", "--fail", shlex.quote(site)])
             self.count += 1
             self.run_process(cmd=command)
-        # button.disabled = False
 
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
         """Called when the worker state changes."""
