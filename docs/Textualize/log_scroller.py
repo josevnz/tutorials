@@ -3,13 +3,16 @@
 Author: Jose Vicente Nunez
 """
 import asyncio
+import shlex
 from typing import List
 
 from textual import on, work
 from textual.app import ComposeResult, App
+from textual.reactive import reactive
 from textual.screen import ModalScreen
 from textual.widgets import Footer, Header, Button, SelectionList, Label, Log
 from textual.widgets.selection_list import Selection
+from textual.worker import Worker
 
 SITES = {
     "Daily Mail": "https://dailymail.co.uk/",
@@ -22,6 +25,7 @@ SITES = {
 
 
 class LogScreen(ModalScreen):
+    count = reactive(0)
     MAX_LINES = 10_000
     ENABLE_COMMAND_PALETTE = False
     CSS = """
@@ -65,29 +69,44 @@ class LogScreen(ModalScreen):
             max_lines=LogScreen.MAX_LINES,
             highlight=True
         )
-        yield Button("Close", id="close", variant="success")
+        button = Button("Close", id="close", variant="success")
+        button.disabled = True
+        yield button
 
     async def on_mount(self) -> None:
+        button = self.query_one('#close', Button)
         event_log = self.query_one('#event_log', Log)
         event_log.clear()
         lst = '\n'.join(self.selections)
         event_log.write(f"Visiting:\n{lst}")
         event_log.write("\n")
+
         for site in self.selections:
-            command = ' '.join(["/usr/bin/curl", "--verbose", "--location", "--fail", site])
+            command = ' '.join(["/usr/bin/curl", "--verbose", "--location", "--fail", shlex.quote(site)])
+            self.count += 1
             self.run_process(cmd=command)
+        # button.disabled = False
+
+    def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
+        """Called when the worker state changes."""
+        if self.count == 0:
+            button = self.query_one('#close', Button)
+            button.disabled = False
+        self.log(event)
 
     @work(exclusive=False)
     async def run_process(self, cmd: str) -> None:
         event_log = self.query_one('#event_log', Log)
         event_log.write_line(f"Running: {cmd}")
-        proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+        proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
+                                                     stderr=asyncio.subprocess.STDOUT)
         stdout, _ = await proc.communicate()
         if proc.returncode != 0:
             raise ValueError(f"'{cmd}' finished with errors ({proc.returncode})")
         stdout = stdout.decode(encoding='utf-8', errors='replace')
         if stdout:
             event_log.write(stdout)
+        self.count -= 1
 
     @on(Button.Pressed, "#close")
     def on_button_pressed(self, _) -> None:
