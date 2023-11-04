@@ -64,11 +64,13 @@ class LogScreen(ModalScreen):
 
     def compose(self) -> ComposeResult:
         yield Label(f"Visiting {len(self.selections)} sites")
-        yield Log(
+        event_log = Log(
             id='event_log',
             max_lines=LogScreen.MAX_LINES,
             highlight=True
         )
+        event_log.loading = True
+        yield event_log
         button = Button("Close", id="close", variant="success")
         button.disabled = True
         yield button

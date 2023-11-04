@@ -54,7 +54,9 @@ class DetailScreen(ModalScreen):
         yield MarkdownViewer(f"""## User details:
         {row_markdown}
         """)
-        yield Button("Close", variant="primary", id="close")
+        button = Button("Close", variant="primary", id="close")
+        button.tooltip = "Go back to main screen"
+        yield button
 
     @on(Button.Pressed, "#close")
     def on_button_pressed(self, _) -> None:
@@ -81,7 +83,7 @@ class MyApp(App):
     }
 
     DataTable {
-        width: 100;
+        width: 100%;
         height: 100%;
         border: solid green;
     }
@@ -96,12 +98,12 @@ class MyApp(App):
         table = DataTable(id=f'table_myapp')
         table.cursor_type = 'row'
         table.zebra_stripes = True
+        table.loading = True
         yield table
         yield Footer()
 
     def on_mount(self) -> None:
         table = self.get_widget_by_id(f'table_myapp', expect_type=DataTable)
-        table.loading = True
         columns = [x.title() for x in MY_DATA[0]]
         table.add_columns(*columns)
         table.add_rows(MY_DATA[1:])
