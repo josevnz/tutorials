@@ -86,7 +86,6 @@ class LogScreen(ModalScreen):
             self.run_process(cmd=command)
 
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
-        """Called when the worker state changes."""
         if self.count == 0:
             button = self.query_one('#close', Button)
             button.disabled = False
