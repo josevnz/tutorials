@@ -24,10 +24,10 @@ classifiers = [
     "Topic :: Utilities"
 ]
 dependencies = [
-    "pandas",
-    "textual",
-    "numpy",
-    "matplotlib",
+    "pandas==2.1.1",
+    "textual==0.38.1",
+    "numpy=1.26.0",
+    "matplotlib==3.8.0",
     'importlib-metadata; python_version>"3.8"',
 ]
 

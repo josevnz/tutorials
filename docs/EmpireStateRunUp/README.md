@@ -108,7 +108,7 @@ The program can generate two flavors
 Data is not ready to be used (like CSV) so I saved it into a TXT one page at the time, and then did some massaging:
 
 ```shell
-es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results.csv
+es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
 ```
 
 ### Running the code in developer mode

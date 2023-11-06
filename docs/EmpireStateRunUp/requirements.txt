@@ -1,4 +1,4 @@
-textual
-pandas
-numpy
-matplotlib
+textual==0.38.1
+pandas==2.1.1
+numpy=1.26.0
+matplotlib==3.8.0
