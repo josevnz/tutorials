@@ -91,9 +91,11 @@ There are very 4 simple rules:
 3) Rule #3: **Seriously don't do it**. There is a place for stubborn people like you.
 4) Rule #4: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
 
+*TODO*: Write code for web scrapping
+
 ## Cleaning up the data
 
-[Getting the data](raw_data.txt) is just the first battle of many more. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
+[Getting the data](raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
 Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-2023.csv) I was going to use during my analysis.
