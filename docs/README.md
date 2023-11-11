@@ -56,8 +56,9 @@ I tried my best to group them by categories.
 
 * [NYRR - Grafana Dashboards and data ingestion using NYRR data](nyrr/README.md)
 * [Grafana Dashboards using variables with custom JSON DataSource, Mockoon, FastApi and Prometheus](grafana/README.md)
-* [influxdb Introduction, with Dashboards](influxdb_intro/README.md)
-* [influxdb Datasets of the state of CT, with dashboards](influxdb_datasets/README.md)
+* [Influxdb Introduction, with Dashboards](influxdb_intro/README.md)
+* [Influxdb Datasets of the state of CT, with dashboards](influxdb_datasets/README.md)
+* [Glances and InfluxDB for monitoring and troubleshooting](GlancesAndInfluxDB/README.md)
 * [Spy on NFS](SpyOnNfs//README.md)
 
 ## Blog En Español

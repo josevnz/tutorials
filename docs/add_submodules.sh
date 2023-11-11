@@ -1,5 +1,7 @@
 #!/bin/bash
-
+:<<DOC
+Note to self: Run every time a new tutorial on an external repository is added :-D
+DOC
 declare -a submodules
 submodules=(
 "home_nmap"
@@ -15,6 +17,7 @@ submodules=(
 "insecure_protocol_tutorial"
 "influxdb_intro"
 "influxdb_datasets"
+"GlancesAndInfluxDB.git"
 "OracleCloudHomeLab"
 "SuricataLog"
 "yafd"
@@ -31,7 +34,10 @@ submodules=(
 
 for module in ${submodules[*]}; do
 	if [[ ! -d $module ]]; then
-	    git submodule add "https://github.com/josevnz/${module}.git"
+	    if ! git submodule add "https://github.com/josevnz/${module}"; then
+                echo "ERROR: Could not add submodule $modulei -> git submodule add 'https://github.com/josevnz/${module}'"
+                exit 100
+            fi
   fi
   echo "[$module]($module/README.md)"
 done

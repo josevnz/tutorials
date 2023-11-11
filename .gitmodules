@@ -76,3 +76,6 @@
 [submodule "docs/home_nmap"]
 	path = docs/home_nmap
 	url = https://github.com/josevnz/home_nmap.git
+[submodule "docs/GlancesAndInfluxDB"]
+	path = docs/GlancesAndInfluxDB
+	url = https://github.com/josevnz/GlancesAndInfluxDB.git
