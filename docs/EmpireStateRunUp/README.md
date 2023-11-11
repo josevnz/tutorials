@@ -1,115 +1,35 @@
-# Empire State Building Run-Up (2023 edition)
-```
-#########################%%%%####################################
-####################%#%###%##%#+#%%%%###%%#%%%%%%#%###############
-###############%%%%%%%%%%%%%%%#=*%%%%%%%%%#%%%%%%%%%%%%###########
-###############%#%%%%%%%%%%%%%#=#%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%###
-#################%%%%%%%%%%%%%*=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-################%%%%%%%%%%%%%%*+*%#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#################%###%%%%%%%%#**+=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#######################%%%%#*==-=-+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#########################%%-:.--+=*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#**#**#####################:+=+=-:+#%%%%%%%%%%%%%%%%%%%%%%%##%####
-******###################*==*=+==:+#%%%%%%%%%%%%%%%%%%%###########
-*********################*++#++=+-+###%%%%%%%%%%%##%#%############
-**********###############***#++==-=%%#%%%%%######%################
-***************##########**+#*+=#==%%%%%%#%#######################
-***************#########+:+*#*+=#-=%%%%%%##%######################
-***************####*####+-+*#*++#-=%%%%%%#########################
-*+*******************###+-+*##++*-=%%%%%%#########################
-++++++++****************+-+*##=**-=%%%%%%########################*
-++++++++++++++++********=-++#*=**-=%%%%%%########*****#########***
-==+++++++++++++++***+***+-++#*=*+:=%%%%%####**********#######*****
-====+++++++++++++++++++*=-++#*=*+-+%%%%%%##**********#######******
-=====+++++++++++++++++++=-++#*=*+:+%%%%%#***********#######*******
-=========++=+=====++++++=-++#*=*+-*%%%%%#*************************
----=================++++=-++#*=*+-*##%%%#*************************
--------===============++=-++#+-++-*##%%%#****************+++*****+
-----------===============-++#+-+*-#####%#***************+++*****++
----------------==========-++#=-+*=####%%#*********************++=+
--------------------=====--++#+=+*=####%%#*********************++==
--------------------=====--=+#+=+#+##%%%%%*+*******************+===
--------------------======-=+#==+#+##%%%%%*++***********+****++++==
---------------------------++#==+#**#%%%%%*++++**+++++++++++++++===
----------------=*---------++#==+#**%%%%%%*+++++++++++++++++++=====
--------:------==#---------+++-+*##**+#%%%#++++++++++++++++++======
----:-----==---=+#+-++=====+*+=*###***#%%%%*+++*#*++++++++++++=====
-======*###%#*++*#+=#%==+==**+=****+*##%##*#%##*##++***+++*******++
-#*==--*%%#%%%#%*+**++#*+=+#*+=*+*#+#%%%%#*%%%%%%***%###*#****#***+
-**====#%%#%%%#%*+*+==#=+==#*+=*+*#=#*+*###%%#%**##+*%##%%%%%%%%%%*
-**+==-*%%#%%%###*%%%%#++**###=#++%=*+:*##%%%%#**####%%%%%%%%%%%%%#
-###*#*##*+++=======-==++%%%%%##*+#-*+-#*#%%%%#%%%==#%%%**###%%*+++
-########*+++++++++*#***#%%%%%%+:##-++=#*#%%%%%%%%%*+==+=#*++#%%%#*
-*+*#####***#*##*#+***+*+*%%%%%#*##**++##%%%%%%%%%%*+-:-:#*:-+%%#*+
-++*#####+*+#++*+%****+#**%%%%##+*+**+*##%%%%%%%%%%*==--:#*-++#%%##
-**#######%+*+***%*##*=#+*%%%#:=###---*#%%%%%%%%%%%+==-=:*#****+*##
-*##***+++##-:+*#*+#****+#%#**=-###:::#*=+**#%%%%%*+#%%%%***+***###
-..:-=+=-=#+.-#*###**+*****####*#%*#+:++==++====+=+++++++=:::**::+:
-=--=---=+=+==#*%%%%%%%#%###%#######:::::::--====+***++*+*-::**++++
-```
+# Empire State Run Up
 
-> The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
-> While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
-> Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
+Hello. I wrote an application to analyse the results of the 'Empire State Run Up', 2013 edition. 
 
-## Analyzing the data
+I had a blast running this race, and after I got my results, I decided to write some code to have fun with the data.
 
-### Browsing through the data
+And this is the result.
 
-The 'esru_browser' is a simple browser that lets you navigate through the race raw data.
+## If you just want to install it
+
+See the previous section called 'Packaging', and then install it on your virtual environment:
 
 ```shell
-esru_browser
+python3 -m venv ~/virtualenv/EmpireStateRunUp
+. ~/virtualenv/EmpireStateRunUp/bin/activate
+pip install --upgrade pip
+pip install --upgrade build
+pip install --upgrade wheel
+python -m build .
+pip install --upgrade dist/EmpireStateRunUp-0.0.1-py3-none-any.whl
 ```
 
-### Running summary reports
+There are 4 scripts that you can run:
 
-This application will provide details about the following:
+* esru_numbers
+* esru_outlier
+* esru_browser
+* simple_plot
 
-* count, std, mean, min, max 45%, 50% and 75% for age, time, and pace
-* Group and count distribution for Age,  Wave and Gender
+If you want to learn more about these programs, please grab a cup of coffe and read the [TUTORIAL](TUTORIAL.md)
 
-```shell
-esru_numbers
-```
-
-### Finding outliers
-
-This application uses the Z-score to find the outliers for several metrics for this race
-
-```shell
-esru_outlier
-```
-
-### A few plot graphics for you
-
-The `simple_plot` application offers a few plot graphics to help you visualize the data.
-
-#### Age plots
-
-The program can generate two flavors
-
-![](age_plot.png)
-
-![](age_histogram.png)
-
-#### Participants per country plot
-
-![](participants_per_country.png)
-
-#### Gender distribution
-
-![](gender_distribution.png)
-
-## For developers
-
-### Normalizing the data
-
-Data is not ready to be used (like CSV) so I saved it into a TXT one page at the time, and then did some massaging:
-
-```shell
-es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
-```
+## If you are a developer
 
 ### Running the code in developer mode
 

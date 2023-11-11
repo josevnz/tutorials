@@ -1,0 +1,460 @@
+# Empire State Building Run-Up (2023 edition)
+```
+#########################%%%%####################################
+####################%#%###%##%#+#%%%%###%%#%%%%%%#%###############
+###############%%%%%%%%%%%%%%%#=*%%%%%%%%%#%%%%%%%%%%%%###########
+###############%#%%%%%%%%%%%%%#=#%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%###
+#################%%%%%%%%%%%%%*=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
+################%%%%%%%%%%%%%%*+*%#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
+#################%###%%%%%%%%#**+=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#######################%%%%#*==-=-+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
+#########################%%-:.--+=*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
+#**#**#####################:+=+=-:+#%%%%%%%%%%%%%%%%%%%%%%%##%####
+******###################*==*=+==:+#%%%%%%%%%%%%%%%%%%%###########
+*********################*++#++=+-+###%%%%%%%%%%%##%#%############
+**********###############***#++==-=%%#%%%%%######%################
+***************##########**+#*+=#==%%%%%%#%#######################
+***************#########+:+*#*+=#-=%%%%%%##%######################
+***************####*####+-+*#*++#-=%%%%%%#########################
+*+*******************###+-+*##++*-=%%%%%%#########################
+++++++++****************+-+*##=**-=%%%%%%########################*
+++++++++++++++++********=-++#*=**-=%%%%%%########*****#########***
+==+++++++++++++++***+***+-++#*=*+:=%%%%%####**********#######*****
+====+++++++++++++++++++*=-++#*=*+-+%%%%%%##**********#######******
+=====+++++++++++++++++++=-++#*=*+:+%%%%%#***********#######*******
+=========++=+=====++++++=-++#*=*+-*%%%%%#*************************
+---=================++++=-++#*=*+-*##%%%#*************************
+-------===============++=-++#+-++-*##%%%#****************+++*****+
+----------===============-++#+-+*-#####%#***************+++*****++
+---------------==========-++#=-+*=####%%#*********************++=+
+-------------------=====--++#+=+*=####%%#*********************++==
+-------------------=====--=+#+=+#+##%%%%%*+*******************+===
+-------------------======-=+#==+#+##%%%%%*++***********+****++++==
+--------------------------++#==+#**#%%%%%*++++**+++++++++++++++===
+---------------=*---------++#==+#**%%%%%%*+++++++++++++++++++=====
+-------:------==#---------+++-+*##**+#%%%#++++++++++++++++++======
+---:-----==---=+#+-++=====+*+=*###***#%%%%*+++*#*++++++++++++=====
+======*###%#*++*#+=#%==+==**+=****+*##%##*#%##*##++***+++*******++
+#*==--*%%#%%%#%*+**++#*+=+#*+=*+*#+#%%%%#*%%%%%%***%###*#****#***+
+**====#%%#%%%#%*+*+==#=+==#*+=*+*#=#*+*###%%#%**##+*%##%%%%%%%%%%*
+**+==-*%%#%%%###*%%%%#++**###=#++%=*+:*##%%%%#**####%%%%%%%%%%%%%#
+###*#*##*+++=======-==++%%%%%##*+#-*+-#*#%%%%#%%%==#%%%**###%%*+++
+########*+++++++++*#***#%%%%%%+:##-++=#*#%%%%%%%%%*+==+=#*++#%%%#*
+*+*#####***#*##*#+***+*+*%%%%%#*##**++##%%%%%%%%%%*+-:-:#*:-+%%#*+
+++*#####+*+#++*+%****+#**%%%%##+*+**+*##%%%%%%%%%%*==--:#*-++#%%##
+**#######%+*+***%*##*=#+*%%%#:=###---*#%%%%%%%%%%%+==-=:*#****+*##
+*##***+++##-:+*#*+#****+#%#**=-###:::#*=+**#%%%%%*+#%%%%***+***###
+..:-=+=-=#+.-#*###**+*****####*#%*#+:++==++====+=+++++++=:::**::+:
+=--=---=+=+==#*%%%%%%%#%###%#######:::::::--====+***++*+*-::**++++
+```
+
+> The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
+> While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
+> Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
+
+## How I ended running all the way to the top of the Empire State building
+
+Most of us have run a regular race (5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
+the top on one of the most famous building of the world.
+
+Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners. Add to that fact that demand to run is high, and then
+you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5000 applicants).
+
+You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
+
+God news: I wasn't totally unprepared. But I had to adjust my exercise routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical race.
+
+The day of the race came and here are some tough's about it:
+
+* I didn't die. Seriously. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
+* You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
+* No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
+* Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. I got passed and I passed a lot of people that forgot the 'pace yourself' rule.
+
+So all this is great, but I felt compelled to scrap the data from the website with the results and then run some numbers, to
+confirm quantitative how bad I did on the race among other things.
+
+## Getting the data
+
+I tried to contact the company that have the race results, asking if there was a way to get a dump of the results on a 
+format like CSV (not for free) but I never got an answer back. And the results were right there, waiting for me.
+
+The website is pretty basic and only allows scrolling through each record, so I decided to do web scrapping to get the results
+into a format I could use later for data analysis.
+
+### The rules of web scrapping
+
+There are very 4 simple rules:
+
+1) Rule #1: **Don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. Lots of it.
+2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
+3) Rule #3: **Seriously don't do it**. There is a place for stubborn people like you.
+4) Rule #4: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
+
+## Cleaning up the data
+
+[Getting the data](raw_data.txt) is just the first battle of many more. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
+to make your numeric results good, you need to make assumptions.
+
+Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-2023.csv) I was going to use during my analysis.
+
+I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
+
+The [data_normalizer.raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]](empirestaterunup/data_normalizer.py) method does the heavy work of fixing the data for inconsistencies before saving into a CSV format.
+
+As I mention before, there are no hard rules here as cleanup has a high correlation with the data set. For example, to figure out to which wave each runner was assigned I had to make some assumptions based on what I saw the day of the race:
+
+```python
+import datetime
+from enum import Enum
+from typing import Iterable
+
+"""
+Runners started on waves, but for basic analysis we will assume all runners were able to run
+at the same time.
+"""
+BASE_RACE_DATETIME = datetime.datetime(
+    year=2023,
+    month=9,
+    day=4,
+    hour=20,
+    minute=0,
+    second=0,
+    microsecond=0
+)
+
+class Waves(Enum):
+    """
+    22 Elite male
+    17 Elite female
+    There are some holes, so either some runners did not show up or there was spare capacity.
+    https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-4
+    https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-5
+    I guessed who went on which category, based on the BIB numbers I saw that day
+    """
+    EliteMen = ["Elite Men", [1, 25], BASE_RACE_DATETIME]
+    EliteWomen = ["Elite Women", [26, 49], BASE_RACE_DATETIME + datetime.timedelta(minutes=2)]
+    Purple = ["Specialty", [100, 199], BASE_RACE_DATETIME + datetime.timedelta(minutes=10)]
+    Green = ["Sponsors", [200, 299], BASE_RACE_DATETIME + datetime.timedelta(minutes=20)]
+    """
+    The date people applied for the lottery determined the colors?. Let's assume that
+    General Lottery Open: 7/17 9AM- 7/28 11:59PM
+    General Lottery Draw Date: 8/1
+    """
+    Orange = ["Tenants", [300, 399], BASE_RACE_DATETIME + datetime.timedelta(minutes=30)]
+    Grey = ["General 1", [400, 499], BASE_RACE_DATETIME + datetime.timedelta(minutes=40)]
+    Gold = ["General 2", [500, 599], BASE_RACE_DATETIME + datetime.timedelta(minutes=50)]
+    Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
+
+class RaceFields(Enum):
+    level = "level"
+    name = "name"
+    gender = "gender"
+    bib = "bib"
+    state = "state"
+    country = "country"
+    wave = "wave"
+    overall_position = "overall position"
+    gender_position = "gender position"
+    division_position = "division position"
+    pace = "pace"
+    time = "time"
+    city = "city"
+    age = "age"
+    
+# ...
+
+def get_wave_from_bib(bib: int) -> Waves:
+    for wave in Waves:
+        (lower, upper) = wave.value[1]
+        if lower <= bib <= upper:
+            return wave
+    return Waves.Black
+record: Iterable[str] = []
+# ...
+record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).name.upper()
+```
+
+I used enums to make it more clear on what type of data I was working on.
+
+So data analysis is also a little bit of detective fund and faith ;-)
+
+## Analyzing the data
+
+Once the data is clean (or as clean as we can), it is time to move into running some numbers.
+
+So before throwing a single line of code, I took a piece of paper and asked myself a few questions:
+
+* Find interesting buckets (Age, race time, wave, country distribution)
+* Histogram for Age and Country
+* Describe the data! (median, percentiles)
+* Find outliers. [There is a way to apply Z-scores](https://www.investopedia.com/terms/z/zscore.asp) here?
+
+I decided to use [Python Pandas](https://pandas.pydata.org/) for this task. The framework has an arsenal of tools to manipulate the data and to calculate statistics. It also has good tools to perform additional cleanup if needed.
+
+So how Pandas work?
+
+#### Crash course on Pandas
+
+I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. 
+
+In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) looked like:
+
+```shell
+(EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ python3
+Python 3.11.6 (main, Oct  3 2023, 00:00:00) [GCC 12.3.1 20230508 (Red Hat 12.3.1-1)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from empirestaterunup.data import load_data
+```
+
+And the resulting **DataFrame**:
+
+```python
+from empirestaterunup.data import load_data
+load_data('empirestaterunup/results-2023.csv')
+           level                 name gender           state country  ...            pace            time               city  age     finishtimestamp
+bib                                                                   ...                                                                            
+19   Full Course        Wai Ching Soh      M                     MYS  ... 0 days 00:53:00 0 days 00:10:36       Kuala lumpur   29 2023-09-04 20:10:36
+22   Full Course       Ryoji Watanabe      M     Tôkyô / 東京都     JPN  ... 0 days 00:54:20 0 days 00:10:52              Tokyo   40 2023-09-04 20:10:52
+16   Full Course           Fabio Ruga      M                     ITA  ... 0 days 00:56:10 0 days 00:11:14           San siro   42 2023-09-04 20:11:14
+11   Full Course       Emanuele Manzi      M                     ITA  ... 0 days 00:57:20 0 days 00:11:28             Cremia   45 2023-09-04 20:11:28
+249  Full Course             Alex Cyr      M         Ontario     CAN  ... 0 days 00:59:20 0 days 00:11:52            Toronto   28 2023-09-04 20:11:52
+..           ...                  ...    ...             ...     ...  ...             ...             ...                ...  ...                 ...
+555  Full Course     Caroline Edwards      F  Leicestershire     GBR  ... 0 days 04:36:25 0 days 00:55:17  Ashby de la zouch   47 2023-09-04 20:55:17
+557  Full Course        Sarah Preston      F      Derbyshire     GBR  ... 0 days 04:36:50 0 days 00:55:22        Swadlincote   34 2023-09-04 20:55:22
+544  Full Course  Christopher Winkler      M              Ny     USA  ... 0 days 05:00:50 0 days 01:00:10         Massapequa   40 2023-09-04 21:00:10
+545  Full Course          Jay Winkler      U              Ny     USA  ... 0 days 05:26:35 0 days 01:05:19         Massapequa   33 2023-09-04 21:05:19
+646  Full Course           Dana Zajko      F              Va     USA  ... 0 days 05:34:00 0 days 01:06:48         Alexandria   38 2023-09-04 21:06:48
+
+[374 rows x 14 columns]
+```
+
+The code above shows a custom function I wrote to load the CSV file into a DataFrame, with some manipulations:
+
+```python
+# Not importing some definitions here, you can check the data.py file to see the real code
+def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
+    """
+    ```csv
+    level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
+    Full Course,Wai Ching Soh,M,19,-,MYS,ELITEMEN,1,1,1,53:00,10:36,Kuala lumpur,29
+    ```
+    * The code remove by default the DNF runners to avoid distortion on the results.
+    * Replace unknown ages with the median, to make analysis easier and avoid distortions
+    """
+    if data_file:
+        def_file = data_file
+    else:
+        def_file = RACE_RESULTS
+    df = pandas.read_csv(
+        def_file
+    )
+    df[RaceFields.pace.value] = pandas.to_timedelta(df[RaceFields.pace.value])
+    df[RaceFields.time.value] = pandas.to_timedelta(df[RaceFields.time.value])
+    df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
+    if remove_dnf:
+        df.drop(df[df.level == 'DNF'].index, inplace=True)
+    # Normalize Age
+    median_age = df[RaceFields.age.value].median()
+    df[RaceFields.age.value].fillna(median_age, inplace=True)
+    df[RaceFields.age.value] = df[RaceFields.age.value].astype(int)
+    # Normalize state and city
+    df.replace({RaceFields.state.value: {'-': ''}}, inplace=True)
+    df[RaceFields.state.value].fillna('', inplace=True)
+    df[RaceFields.city.value].fillna('', inplace=True)
+    # Normalize gender position
+    median_gender_pos = df[RaceFields.gender_position.value].median()
+    df[RaceFields.gender_position.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.gender_position.value] = df[RaceFields.gender_position.value].astype(int)
+
+    # Normalize BIB and make it the index
+    df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
+    df.set_index(RaceFields.bib.value, inplace=True)
+    return df
+```
+
+I do a few things here, like converting 'Not a Number (nan)' values with empty values, among other things.
+
+Quickly things got a little bit complicated as I started writing code to answer questions. That is the right moment to write unit tests:
+
+> The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
+
+Let's check how to test our code (feel free to skip next section if you are familiar with unit testing)
+
+### Testing, testing and after that ... testing
+
+I tried to have a simple [unit test](https://docs.python.org/3/library/unittest.html) for every method I wrote on the code. This saved me lots of headaches down the road, 
+as I refactored code I found better ways to get the same results, producing correct numbers:
+
+```python
+import unittest
+
+from pandas import DataFrame
+
+from empirestaterunup.analyze import get_country_counts
+from empirestaterunup.data import load_data
+
+class AnalyzeTestCase(unittest.TestCase):
+    df: DataFrame
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.df = load_data()
+    def test_get_country_counts(self):
+        country_counts, filtered_countries = get_country_counts(df=AnalyzeTestCase.df)
+        self.assertIsNotNone(country_counts)
+        self.assertEqual(2, country_counts['JPN'])
+        self.assertIsNotNone(filtered_countries)
+        self.assertEqual(3, filtered_countries.shape[0])
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+Get the data, make sure [it meets the expectations](test/test_data.py). Move on [the next type of tests about the data](test/test_analyze.py).
+
+Now that we have some results we can try to visualize them.
+
+## Visualizing the results
+
+I wanted to use the terminal as much as possible to visualize my findings. I decided to use the [Textual](https://textual.textualize.io/) framework to accomplish that.
+This framework is very complete and allows you to build text applications that are responsive and beautiful to look at.
+
+They are also easy to write, so before we go deeper into the resulting applications let's make a pause to learn about Textual.
+
+### A crash course of Textual
+
+*TODO*
+
+
+
+### Browsing through the data
+
+The 'esru_browser' is a simple browser that lets you navigate through the race raw data.
+
+```shell
+esru_browser
+```
+
+The application shows all the race details for every Runner, on a table that allows sorting by column.
+
+![](esru_browser.png)
+
+
+
+
+### Running summary reports
+
+This application provides details about the following:
+
+* count, std, mean, min, max 45%, 50% and 75% for age, time, and pace
+* Group and count distribution for Age,  Wave and Gender
+
+```shell
+esru_numbers
+```
+
+Some interesting facts about the race:
+
+
+
+![](esru_numbers.png)
+
+
+### Finding outliers
+
+This application uses the Z-score to find the outliers for several metrics for this race
+
+```shell
+esru_outlier
+```
+
+### A few plot graphics for you
+
+These were made with matplotlib. The code to generate the plots os very straightforward.
+
+The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphics to help you visualize the data.
+
+The class `Plotter` does all the heavy lifting
+
+```python
+from pathlib import Path
+from empirestaterunup.data import load_data, RaceFields
+class Plotter:
+
+    def __init__(self, data_file: Path = None):
+        self.df = load_data(data_file)
+
+    def plot_age(self, gtype: str):
+        if gtype == 'box':
+            self.df[RaceFields.age.value].plot.box(
+                title="Age details",
+                grid=True,
+                color={
+                    "boxes": "DarkGreen",
+                    "whiskers": "DarkOrange",
+                    "medians": "DarkBlue",
+                    "caps": "Gray",
+                }
+            )
+        elif gtype == 'hist':
+            self.df[RaceFields.age.value].plot.hist(
+                title="Age details",
+                grid=True,
+                color='k'
+            )
+
+    def plot_country(self):
+        self.df[RaceFields.country.value].value_counts().plot.barh(
+            title="Participants per country",
+            stacked=True
+        )
+
+    def plot_gender(self):
+        self.df[RaceFields.gender.value].value_counts().plot.pie(
+            title="Gender participation",
+            subplots=True,
+            autopct="%.2f"
+        )
+```
+
+Each method basically ingest a Panda Dataframe to produce the desired plot.
+
+#### Age plots
+
+The program can generate two flavors for the same data, one is a Box diagram:
+
+![](age_plot.png)
+
+And the second is a regular histogram:
+
+![](age_histogram.png)
+
+You can see from both graphics that the group age with most partipants is the 40-45 year old bracket, and the outliers
+are on the 10-20 and 70-80 year old groups.
+
+#### Participants per country plot
+
+![](participants_per_country.png)
+
+No surprises here, the overwhelming majority of racers come from the United States, followed by Mexico. Interestingly 
+the winner of the 2013 race is from Malaysia, with only 2 runners. 
+
+#### Gender distribution
+
+![](gender_distribution.png)
+
+Majority of the runners identified themselves as Males, followed by Female.
+
+## Developers zone
+
+### Normalizing the data
+
+Data is not ready to be used (like CSV) so I saved it into a TXT one page at the time, and then did some massaging:
+
+```shell
+es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
+```
+
+
