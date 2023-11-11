@@ -327,7 +327,7 @@ They are also easy to write, so before we go deeper into the resulting applicati
 
 ### A crash course of Textual
 
-*TODO*
+The Textual project has a really nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
 
 
 
