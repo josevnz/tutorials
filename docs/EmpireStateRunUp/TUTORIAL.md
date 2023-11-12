@@ -370,8 +370,81 @@ They are also easy to write, so before we go deeper into the resulting applicati
 
 The Textual project has a really nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
 
-## Running the applications
+But let's see how this applies to our problem. For example, I wanted to display the race details of all the 374 runners on a
+scrollable table. I ended writing the following class:
 
+```python
+class BrowserApp(App):
+    ENABLE_COMMAND_PALETTE = False
+    BINDINGS = [("q", "quit_app", "Quit")]
+    CSS_PATH = "browser.tcss"
+
+    def __init__(
+            self,
+            driver_class: Type[Driver] | None = None,
+            css_path: CSSPathType | None = None,
+            watch_css: bool = False,
+            country_data: DataFrame = None,
+            df: DataFrame = None
+    ):
+        super().__init__(driver_class, css_path, watch_css)
+        if not country_data:
+            self.country_data = load_country_details()
+        else:
+            self.country_data = country_data
+        if df:
+            self.df = df
+        else:
+            self.df = load_data()
+        for three_letter_code in set(self.df[RaceFields.country.value].tolist()):
+            filtered_country = lookup_country_by_code(
+                df=self.country_data,
+                three_letter_code=three_letter_code
+            )
+            country_name: str = three_letter_code
+            if CountryColumns.name.value in filtered_country.columns:
+                country_name = filtered_country[CountryColumns.name.value].values[0]
+            filtered = self.df[RaceFields.country.value] == three_letter_code
+            self.df.loc[
+                filtered,
+                [RaceFields.country.value]
+            ] = [country_name.strip().title()]
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+        yield DataTable(id='runners')
+        yield Footer()
+
+    def on_mount(self) -> None:
+        table = self.get_widget_by_id(f'runners', expect_type=DataTable)
+        table.zebra_stripes = True
+        table.cursor_type = 'row'
+        columns_raw, rows = to_list_of_tuples(self.df)
+        for column in columns_raw:
+            table.add_column(column.title(), key=column)
+        table.add_rows(rows)
+        table.sort('overall position')
+
+    @on(DataTable.HeaderSelected, '#runners')
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        table = event.data_table
+        table.sort(event.column_key)
+```
+
+Time to dissect what each method of the `BrowserApp` class does:
+
+* Constructor `__init__` takes two extra DataFrames, one with the country codes and the other with the race results. I use the country codes to beautify the results on the table.
+* Method `action_quit_app` is what is called a method binding. If you press the letter 'q' it will exit the app
+* The `compose` method creates the TUI components, it 'yields' components back to the framework, and they get added to the screen in that order. I return a header, a table and a footer
+* Method `on_mount` is more interesting, here you can get your components and change their behaviour. I add columns, populate data into the table, define sorting columns
+* I allow the table to sort by column by defining a method called `on_header_clicked` and by using an annotation which is just a function decorator that tells the framework to call this method when a 'DataTable.HeaderSelected' ocurrs.
+
+As you can see, Textual is a pretty powerful framework that reminds me a lot of Java Swing, but without the complexity.
+
+## Running the applications
 
 ### Browsing through the data
 
@@ -420,6 +493,8 @@ esru_outlier
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
 ![](esru_outlier-2.png)
+
+Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
 
 ### A few plot graphics for you
 
@@ -499,6 +574,10 @@ the winner of the 2013 race is from Malaysia, with only 2 runners.
 Majority of the runners identified themselves as Males, followed by Female.
 
 ## What is next?
+
+* There are a lot of public race datasets out there, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon 1970-2018](https://github.com/davidjaimes/nyc-marathon).
+* You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. There are also many other applications out there you can try.
+* [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests.
 
 
 
