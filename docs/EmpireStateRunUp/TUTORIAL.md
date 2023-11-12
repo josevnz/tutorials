@@ -179,7 +179,13 @@ record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).
 
 I used enums to make it more clear on what type of data I was working on.
 
-So data analysis is also a little bit of detective fund and faith ;-)
+At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
+
+```shell
+es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
+```
+
+Now with the data ready we can proceed to do some analysis.
 
 ## Analyzing the data
 
@@ -329,6 +335,7 @@ They are also easy to write, so before we go deeper into the resulting applicati
 
 The Textual project has a really nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
 
+## Running the applications
 
 
 ### Browsing through the data
@@ -344,8 +351,6 @@ The application shows all the race details for every Runner, on a table that all
 ![](esru_browser.png)
 
 
-
-
 ### Running summary reports
 
 This application provides details about the following:
@@ -359,7 +364,10 @@ esru_numbers
 
 Some interesting facts about the race:
 
-
+* Average age is 41 years old and 40 years old is the largest age group
+* Majority number of people belonged to the 'BLACK WAVE'
+* Majority of the people finished the race between 20 and 30 minutes.
+* Youngest runner was 11 years old, oldest 78
 
 ![](esru_numbers.png)
 
@@ -371,6 +379,12 @@ This application uses the Z-score to find the outliers for several metrics for t
 ```shell
 esru_outlier
 ```
+
+![](esru_outlier-1.png)
+
+Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
+
+![](esru_outlier-2.png)
 
 ### A few plot graphics for you
 
@@ -449,14 +463,8 @@ the winner of the 2013 race is from Malaysia, with only 2 runners.
 
 Majority of the runners identified themselves as Males, followed by Female.
 
-## Developers zone
+## What is next?
 
-### Normalizing the data
 
-Data is not ready to be used (like CSV) so I saved it into a TXT one page at the time, and then did some massaging:
-
-```shell
-es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
-```
 
 
