@@ -5,8 +5,6 @@ The race results website doesn't offer an export option and quite honestly writi
 So just coping and pasting the 8 pages of results took less time, the data normalizer is quite simple and was used
 to generate a nicer CSV file.
 
-https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results
-
 Author Jose Vicente Nunez (kodegeek.com@protonmail.com)
 """
 import csv

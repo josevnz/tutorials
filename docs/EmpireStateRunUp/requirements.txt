@@ -2,3 +2,5 @@ textual==0.41.0
 pandas==2.1.1
 numpy==1.26.0
 matplotlib==3.8.0
+EmpireStateRunUp~=0.0.1
+selenium~=4.15.2
