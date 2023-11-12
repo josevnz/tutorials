@@ -74,7 +74,7 @@ The day of the race came and here are some tough's about it:
 So all this is great, but I felt compelled to scrap the data from the website with the results and then run some numbers, to
 confirm quantitative how bad I did on the race among other things.
 
-## Getting the data
+## Getting the data using web scrapping
 
 I tried to contact the company that have the race results, asking if there was a way to get a dump of the results on a 
 format like CSV (not for free) but I never got an answer back. And the results were right there, waiting for me.
@@ -281,9 +281,14 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 ```
 
-I do a few things here, like converting 'Not a Number (nan)' values with empty values, among other things.
+I do a few things here after loading the CSV into a Dataframe:
+* Converting 'Not a Number (nan)' values with empty values, among other things.
+* Drop rows for runners that did not reach floor 86. Make the analysis easier
+* Convert strings into native data types like integers, timestamps
+* A few entries did not have the gender defined. That affected other fields like 'gender_position'. To avoid distortions, these were filled with the median.
+* The BIB number is unique for each runner, so that became the new DataFrame index
 
-Quickly things got a little bit complicated as I started writing code to answer questions. That is the right moment to write unit tests:
+Quickly things got a little bit complicated as I started writing more code to answer questions. That is the right moment to write unit tests:
 
 > The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
 
@@ -292,7 +297,9 @@ Let's check how to test our code (feel free to skip next section if you are fami
 ### Testing, testing and after that ... testing
 
 I tried to have a simple [unit test](https://docs.python.org/3/library/unittest.html) for every method I wrote on the code. This saved me lots of headaches down the road, 
-as I refactored code I found better ways to get the same results, producing correct numbers:
+as I refactored code I found better ways to get the same results, producing correct numbers.
+
+A Unit test is a class that extends 'unittest.TestCase'. Each method that starts with 'test_' is a test that must pass several assertions:
 
 ```python
 import unittest
