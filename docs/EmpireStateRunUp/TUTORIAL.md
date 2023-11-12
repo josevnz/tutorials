@@ -575,7 +575,7 @@ Majority of the runners identified themselves as Males, followed by Female.
 
 ## What is next?
 
-* There are a lot of public race datasets out there, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon 1970-2018](https://github.com/davidjaimes/nyc-marathon).
+* There are a lot of public race datasets out there, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. There are also many other applications out there you can try.
 * [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests.
 
