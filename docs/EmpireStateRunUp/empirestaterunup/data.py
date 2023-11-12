@@ -1,3 +1,7 @@
+"""
+Data loading logic, after web scrapping process is completed.
+author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+"""
 import datetime
 import math
 import re

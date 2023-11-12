@@ -1,3 +1,7 @@
+"""
+Analyze original race results and give back canned reports
+author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+"""
 from typing import Union, Tuple
 
 import numpy as np

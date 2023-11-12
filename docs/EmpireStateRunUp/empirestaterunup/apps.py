@@ -1,3 +1,7 @@
+"""
+Collection of applications to display race findings
+author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+"""
 import textwrap
 from argparse import ArgumentParser
 from pathlib import Path
