@@ -288,13 +288,41 @@ I do a few things here after loading the CSV into a Dataframe:
 * A few entries did not have the gender defined. That affected other fields like 'gender_position'. To avoid distortions, these were filled with the median.
 * The BIB number is unique for each runner, so that became the new DataFrame index
 
-Quickly things got a little bit complicated as I started writing more code to answer questions. That is the right moment to write unit tests:
+Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a Z-score:
 
-> The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
+```python
+def get_zscore(df: DataFrame, z_filter=None):
+    if z_filter is None:
+        z_filter = Z_FILTER
+    filtered = df.drop(z_filter, axis=1)
+    return filtered.sub(filtered.mean()).div(filtered.std(ddof=0))
+
+def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFrame:
+    """
+    Use the z-score, anything further away than 3 standard deviations is considered an outlier.
+    """
+    filtered_df = df[column]
+    z_scores = get_zscore(df)[column]
+    is_over = np.abs(z_scores) > std_threshold
+    return filtered_df[is_over]
+```
+
+Also, it is very simple to get common statistics just by calling describe on our data:
+
+```python
+def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
+    return data[criteria].describe()
+```
+
+All the analysis logic [was kep together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
 
 Let's check how to test our code (feel free to skip next section if you are familiar with unit testing)
 
 ### Testing, testing and after that ... testing
+
+Quickly things got a little bit complicated as I started writing more code to answer questions. That is the right moment to write unit tests:
+
+> The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
 
 I tried to have a simple [unit test](https://docs.python.org/3/library/unittest.html) for every method I wrote on the code. This saved me lots of headaches down the road, 
 as I refactored code I found better ways to get the same results, producing correct numbers.
