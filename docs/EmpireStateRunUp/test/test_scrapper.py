@@ -1,15 +1,19 @@
+import logging
 import unittest
 
 from empirestaterunup.scrapper import EmpireStateScrapper
 
+logger = logging.getLogger('selenium')
+logger.setLevel(logging.DEBUG)
+
 
 class ScrapperTestCase(unittest.TestCase):
-    def test_scrape(self):
-        with EmpireStateScrapper(headless=False) as esc:
+    def test_scrapper(self):
+        with EmpireStateScrapper(headless=True) as esc:
             self.assertIsNotNone(esc)
-            source = esc.scrape()
-            self.assertIsNotNone(source)
-            print(source)
+            print(esc.get_race_links())
+            while esc.click_next_button():
+                print(esc.get_race_links())
 
 
 if __name__ == '__main__':
