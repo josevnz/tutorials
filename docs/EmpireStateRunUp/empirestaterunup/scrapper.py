@@ -1,6 +1,6 @@
 import re
 from time import sleep
-from typing import Dict
+from typing import Dict, Any
 
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions
 EMPIRE_STATE_2013_RACE_RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
 
 
-class EmpireStateScrapper:
+class RacerLinksScrapper:
 
     def __init__(self, headless: bool = True, load_wait: int = 5):
         options = Options()
@@ -22,6 +22,7 @@ class EmpireStateScrapper:
         self.load_wait = load_wait
         self.driver.get(EMPIRE_STATE_2013_RACE_RESULTS)
         sleep(self.load_wait)
+        self.__links = {}
 
     def __enter__(self):
         return self
@@ -29,34 +30,34 @@ class EmpireStateScrapper:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.close()
 
-    def navigate(self) -> Dict[str, str]:
-        links = {}
-        while True:
-            """
-            OuterHtml example:
-            <a class="athName athName-display" style="display: block; font-size: 21px; line-height: 1.2em; color: rgb(74, 74, 74); text-decoration: none; width: 334px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: ProximaNovaBold;" href="/event/382111/results/Event/1062909/Course/2407855/Bib/19">Wai Ching Soh</a>
-            """
-            for a in self.driver.find_elements(By.TAG_NAME, "a"):
-                href = a.get_attribute('href')
-                if re.search('Bib', href):
-                    links[a.text.strip()] = href.strip()
-            """
-            OuterHtml example:
-            <button style="margin: 5px; padding: 12px 8px; color: rgb(0, 168, 227); background-color: rgb(255, 255, 255); border: 1px solid rgb(179, 193, 206); cursor: pointer;" value="1">&gt;</button>
-            """
-            # Brute force the depth of the next (>) click button
-            button = None
-            for i in range(6, 10):
-                try:
-                    self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    # button = self.driver.find_element(By.CSS_SELECTOR, f"div:nth-child({i}) > button")
-                    button = WebDriverWait(self.driver, 20).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f"div:nth-child({i}) > button")))
-                    break
-                except NoSuchElementException:
-                    pass
-            if button and button.text == '>':
-                # button.click()
-                self.driver.execute_script("arguments[0].click();", button)
-            else:
-                break
-        return links
+    def __get_racer_links__(self) -> None:
+        for a in self.driver.find_elements(By.TAG_NAME, "a"):
+            href = a.get_attribute('href')
+            if re.search('Bib', href):
+                name = a.text.strip().title()
+                self.__links[name] = href.strip()
+
+    def __click__(self, level: int) -> Any:
+        button = WebDriverWait(self.driver, 20).until(
+            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f"div:nth-child({level}) > button")))
+        self.driver.execute_script("arguments[0].click();", button)
+        sleep(2.5)
+        return button
+
+    def get_all_links(self) -> Dict[str, str]:
+        self.__get_racer_links__()
+        self.__click__(6)
+        self.__get_racer_links__()
+        self.__click__(7)
+        self.__get_racer_links__()
+        self.__click__(7)
+        self.__get_racer_links__()
+        self.__click__(9)
+        self.__get_racer_links__()
+        self.__click__(9)
+        self.__get_racer_links__()
+        self.__click__(7)
+        self.__get_racer_links__()
+        self.__click__(7)
+        self.__get_racer_links__()
+        return self.__links

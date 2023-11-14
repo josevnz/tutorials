@@ -71,13 +71,11 @@ The day of the race came and here are some tough's about it:
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
 * Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. I got passed and I passed a lot of people that forgot the 'pace yourself' rule.
 
-So all this is great, but I felt compelled to scrap the data from the website with the results and then run some numbers, to
-confirm quantitative how bad I did on the race among other things.
+I felt compelled to scrap the data from the website with the race results, I wanted to analyze the data to see what other interesting facts where there.
 
 ## Getting the data using web scrapping
 
-I tried to contact the company that have the race results, asking if there was a way to get a dump of the results on a 
-format like CSV (not for free) but I never got an answer back. And the results were right there, waiting for me.
+The race results site doesn't have an export feature and I never heard back from their support team to see if there was an alternate way to get the race data, so the only alternative left was to do some web scrapping.
 
 The website is pretty basic and only allows scrolling through each record, so I decided to do web scrapping to get the results
 into a format I could use later for data analysis.
@@ -88,10 +86,76 @@ There are very 4 simple rules:
 
 1) Rule #1: **Don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. Lots of it.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
-3) Rule #3: **Seriously don't do it**. There is a place for stubborn people like you.
-4) Rule #4: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
+3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
 
-*TODO*: Write code for web scrapping
+I decided to use Selenium Web Driver as it calls a real browser, like FireFox, to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
+
+Selenium is a complex tool and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
+
+```python
+import re
+from time import sleep
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+
+RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
+LINKS = {}
+
+
+def print_links(web_driver: WebDriver, page: int) -> None:
+    for a in web_driver.find_elements(By.TAG_NAME, "a"):
+        href = a.get_attribute('href')
+        if re.search('Bib', href):
+            name = a.text.strip().title()
+            print(f"Page={page}, {name}={href.strip()}")
+            LINKS[name] = href.strip()
+
+
+def click(level: int) -> None:
+    button = WebDriverWait(driver, 20).until(
+        expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f"div:nth-child({level}) > button")))
+    driver.execute_script("arguments[0].click();", button)
+    sleep(2.5)
+
+
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Firefox(options=options)
+driver.get(RESULTS)
+sleep(2.5)
+print_links(driver, 1)
+click(6)
+print_links(driver, 2)
+click(7)
+print_links(driver, 3)
+click(7)
+print_links(driver, 4)
+click(9)
+print_links(driver, 5)
+click(9)
+print_links(driver, 6)
+click(7)
+print_links(driver, 7)
+click(7)
+print_links(driver, 8)
+print(len(LINKS))
+```
+
+The code:
+
+1) Gets the main webpage with the `driver.get(...)` method, 
+2) Then get the `<a href` tags, sleeps a little to get a chance to render the HTML, 
+3) Then finds and clicks the `>` (next page) button.
+4) Do this steps for a total of 8 times, as this is how many pages of results are available (each page has 50 runners)
+
+This is hardly reusable code and is here just to demonstrate how Selenium WebDriver works. You should definitely read the [scrapper.py](empirestaterunup/scrapper.py) code, to learn how to get the full runners
+data and not just the race links.
+
 
 ## Cleaning up the data
 
@@ -217,7 +281,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 And the resulting **DataFrame**:
 
-```python
+```shell
 from empirestaterunup.data import load_data
 load_data('empirestaterunup/results-2023.csv')
            level                 name gender           state country  ...            pace            time               city  age     finishtimestamp
