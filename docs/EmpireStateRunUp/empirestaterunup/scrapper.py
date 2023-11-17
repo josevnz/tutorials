@@ -24,6 +24,7 @@ class RacerLinksScrapper:
         sleep(self.load_wait)
         self.racers = {}
         self.count = 0
+        self.rank_to_bib = []
 
     def __enter__(self):
         try:
@@ -62,7 +63,7 @@ class RacerLinksScrapper:
                 bib = int(url.split('/')[-1])
                 self.racers[bib] = {
                     "name": name,
-                    "url": url
+                    "url": url,
                 }
 
         """
@@ -100,6 +101,7 @@ class RacerLinksScrapper:
                     record['City'] = ""
                     record['State'] = ""
                     record['Country'] = tokens[0]
+            # By now all the record parts should be available
             if 'Country' in record:
                 bib = record['Bib']
                 self.racers[bib]['Overall Rank'] = self.count
@@ -114,7 +116,8 @@ class RacerLinksScrapper:
                 self.racers[bib]['City'] = record['City'].strip()
                 self.racers[bib]['State'] = record['State'].strip()
                 self.racers[bib]['Country'] = record['Country'].strip()
-                self.racers[bib]['Bib'] = bib  # For convenience, store at this level
+                self.racers[bib]['Bib'] = bib
+                self.rank_to_bib.append(bib)  # Sorted by rank
                 record = {}
             # print(span.text)
 
