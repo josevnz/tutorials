@@ -1,7 +1,7 @@
 import pprint
 import re
 from time import sleep
-from typing import Any, List
+from typing import Any
 
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -15,7 +15,7 @@ EMPIRE_STATE_2013_RACE_RESULTS = "https://www.athlinks.com/event/382111/results/
 
 class RacerLinksScrapper:
 
-    def __init__(self, headless: bool = True, load_wait: int = 5):
+    def __init__(self, headless: bool = True, load_wait: int = 5, debug: bool = False):
         self.rank_to_bib: list[int] = []
         options = Options()
         if headless:
@@ -25,6 +25,7 @@ class RacerLinksScrapper:
         self.driver.get(EMPIRE_STATE_2013_RACE_RESULTS)
         sleep(self.load_wait)
         self.racers = {}
+        self.debug = debug
 
     def __enter__(self):
         try:
@@ -145,6 +146,12 @@ class RacerLinksScrapper:
             time = times[count]
             self.racers[bib]['Full Race Time'] = time
             self.racers[bib]['Pace Time'] = pace
+
+        if self.debug:
+            print("Racers")
+            pprint.pprint(self.racers)
+            print("Rank to BIB")
+            pprint.pprint(self.rank_to_bib)
 
     def __click__(self, level: int) -> Any:
         button = WebDriverWait(self.driver, 20).until(
