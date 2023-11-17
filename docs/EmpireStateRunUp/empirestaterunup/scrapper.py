@@ -1,6 +1,7 @@
+import pprint
 import re
 from time import sleep
-from typing import Any
+from typing import Any, List
 
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -15,6 +16,7 @@ EMPIRE_STATE_2013_RACE_RESULTS = "https://www.athlinks.com/event/382111/results/
 class RacerLinksScrapper:
 
     def __init__(self, headless: bool = True, load_wait: int = 5):
+        self.rank_to_bib: list[int] = []
         options = Options()
         if headless:
             options.add_argument("--headless")
@@ -23,8 +25,6 @@ class RacerLinksScrapper:
         self.driver.get(EMPIRE_STATE_2013_RACE_RESULTS)
         sleep(self.load_wait)
         self.racers = {}
-        self.count = 0
-        self.rank_to_bib = []
 
     def __enter__(self):
         try:
@@ -76,17 +76,20 @@ class RacerLinksScrapper:
         ...
         """
         record = {}
+        count = 0
         for span in self.driver.find_elements(By.TAG_NAME, "span"):
-            if span.text == 'Claim':
-                self.count += 1
-            matcher = re.search('([A-Z])\\s(\\d+)', span.text)
+            text = span.text.strip()
+            if text == 'Claim':
+                count += 1
+            matcher = re.search('([A-Z])\\s(\\d+)', text)
             if matcher:
                 record['Gender'] = matcher.group(1)
                 record['Age'] = int(matcher.group(2))
-            matcher = re.search('Bib\\s(\\d+)', span.text)
+            matcher = re.search('Bib\\s(\\d+)', text)
             if matcher:
                 record['Bib'] = int(matcher.group(1))
-            matcher = re.search(',', span.text)
+                self.rank_to_bib.append(record['Bib'])
+            matcher = re.search(',', text)
             if matcher:
                 tokens = span.text.split(',')
                 if len(tokens) == 3:
@@ -104,7 +107,7 @@ class RacerLinksScrapper:
             # By now all the record parts should be available
             if 'Country' in record:
                 bib = record['Bib']
-                self.racers[bib]['Overall Rank'] = self.count
+                self.racers[bib]['Overall Rank'] = count
                 if 'Gender' in record:
                     self.racers[bib]['Gender'] = record['Gender'].strip()
                 else:
@@ -117,9 +120,31 @@ class RacerLinksScrapper:
                 self.racers[bib]['State'] = record['State'].strip()
                 self.racers[bib]['Country'] = record['Country'].strip()
                 self.racers[bib]['Bib'] = bib
-                self.rank_to_bib.append(bib)  # Sorted by rank
                 record = {}
-            # print(span.text)
+
+        """
+        Last piece of information, get pace and race time (HH:MM:SS).
+        Times are sorted by rank, match these with the rank_to_bib map.
+        """
+        sleep(1)
+        times = []
+        paces = []
+        count = 0
+        div = self.driver.find_element(By.TAG_NAME, "div")
+        for text in div.text.split('\n'):
+            if re.search('\\d+:\\d+$', text):
+                time = text.strip()
+                if (count % 2) == 0:
+                    paces.append(time)
+                else:
+                    times.append(time)
+                count += 1
+        for count in range(0, len(times)):
+            bib = self.rank_to_bib[count]
+            pace = paces[count]
+            time = times[count]
+            self.racers[bib]['Full Race Time'] = time
+            self.racers[bib]['Pace Time'] = pace
 
     def __click__(self, level: int) -> Any:
         button = WebDriverWait(self.driver, 20).until(
