@@ -12,8 +12,8 @@ class RacerLinksScrapperTestCase(unittest.TestCase):
     def test_navigate(self):
         with RacerLinksScrapper(headless=True) as esc:
             self.assertIsNotNone(esc)
-            pprint.pprint(esc.links)
-            self.assertEqual(377, len(esc.links))
+            self.assertEqual(377, len(esc.racers))
+            pprint.pprint(esc.racers)
 
     def test_runner_detail(self):
         links = {
