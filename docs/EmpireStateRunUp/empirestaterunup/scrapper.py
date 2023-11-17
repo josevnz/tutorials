@@ -23,6 +23,7 @@ class RacerLinksScrapper:
         self.driver.get(EMPIRE_STATE_2013_RACE_RESULTS)
         sleep(self.load_wait)
         self.racers = {}
+        self.count = 0
 
     def __enter__(self):
         try:
@@ -73,11 +74,10 @@ class RacerLinksScrapper:
         Claim
         ...
         """
-        pos = -1
         record = {}
         for span in self.driver.find_elements(By.TAG_NAME, "span"):
             if span.text == 'Claim':
-                pos += 1
+                self.count += 1
             matcher = re.search('([A-Z])\\s(\\d+)', span.text)
             if matcher:
                 record['Gender'] = matcher.group(1)
@@ -102,6 +102,7 @@ class RacerLinksScrapper:
                     record['Country'] = tokens[0]
             if 'Country' in record:
                 bib = record['Bib']
+                self.racers[bib]['Overall Rank'] = self.count
                 if 'Gender' in record:
                     self.racers[bib]['Gender'] = record['Gender'].strip()
                 else:
