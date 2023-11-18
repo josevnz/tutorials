@@ -124,28 +124,12 @@ class RacerLinksScrapper:
                 record = {}
 
         """
-        Last piece of information, get pace and race time (HH:MM:SS).
-        Times are sorted by rank, match these with the rank_to_bib map.
+        The following attributes are easier to fill by asking for a particular BIB
+        Pace and race time (HH:MM:SS).
+            Times are sorted by rank, match these with the rank_to_bib map.
+        Race position: Overall, Gender, Division
+            Some racers did not identify as Male or Female and their Gender position is missing.
         """
-        sleep(1)
-        times = []
-        paces = []
-        count = 0
-        div = self.driver.find_element(By.TAG_NAME, "div")
-        for text in div.text.split('\n'):
-            if re.search('\\d+:\\d+$', text):
-                time = text.strip()
-                if (count % 2) == 0:
-                    paces.append(time)
-                else:
-                    times.append(time)
-                count += 1
-        for count in range(0, len(times)):
-            bib = self.rank_to_bib[count]
-            pace = paces[count]
-            time = times[count]
-            self.racers[bib]['Full Race Time'] = time
-            self.racers[bib]['Pace Time'] = pace
 
         if self.debug:
             print("Racers")
