@@ -166,7 +166,7 @@ Luckily for me the dataset is very small (374 records, one for each runner) so I
 
 I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
 
-The [data_normalizer.raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]](empirestaterunup/data_normalizer.py) method does the heavy work of fixing the data for inconsistencies before saving into a CSV format.
+The [data_normalizer.raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]](empirestaterunup/runners.py) method does the heavy work of fixing the data for inconsistencies before saving into a CSV format.
 
 As I mention before, there are no hard rules here as cleanup has a high correlation with the data set. For example, to figure out to which wave each runner was assigned I had to make some assumptions based on what I saw the day of the race:
 

@@ -33,8 +33,8 @@ dependencies = [
 ]
 
 [project.scripts]
-es_normalizer = "empirestaterunup.data_normalizer:main"
-esru_numbers = "empirestaterunup.apps:run_5_number"
-esru_outlier = "empirestaterunup.apps:run_outlier"
-esru_browser = "empirestaterunup.apps:run_browser"
-simple_plot = "empirestaterunup.apps:simple_plot"
+es_normalizer = "empirestaterunup.runners:run_normalizer"
+esru_numbers = "empirestaterunup.runners:run_5_number"
+esru_outlier = "empirestaterunup.runners:run_outlier"
+esru_browser = "empirestaterunup.runners:run_browser"
+simple_plot = "empirestaterunup.runners:simple_plot"
