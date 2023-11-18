@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 class RacerLinksScrapperTestCase(unittest.TestCase):
     def test_link_scrapper(self):
-        with RacerLinksScrapper(headless=True, debug=True) as esc:
+        with RacerLinksScrapper(headless=True, debug=False) as esc:
             self.assertIsNotNone(esc)
             self.assertEqual(377, len(esc.racers))
             self.assertEqual(377, len(esc.rank_to_bib))
