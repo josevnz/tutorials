@@ -19,7 +19,7 @@ from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
 from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
-logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
 
 
 def run_normalizer():
