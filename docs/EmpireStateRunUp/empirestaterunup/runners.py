@@ -179,7 +179,6 @@ def run_scrapper():
         "resultsdir",
         action="store",
         type=Path,
-        nargs="*",
         help="Location of the final scrapping results"
     )
     options = parser.parse_args()
