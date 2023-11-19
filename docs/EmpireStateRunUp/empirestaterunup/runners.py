@@ -8,6 +8,7 @@ to generate a nicer CSV file.
 Author Jose Vicente Nunez (kodegeek.com@protonmail.com)
 """
 import csv
+import pprint
 from pathlib import Path
 from argparse import ArgumentParser
 import logging
@@ -15,7 +16,7 @@ import logging
 from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
-from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details, RaceFields
+from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.DEBUG)
@@ -166,7 +167,14 @@ def run_browser():
 
 
 def run_scrapper():
+    default_report_name = "empire_state_run_up_scrapped.txt"
     parser = ArgumentParser(description="Scrapper Website")
+    parser.add_argument(
+        "--reportname",
+        action="store",
+        default=default_report_name,
+        help="Location of the final scrapping results"
+    )
     parser.add_argument(
         "resultsdir",
         action="store",
@@ -180,11 +188,11 @@ def run_scrapper():
         reportdir = Path(options.resultsdir)
         if reportdir.exists():
             reportdir.mkdir(exist_ok=True)
-        report_file = reportdir.joinpath("empire_state_run_up_scrapped.txt")
+        report_file = reportdir.joinpath(options.reportname)
         with open(report_file, 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES)
             writer.writeheader()
-            with RacerDetailsScrapper(racer=link_scrapper.racers, debug_level=0) as rds:
-                for racer in link_scrapper.racers:
-                        bib = racer[RaceFields.bib.value]
-                        print(f"Enriched BIB={bib}")
+            for bib in link_scrapper.racers:
+                with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
+                    pprint.pprint(rds.racer)
+
