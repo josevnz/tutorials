@@ -16,16 +16,29 @@ class RacerLinksScrapperTestCase(unittest.TestCase):
             self.assertEqual(377, len(esc.rank_to_bib))
 
     def test_runner_detail(self):
-        links = {
-            'Aaron Field': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/368',
-            'Al Bueno': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/609',
-            'Alan Lynch': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/57',
-            'Alejandra Sanchez': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/40',
-            'Alessandro Manrique': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/562'
-        }
-        for name in links:
-            with RacerDetailsScrapper(links[name], name) as rds:
+        racer_details = [
+            {
+                'name': 'Alejandra Sanchez',
+                'url': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/40'
+            },
+            {
+                'name': 'Alessandro Manrique',
+                'url': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/562'
+            },
+            {
+                'name': 'HARPREET Sethi',
+                'url': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/434'
+            }
+        ]
+        for racer in racer_details:
+            print(f"name={racer['name']}, url={racer['url']}")
+            with RacerDetailsScrapper(
+                racer=racer,
+                debug_level=1,
+            ) as rds:
                 self.assertIsNotNone(rds)
+                self.assertIsNotNone(rds.racer)
+                pprint.pp(rds.racer)
 
 
 if __name__ == '__main__':

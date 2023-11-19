@@ -1,7 +1,8 @@
 import pprint
 import re
+import subprocess
 from time import sleep
-from typing import Any
+from typing import Any, Dict
 
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -147,34 +148,83 @@ class RacerLinksScrapper:
 
 class RacerDetailsScrapper:
 
-    def __init__(self, url: str, name: str, headless: bool = True, load_wait: int = 5):
+    def __init__(self, racer: Dict[str, Any], headless: bool = True, load_wait: int = 5, debug_level: int = 0):
         options = Options()
+        fp = webdriver.FirefoxProfile()
+        service = webdriver.FirefoxService()
         if headless:
             options.add_argument("--headless")
-        self.driver = webdriver.Firefox(options=options)
+            if debug_level > 1:
+                """
+                Workaround for: `driver.get_log()`
+                https://github.com/mozilla/geckodriver/issues/330
+                """
+                fp.set_preference("devtools.console.stdout.content", "true")
+                options.log.level = "trace"
+                service.log_output = subprocess.STDOUT
+        options.profile = fp
+        self.driver = webdriver.Firefox(
+            options=options,
+            service=service
+        )
         self.load_wait = load_wait
-        self.driver.get(url)
+        self.driver.get(racer['url'])
         sleep(self.load_wait)
-        self.name = name
+        self.racer = racer
+        self.debug_level = debug_level
 
     def __enter__(self):
         self.__get_racer_details__()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.close()
 
     def __get_racer_details__(self):
         """
-        This method is dense, because the data is scattered all over the place on the page
-        """
-
-        """
-        Get Gender, Age, State
-        Chip Start Time, Distance, Gun Time.
-        """
-
-        """
         Race splits for 20th, 65th and full course:
         split, Overall,Gender, Division, Pace, Time
         """
-        pass
+        # Assume racer didn't finish
+        self.racer['Overall Split 20th floor'] = ""
+        self.racer['Gender Split 20th floor'] = ""
+        self.racer['Bracket Split 20th floor'] = ""
+        self.racer['Pace 20th floor'] = ""
+        self.racer['Time 20th floor'] = ""
+        self.racer['Overall Split 65th floor'] = ""
+        self.racer['Gender Split 65th floor'] = ""
+        self.racer['Bracket Split 65th floor'] = ""
+        self.racer['Pace 65th floor'] = ""
+        self.racer['Time 65th floor'] = ""
+        self.racer['Overall Split Full Course'] = ""
+        self.racer['Gender Split Full Course'] = ""
+        self.racer['Bracket Split Full Course'] = ""
+        self.racer['Pace Full Course'] = ""
+        self.racer['Time Full Course'] = ""
+        for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='row mx-0']"):
+            value = div.text.strip()
+            if self.debug_level > 0:
+                print(value)
+            """
+            Parsing is pretty brittle, several assumptions where made:
+                * Should get 3 rows of 3 columns, except for runners who did not finish the full course
+            """
+            values = value.split('\n')
+            if values[0] == '20th Floor' and values[1] != '--':
+                self.racer['Overall Split 20th floor'] = values[1]
+                self.racer['Gender Split 20th floor'] = values[3]
+                self.racer['Bracket Split 20th floor'] = values[5]
+                self.racer['Pace 20th floor'] = values[7]
+                self.racer['Time 20th floor'] = values[9]
+            elif values[0] == '65th Floor' and values[1] != '--':
+                self.racer['Overall Split 65th floor'] = values[1]
+                self.racer['Gender Split 65th floor'] = values[3]
+                self.racer['Bracket Split 65th floor'] = values[5]
+                self.racer['Pace 65th floor'] = values[7]
+                self.racer['Time 65th floor'] = values[9]
+            elif values[0] == 'Full Course' and values[1] != '--':
+                self.racer['Overall Split Full Course'] = values[1]
+                self.racer['Gender Split Full Course'] = values[3]
+                self.racer['Bracket Split Full Course'] = values[5]
+                self.racer['Pace Full Course'] = values[7]
+                self.racer['Time Full Course'] = values[9]
