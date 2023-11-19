@@ -15,7 +15,8 @@ import logging
 from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
-from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details
+from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details, RaceFields
+from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.DEBUG)
 
@@ -162,3 +163,28 @@ def run_browser():
     app.title = f"Race runners".title()
     app.sub_title = f"Browse details: {app.df.shape[0]}"
     app.run()
+
+
+def run_scrapper():
+    parser = ArgumentParser(description="Scrapper Website")
+    parser.add_argument(
+        "resultsdir",
+        action="store",
+        type=Path,
+        nargs="*",
+        help="Location of the final scrapping results"
+    )
+    options = parser.parse_args()
+    with RacerLinksScrapper(headless=True, debug=False) as link_scrapper:
+        print(f"Got {len(link_scrapper.racers)} racer results")
+        reportdir = Path(options.resultsdir)
+        if reportdir.exists():
+            reportdir.mkdir(exist_ok=True)
+        report_file = reportdir.joinpath("empire_state_run_up_scrapped.txt")
+        with open(report_file, 'w') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES)
+            writer.writeheader()
+            with RacerDetailsScrapper(racer=link_scrapper.racers, debug_level=0) as rds:
+                for racer in link_scrapper.racers:
+                        bib = racer[RaceFields.bib.value]
+                        print(f"Enriched BIB={bib}")

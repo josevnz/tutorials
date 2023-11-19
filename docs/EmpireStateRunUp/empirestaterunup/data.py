@@ -66,6 +66,17 @@ class RaceFields(Enum):
     time = "time"
     city = "city"
     age = "age"
+    twenty_floor_position = "20th floor position"
+    twenty_floor_gender_position = "20th floor gender position"
+    twenty_floor_division_position = "20th floor division position"
+    twenty_floor_pace = '20th floorpPace'
+    twenty_floor_time = '20th floor time'
+    sixty_five_floor_position = "65th floor position"
+    sixty_five_floor_gender_position = "65th floor gender position"
+    sixty_five_floor_division_position = "65th floor division position"
+    sixty_five_floor_pace = '65th floor pace'
+    sixty_five_floor_time = '65th floor time'
+    url = "url"
 
 
 FIELD_NAMES = [x.value for x in RaceFields]
