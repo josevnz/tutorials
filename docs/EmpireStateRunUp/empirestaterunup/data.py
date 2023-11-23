@@ -108,6 +108,12 @@ def get_wave_start_time(wave: Waves) -> datetime:
     return wave.value[2]
 
 
+def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
+    record = {}
+    # TODO: Add logic
+    yield record
+
+
 def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
     Read the whole RAW file, product of a manual copy and paste, return a clean version.
@@ -199,8 +205,9 @@ def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     try:
                         record[RaceFields.gender_position.value] = int(line.strip())
                     except ValueError:
+                        # If GENDER is not specified the position is missing.
                         record[
-                            RaceFields.gender_position.value] = math.nan  # If GENDER is not specified the position is missing.
+                            RaceFields.gender_position.value] = math.nan
                 elif tk_cnt == 5:
                     record[RaceFields.division_position.value] = int(line.strip())
                 elif tk_cnt == 6:

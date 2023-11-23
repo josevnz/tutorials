@@ -156,8 +156,8 @@ The code above is hardly reusable code, but it gets the job done by doing the fo
 To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
 
 ```shell
-(EmpireStateRunUp2) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper ~/temp/raw_race_results.csv
-2023-11-23 06:18:11,437 Saving results to /home/josevnz/temp/raw_race_results.csv
+(EmpireStateRunUp2) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper ~/temp/raw_data.csv
+2023-11-23 06:18:11,437 Saving results to /home/josevnz/temp/raw_data.csv
 2023-11-23 06:19:05,840 Got 377 racer results
 2023-11-23 06:19:05,840 Processing BIB: 19, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19
 2023-11-23 06:19:15,687 Wrote: name=Wai Ching Soh, position=1

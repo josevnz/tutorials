@@ -15,7 +15,8 @@ import logging
 from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
-from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields
+from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields, \
+    raw_csv_read
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
@@ -30,22 +31,22 @@ def run_raw_cleaner():
         help='Enable verbose mode'
     )
     parser.add_argument(
-        '--rawfile',
+        '--raw_file',
         type=Path,
         required=True,
         help='Raw file'
     )
     parser.add_argument(
-        'reportfile',
+        'report_file',
         type=Path,
         help='New report file'
     )
     OPTIONS = parser.parse_args()
     try:
-        with open(OPTIONS.reportfile, 'w', newline='') as csvfile:
+        with open(OPTIONS.report_file, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
             writer.writeheader()
-            for row in raw_copy_paste_read(OPTIONS.rawfile):
+            for row in raw_copy_paste_read(OPTIONS.raw_file):
                 try:
                     writer.writerow(row)
                     if OPTIONS.verbose:
@@ -202,3 +203,38 @@ def run_scrapper():
                             logging.warning(rds.racer)
                     except ValueError as ve:
                         raise ValueError(f"row={rds.racer}", ve)
+
+
+def run_csv_cleaner():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        default=False,
+        help='Enable verbose mode'
+    )
+    parser.add_argument(
+        '--raw_file',
+        type=Path,
+        required=True,
+        help='Raw file'
+    )
+    parser.add_argument(
+        'report_file',
+        type=Path,
+        help='New report file'
+    )
+    OPTIONS = parser.parse_args()
+    try:
+        with open(OPTIONS.report_file, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
+            writer.writeheader()
+            for row in raw_csv_read(OPTIONS.raw_file):
+                try:
+                    writer.writerow(row)
+                    if OPTIONS.verbose:
+                        logging.warning(row)
+                except ValueError as ve:
+                    raise ValueError(f"row={row}", ve)
+    except KeyboardInterrupt:
+        pass
