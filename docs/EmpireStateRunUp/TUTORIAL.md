@@ -146,20 +146,34 @@ print_links(driver, 8)
 print(len(LINKS))
 ```
 
-The code:
+The code above is hardly reusable code, but it gets the job done by doing the following:
 
 1) Gets the main webpage with the `driver.get(...)` method, 
 2) Then get the `<a href` tags, sleeps a little to get a chance to render the HTML, 
 3) Then finds and clicks the `>` (next page) button.
 4) Do this steps for a total of 8 times, as this is how many pages of results are available (each page has 50 runners)
 
-This is hardly reusable code and is here just to demonstrate how Selenium WebDriver works. You should definitely read the [scrapper.py](empirestaterunup/scrapper.py) code, to learn how to get the full runners
-data and not just the race links.
+To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
 
+```shell
+(EmpireStateRunUp2) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper ~/temp/raw_race_results.csv
+2023-11-23 06:18:11,437 Saving results to /home/josevnz/temp/raw_race_results.csv
+2023-11-23 06:19:05,840 Got 377 racer results
+2023-11-23 06:19:05,840 Processing BIB: 19, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19
+2023-11-23 06:19:15,687 Wrote: name=Wai Ching Soh, position=1
+2023-11-23 06:19:16,583 Processing BIB: 22, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/22
+2023-11-23 06:19:25,735 Wrote: name=Ryoji Watanabe, position=2
+2023-11-23 06:19:26,504 Processing BIB: 16, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/16
+...
+```
+
+I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes.
+
+Data needs some cleaning up and that is the next step.
 
 ## Cleaning up the data
 
-[Getting the data](raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
+[Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
 Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-2023.csv) I was going to use during my analysis.
@@ -305,6 +319,50 @@ The code above shows a custom function I wrote to load the CSV file into a DataF
 
 ```python
 # Not importing some definitions here, you can check the data.py file to see the real code
+from pathlib import Path
+from enum import Enum
+import pandas
+from pandas import DataFrame
+import datetime
+
+class RaceFields(Enum):
+    level = "level"
+    name = "name"
+    gender = "gender"
+    bib = "bib"
+    state = "state"
+    country = "country"
+    wave = "wave"
+    overall_position = "overall position"
+    gender_position = "gender position"
+    division_position = "division position"
+    pace = "pace"
+    time = "time"
+    city = "city"
+    age = "age"
+    twenty_floor_position = "20th floor position"
+    twenty_floor_gender_position = "20th floor gender position"
+    twenty_floor_division_position = "20th floor division position"
+    twenty_floor_pace = '20th floor Pace'
+    twenty_floor_time = '20th floor time'
+    sixty_five_floor_position = "65th floor position"
+    sixty_five_floor_gender_position = "65th floor gender position"
+    sixty_five_floor_division_position = "65th floor division position"
+    sixty_five_floor_pace = '65th floor pace'
+    sixty_five_floor_time = '65th floor time'
+    url = "url"
+FIELD_NAMES = [x.value for x in RaceFields]
+
+BASE_RACE_DATETIME = datetime.datetime(
+    year=2023,
+    month=9,
+    day=4,
+    hour=20,
+    minute=0,
+    second=0,
+    microsecond=0
+)
+RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
 def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     """
     ```csv
@@ -355,6 +413,9 @@ I do a few things here after loading the CSV into a Dataframe:
 Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a Z-score:
 
 ```python
+from pandas import DataFrame
+import numpy as np
+Z_FILTER = ['name', 'level', 'gender', 'city','state', 'country', 'wave', 'overall position', 'gender position', 'division position']
 def get_zscore(df: DataFrame, z_filter=None):
     if z_filter is None:
         z_filter = Z_FILTER
@@ -374,6 +435,7 @@ def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFram
 Also, it is very simple to get common statistics just by calling describe on our data:
 
 ```python
+from pandas import DataFrame
 def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
     return data[criteria].describe()
 ```
@@ -438,6 +500,126 @@ But let's see how this applies to our problem. For example, I wanted to display 
 scrollable table. I ended writing the following class:
 
 ```python
+from textual.app import ComposeResult, App, CSSPathType
+import pandas
+from pandas import DataFrame
+from textual.driver import Driver
+from typing import Type
+from pathlib import Path
+from textual.widgets import DataTable, Footer, Header
+from typing import Tuple, Union
+from enum import Enum
+import datetime
+from textual import on
+COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
+def load_country_details(data_file: Path = None) -> DataFrame:
+    """
+    ```csv
+    name,alpha-2,alpha-3,country-code,iso_3166-2,region,sub-region,intermediate-region,region-code,sub-region-code,intermediate-region-code
+    United States of America,US,USA,840,ISO 3166-2:US,Americas,Northern America,"",019,021,""
+    """
+    if data_file:
+        def_file = data_file
+    else:
+        def_file = COUNTRY_DETAILS
+    df = pandas.read_csv(
+        def_file
+    )
+    return df
+RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
+class RaceFields(Enum):
+    level = "level"
+    name = "name"
+    gender = "gender"
+    bib = "bib"
+    state = "state"
+    country = "country"
+    wave = "wave"
+    overall_position = "overall position"
+    gender_position = "gender position"
+    division_position = "division position"
+    pace = "pace"
+    time = "time"
+    city = "city"
+    age = "age"
+    twenty_floor_position = "20th floor position"
+    twenty_floor_gender_position = "20th floor gender position"
+    twenty_floor_division_position = "20th floor division position"
+    twenty_floor_pace = '20th floor Pace'
+    twenty_floor_time = '20th floor time'
+    sixty_five_floor_position = "65th floor position"
+    sixty_five_floor_gender_position = "65th floor gender position"
+    sixty_five_floor_division_position = "65th floor division position"
+    sixty_five_floor_pace = '65th floor pace'
+    sixty_five_floor_time = '65th floor time'
+    url = "url"
+
+class CountryColumns(Enum):
+    name = "name"
+    alpha_2 = "alpha-2"
+    alpha_3 = "alpha-3"
+    country_code = "country-code"
+    iso_3166_2 = "iso_3166-2"
+    region = "region"
+    sub_region = "sub-region"
+    intermediate_region = "intermediate-region"
+    region_code = "region-code"
+    sub_region_code = "sub-region-code"
+    intermediate_region_code = "intermediate-region-code"
+    
+FIELD_NAMES = [x.value for x in RaceFields]
+BASE_RACE_DATETIME = datetime.datetime(year=2023, month=9, day=4, hour=20, minute=0, second=0, microsecond=0)
+
+def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
+    # Adding the load data function here for clarity, this belongs to its own module for reuse
+    if data_file:
+        def_file = data_file
+    else:
+        def_file = RACE_RESULTS
+    df = pandas.read_csv(
+        def_file
+    )
+    df[RaceFields.pace.value] = pandas.to_timedelta(df[RaceFields.pace.value])
+    df[RaceFields.time.value] = pandas.to_timedelta(df[RaceFields.time.value])
+    df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
+    if remove_dnf:
+        df.drop(df[df.level == 'DNF'].index, inplace=True)
+    median_age = df[RaceFields.age.value].median()
+    df[RaceFields.age.value].fillna(median_age, inplace=True)
+    df[RaceFields.age.value] = df[RaceFields.age.value].astype(int)
+    df.replace({RaceFields.state.value: {'-': ''}}, inplace=True)
+    df[RaceFields.state.value].fillna('', inplace=True)
+    df[RaceFields.city.value].fillna('', inplace=True)
+    # Normalize gender position
+    median_gender_pos = df[RaceFields.gender_position.value].median()
+    df[RaceFields.gender_position.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.gender_position.value] = df[RaceFields.gender_position.value].astype(int)
+
+    # Normalize BIB and make it the index
+    df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
+    df.set_index(RaceFields.bib.value, inplace=True)
+    return df
+
+def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
+    bib_as_column = df.reset_index(level=0, inplace=False)
+    if not bibs:
+        filtered = bib_as_column
+    else:
+        filtered = bib_as_column[bib_as_column[RaceFields.bib.value].isin(bibs)]
+    rows = [(
+        r.level, r[RaceFields.name.value], r.gender, r.bib, r.state, r.country,
+        r.wave, r[RaceFields.overall_position.value], r[RaceFields.gender_position.value],
+        r[RaceFields.division_position.value], r.pace, r.time, r.city, r.age
+    ) for _, r in filtered.iterrows()]
+    return tuple(FIELD_NAMES), rows
+
+def lookup_country_by_code(df: DataFrame, three_letter_code: str) -> DataFrame:
+    if not isinstance(three_letter_code, str):
+        raise ValueError(f"Invalid type for three letter country code: '{three_letter_code}'")
+    if len(three_letter_code) != 3:
+        raise ValueError(f"Invalid three letter country code: '{three_letter_code}'")
+    return df.loc[df[CountryColumns.alpha_3.value] == three_letter_code]
+
 class BrowserApp(App):
     ENABLE_COMMAND_PALETTE = False
     BINDINGS = [("q", "quit_app", "Quit")]

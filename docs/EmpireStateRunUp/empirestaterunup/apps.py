@@ -302,5 +302,3 @@ class BrowserApp(App):
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
-
-

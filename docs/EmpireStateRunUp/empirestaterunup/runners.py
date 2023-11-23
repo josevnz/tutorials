@@ -166,7 +166,6 @@ def run_browser():
 
 
 def run_scrapper():
-    default_report_name = "empire_state_run_up_scrapped.txt"
     parser = ArgumentParser(description="Scrapper Website")
     parser.add_argument(
         '--verbose',
