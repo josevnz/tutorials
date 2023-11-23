@@ -108,9 +108,10 @@ def get_wave_start_time(wave: Waves) -> datetime:
     return wave.value[2]
 
 
-def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
+def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
-    Read the whole RAW file, return a normalized version
+    Read the whole RAW file, product of a manual copy and paste, return a clean version.
+    You should use the raw_csv_read() method on the file produced by the scrapper.
     Each record looks like this (copy and paste from the website):
 
     NAME
@@ -132,7 +133,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     MIN/MI
     10:36
     ```
-    :param raw_file:
+    :param raw_file: Yes, copied and pasted all the 8 pages when started the project, before writing a scrapper :D
     :return:
     """
     with open(raw_file, 'r') as file_data:
@@ -217,6 +218,19 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.time.value] = line.strip()
                     else:
                         record[RaceFields.time.value] = f"00:{line.strip()}"
+
+                    # None of the fields below are available on the first level copy and paste
+                    record[RaceFields.twenty_floor_position.value] = ""
+                    record[RaceFields.twenty_floor_gender_position.value] = ""
+                    record[RaceFields.twenty_floor_division_position.value] = ""
+                    record[RaceFields.twenty_floor_pace.value] = ""
+                    record[RaceFields.twenty_floor_time.value] = ""
+                    record[RaceFields.sixty_five_floor_position.value] = ""
+                    record[RaceFields.sixty_five_floor_gender_position.value] = ""
+                    record[RaceFields.sixty_five_floor_division_position.value] = ""
+                    record[RaceFields.sixty_five_floor_pace.value] = ""
+                    record[RaceFields.sixty_five_floor_time.value] = ""
+
                     yield record
             except ValueError as ve:
                 raise ValueError(f"ln_cnt={ln_cnt}, tk_cnt={tk_cnt},{record}", ve)

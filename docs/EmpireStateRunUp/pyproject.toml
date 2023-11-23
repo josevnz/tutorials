@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.scripts]
-esru_normalizer = "empirestaterunup.runners:run_normalizer"
+esru_normalizer = "empirestaterunup.runners:run_raw_cleaner"
 esru_numbers = "empirestaterunup.runners:run_5_number"
 esru_outlier = "empirestaterunup.runners:run_outlier"
 esru_browser = "empirestaterunup.runners:run_browser"

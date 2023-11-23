@@ -1,9 +1,12 @@
 import unittest
+from pathlib import Path
 
 from empirestaterunup.analyze import better_than_median_waves
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, RaceFields
+    get_categories, raw_copy_paste_read
+
+RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
 
 
 class DataTestCase(unittest.TestCase):
@@ -99,6 +102,11 @@ class DataTestCase(unittest.TestCase):
         median_time, wave_series = better_than_median_waves(run_data)
         self.assertIsNotNone(median_time)
         self.assertEqual(42, wave_series.iloc[0])
+
+    def test_raw_copy_paste_read(self):
+        clean_data = [record for record in raw_copy_paste_read(RAW_COPY_PASTE_RACE_RESULTS)]
+        self.assertIsNotNone(clean_data)
+        self.assertEqual(375, len(clean_data))
 
 
 if __name__ == '__main__':

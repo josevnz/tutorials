@@ -15,13 +15,13 @@ import logging
 from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
-from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details, RaceFields
+from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
 
 
-def run_normalizer():
+def run_raw_cleaner():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
         '--verbose',
@@ -45,7 +45,7 @@ def run_normalizer():
         with open(OPTIONS.reportfile, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
             writer.writeheader()
-            for row in raw_read(OPTIONS.rawfile):
+            for row in raw_copy_paste_read(OPTIONS.rawfile):
                 try:
                     writer.writerow(row)
                     if OPTIONS.verbose:
