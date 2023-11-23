@@ -8,7 +8,6 @@ to generate a nicer CSV file.
 Author Jose Vicente Nunez (kodegeek.com@protonmail.com)
 """
 import csv
-import pprint
 from pathlib import Path
 from argparse import ArgumentParser
 import logging
@@ -16,32 +15,32 @@ import logging
 from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
-from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details
+from empirestaterunup.data import raw_read, FIELD_NAMES, load_data, load_country_details, RaceFields
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
 
 
 def run_normalizer():
-    PARSER = ArgumentParser(description=__doc__)
-    PARSER.add_argument(
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument(
         '--verbose',
         action='store_true',
         default=False,
         help='Enable verbose mode'
     )
-    PARSER.add_argument(
+    parser.add_argument(
         '--rawfile',
         type=Path,
         required=True,
         help='Raw file'
     )
-    PARSER.add_argument(
+    parser.add_argument(
         'reportfile',
         type=Path,
         help='New report file'
     )
-    OPTIONS = PARSER.parse_args()
+    OPTIONS = parser.parse_args()
     try:
         with open(OPTIONS.reportfile, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
@@ -170,28 +169,37 @@ def run_scrapper():
     default_report_name = "empire_state_run_up_scrapped.txt"
     parser = ArgumentParser(description="Scrapper Website")
     parser.add_argument(
-        "--reportname",
-        action="store",
-        default=default_report_name,
-        help="Location of the final scrapping results"
+        '--verbose',
+        action='store_true',
+        default=False,
+        help='Enable verbose mode'
     )
     parser.add_argument(
-        "resultsdir",
+        "report_file",
         action="store",
         type=Path,
         help="Location of the final scrapping results"
     )
     options = parser.parse_args()
+    report_file = Path(options.report_file)
+    logging.info("Saving results to %s", report_file)
     with RacerLinksScrapper(headless=True, debug=False) as link_scrapper:
-        print(f"Got {len(link_scrapper.racers)} racer results")
-        reportdir = Path(options.resultsdir)
-        if reportdir.exists():
-            reportdir.mkdir(exist_ok=True)
-        report_file = reportdir.joinpath(options.reportname)
+        logging.info("Got %s racer results", len(link_scrapper.racers))
+        if not report_file.parent.exists():
+            report_file.parent.mkdir(exist_ok=True)
         with open(report_file, 'w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES)
+            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for bib in link_scrapper.racers:
+                url = link_scrapper.racers[bib][RaceFields.url.value]
+                logging.info("Processing BIB: %s, will fetch: %s", bib, url)
                 with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
-                    pprint.pprint(rds.racer)
-
+                    try:
+                        position = link_scrapper.racers[bib][RaceFields.overall_position.value]
+                        name = link_scrapper.racers[bib][RaceFields.name.value]
+                        writer.writerow(rds.racer)
+                        logging.info("Wrote: name=%s, position=%s", name, position)
+                        if options.verbose:
+                            logging.warning(rds.racer)
+                    except ValueError as ve:
+                        raise ValueError(f"row={rds.racer}", ve)

@@ -11,7 +11,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
-from empirestaterunup.data import RaceFields
+from empirestaterunup.data import RaceFields, Level
 
 EMPIRE_STATE_2013_RACE_RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
 
@@ -67,7 +67,7 @@ class RacerLinksScrapper:
                 bib = int(url.split('/')[-1])
                 self.racers[bib] = {
                     RaceFields.name.value: name,
-                    RaceFields.url.value: url,
+                    RaceFields.url.value: url
                 }
 
         """
@@ -205,6 +205,7 @@ class RacerDetailsScrapper:
         self.racer[RaceFields.division_position.value] = ""
         self.racer[RaceFields.pace.value] = ""
         self.racer[RaceFields.time.value] = ""
+        self.racer[RaceFields.level.value] = Level.dnf.value
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='row mx-0']"):
             value = div.text.strip()
             if self.debug_level > 0:
@@ -232,3 +233,4 @@ class RacerDetailsScrapper:
                 self.racer[RaceFields.division_position.value] = values[5]
                 self.racer[RaceFields.pace.value] = values[7]
                 self.racer[RaceFields.time.value] = values[9]
+                self.racer[RaceFields.level.value] = Level.full.value

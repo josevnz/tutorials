@@ -51,6 +51,16 @@ class Waves(Enum):
     Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
 
 
+"""
+Interested only in people who completed the 86 floors. So is either full course or dnf
+"""
+
+
+class Level(Enum):
+    full = "Full Course"
+    dnf = "DNF"
+
+
 class RaceFields(Enum):
     level = "level"
     name = "name"
@@ -69,7 +79,7 @@ class RaceFields(Enum):
     twenty_floor_position = "20th floor position"
     twenty_floor_gender_position = "20th floor gender position"
     twenty_floor_division_position = "20th floor division position"
-    twenty_floor_pace = '20th floorpPace'
+    twenty_floor_pace = '20th floor Pace'
     twenty_floor_time = '20th floor time'
     sixty_five_floor_position = "65th floor position"
     sixty_five_floor_gender_position = "65th floor gender position"
@@ -150,9 +160,9 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.bib.value] = int(matcher.group(3))
                         if record[RaceFields.bib.value] in DNF_BIB:
                             record[
-                                RaceFields.level.value] = "DNF"  # Interested only in people who completed the 86 floors
+                                RaceFields.level.value] = Level.dnf.value
                         else:
-                            record[RaceFields.level.value] = "Full Course"
+                            record[RaceFields.level.value] = Level.full.value
                         location = matcher.group(4).split(',')
                         if len(location) == 3:
                             record[RaceFields.city.value] = location[0].strip().capitalize()
