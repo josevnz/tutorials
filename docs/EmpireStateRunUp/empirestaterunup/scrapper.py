@@ -78,8 +78,12 @@ class RacerLinksScrapper:
         Kuala Lumpur, -, MYS
         Claim
         ...
+        Gender and age may be missing from the racers details ...
         """
-        record = {}
+        record = {
+            RaceFields.gender.value: "",
+            RaceFields.age.value: ""
+        }
         count = 0
         for span in self.driver.find_elements(By.TAG_NAME, "span"):
             text = span.text.strip()
@@ -188,8 +192,11 @@ class RacerDetailsScrapper:
         """
         Race splits for 20th, 65th and full course:
         split, Overall,Gender, Division, Pace, Time
+
+        Assume racer didn't finish so none of these attributes can be enriched.
+        Also, some values can be missing if gender or age was not provided.
+
         """
-        # Assume racer didn't finish so none of these attributes can be enriched
         self.racer[RaceFields.twenty_floor_position.value] = ""
         self.racer[RaceFields.twenty_floor_gender_position.value] = ""
         self.racer[RaceFields.twenty_floor_division_position.value] = ""
@@ -220,17 +227,20 @@ class RacerDetailsScrapper:
                 self.racer[RaceFields.twenty_floor_gender_position.value] = values[3]
                 self.racer[RaceFields.twenty_floor_division_position.value] = values[5]
                 self.racer[RaceFields.twenty_floor_pace.value] = values[7]
-                self.racer[RaceFields.twenty_floor_time.value] = values[9]
+                if len(values) >= 10:
+                    self.racer[RaceFields.twenty_floor_time.value] = values[9]
             elif values[0] == '65th Floor' and values[1] != '--':
                 self.racer[RaceFields.sixty_five_floor_position.value] = values[1]
                 self.racer[RaceFields.sixty_five_floor_gender_position.value] = values[3]
                 self.racer[RaceFields.sixty_five_floor_division_position.value] = values[5]
                 self.racer[RaceFields.sixty_five_floor_pace.value] = values[7]
-                self.racer[RaceFields.sixty_five_floor_time.value] = values[9]
+                if len(values) >= 10:
+                    self.racer[RaceFields.sixty_five_floor_time.value] = values[9]
             elif values[0] == 'Full Course' and values[1] != '--':
+                self.racer[RaceFields.level.value] = Level.full.value
                 self.racer[RaceFields.overall_position.value] = values[1]
                 self.racer[RaceFields.gender_position.value] = values[3]
                 self.racer[RaceFields.division_position.value] = values[5]
                 self.racer[RaceFields.pace.value] = values[7]
-                self.racer[RaceFields.time.value] = values[9]
-                self.racer[RaceFields.level.value] = Level.full.value
+                if len(values) >= 10:
+                    self.racer[RaceFields.time.value] = values[9]
