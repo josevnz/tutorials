@@ -1,10 +1,11 @@
+import pprint
 import unittest
 from pathlib import Path
 
 from empirestaterunup.analyze import better_than_median_waves
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, raw_copy_paste_read, raw_csv_read
+    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES
 
 RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
 RAW_CSV_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.csv")
@@ -113,6 +114,14 @@ class DataTestCase(unittest.TestCase):
         clean_data = [record for record in raw_csv_read(RAW_CSV_RACE_RESULTS)]
         self.assertIsNotNone(clean_data)
         self.assertEqual(377, len(clean_data))
+        for record in clean_data:
+            for field in FIELD_NAMES:
+                self.assertTrue(field in record.keys())
+            if record[RaceFields.name.value] == "Kamila Chomanicova":
+                self.assertEqual(record[RaceFields.age.value], 30)
+                self.assertEqual(record[RaceFields.gender.value], "F")
+                self.assertEqual(record[RaceFields.sixty_five_floor_time.value], "00:10:40")
+            pprint.pprint(record)
 
 
 if __name__ == '__main__':

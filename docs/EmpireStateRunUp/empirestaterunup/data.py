@@ -2,6 +2,7 @@
 Data loading logic, after web scrapping process is completed.
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
+import csv
 import datetime
 import math
 import re
@@ -110,8 +111,65 @@ def get_wave_start_time(wave: Waves) -> datetime:
 
 def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     record = {}
-    # TODO: Add logic
-    yield record
+    with open(raw_file, 'r') as raw_csv_file:
+        reader = csv.DictReader(raw_csv_file)
+        for row in reader:
+            try:
+                for field in FIELD_NAMES:
+                    column_val = row[field].strip()
+                    if field == RaceFields.bib.value:
+                        bib = int(column_val)
+                        record[field] = bib
+                    if field in [
+                        RaceFields.gender_position.value,
+                        RaceFields.division_position.value,
+                        RaceFields.overall_position.value,
+                        RaceFields.twenty_floor_position.value,
+                        RaceFields.twenty_floor_division_position.value,
+                        RaceFields.twenty_floor_gender_position.value,
+                        RaceFields.sixty_five_floor_position.value,
+                        RaceFields.sixty_five_floor_division_position.value,
+                        RaceFields.sixty_five_floor_gender_position.value
+                    ]:
+                        try:
+                            record[field] = int(column_val)
+                        except ValueError:
+                            record[field] = math.nan
+                    elif field == RaceFields.wave.value:
+                        record[field] = get_wave_from_bib(bib).name.upper()
+                    elif field in [
+                        RaceFields.gender.value,
+                        RaceFields.country.value
+                    ]:
+                        record[field] = column_val.upper()
+                    elif field in [
+                        RaceFields.city.value,
+                        RaceFields.state.value,
+
+                    ]:
+                        record[field] = column_val.capitalize()
+                    elif field in [
+                        RaceFields.sixty_five_floor_pace.value,
+                        RaceFields.sixty_five_floor_time.value,
+                        RaceFields.twenty_floor_pace.value,
+                        RaceFields.twenty_floor_time.value,
+                        RaceFields.pace.value,
+                        RaceFields.time.value
+                    ]:
+                        parts = column_val.strip().split(':')
+                        for idx in range(0, len(parts)):
+                            if len(parts[idx]) == 1:
+                                parts[idx] = f"0{parts[idx]}"
+                        if len(parts) == 2:
+                            parts.insert(0, "00")
+                        record[field] = ":".join(parts)
+                    else:
+                        record[field] = column_val
+                if record[field] in ['-', '--']:
+                    record[field] = ""
+                yield record
+            except IndexError:
+                raise
 
 
 def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
