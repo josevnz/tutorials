@@ -361,6 +361,22 @@ def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | li
         filtered = bib_as_column
     else:
         filtered = bib_as_column[bib_as_column[RaceFields.bib.value].isin(bibs)]
+    column_names = [
+        RaceFields.level.value,
+        RaceFields.name.value,
+        RaceFields.gender.value,
+        RaceFields.bib.value,
+        RaceFields.state.value,
+        RaceFields.country.value,
+        RaceFields.wave.value,
+        RaceFields.overall_position.value,
+        RaceFields.gender_position.value,
+        RaceFields.division_position.value,
+        RaceFields.pace.value,
+        RaceFields.time.value,
+        RaceFields.city.value,
+        RaceFields.age.value
+    ]
     rows = [(
         r.level,
         r[RaceFields.name.value],
@@ -377,7 +393,7 @@ def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | li
         r.city,
         r.age
     ) for _, r in filtered.iterrows()]
-    return tuple(FIELD_NAMES), rows
+    return tuple(column_names), rows
 
 
 def load_country_details(data_file: Path = None) -> DataFrame:
