@@ -44,7 +44,7 @@ def run_raw_cleaner():
     OPTIONS = parser.parse_args()
     try:
         with open(OPTIONS.report_file, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for row in raw_copy_paste_read(OPTIONS.raw_file):
                 try:
@@ -227,7 +227,7 @@ def run_csv_cleaner():
     OPTIONS = parser.parse_args()
     try:
         with open(OPTIONS.report_file, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES)
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for row in raw_csv_read(OPTIONS.raw_file):
                 try:

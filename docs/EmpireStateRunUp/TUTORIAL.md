@@ -176,7 +176,7 @@ Data needs some cleaning up and that is the next step.
 [Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
-Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-2023.csv) I was going to use during my analysis.
+Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
 
 I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
 
@@ -260,7 +260,7 @@ I used enums to make it more clear on what type of data I was working on.
 At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
 
 ```shell
-es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-2023.csv
+es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-first-level-2023.csv
 ```
 
 Now with the data ready we can proceed to do some analysis.
@@ -297,7 +297,7 @@ And the resulting **DataFrame**:
 
 ```shell
 from empirestaterunup.data import load_data
-load_data('empirestaterunup/results-2023.csv')
+load_data('empirestaterunup/results-first-level-2023.csv')
            level                 name gender           state country  ...            pace            time               city  age     finishtimestamp
 bib                                                                   ...                                                                            
 19   Full Course        Wai Ching Soh      M                     MYS  ... 0 days 00:53:00 0 days 00:10:36       Kuala lumpur   29 2023-09-04 20:10:36
@@ -362,7 +362,7 @@ BASE_RACE_DATETIME = datetime.datetime(
     second=0,
     microsecond=0
 )
-RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
+RACE_RESULTS = Path(__file__).parent.joinpath("results-first-level-2023.csv")
 def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     """
     ```csv
@@ -526,7 +526,7 @@ def load_country_details(data_file: Path = None) -> DataFrame:
         def_file
     )
     return df
-RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
+RACE_RESULTS = Path(__file__).parent.joinpath("results-first-level-2023.csv")
 class RaceFields(Enum):
     level = "level"
     name = "name"

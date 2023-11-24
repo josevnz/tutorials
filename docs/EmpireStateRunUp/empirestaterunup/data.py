@@ -120,7 +120,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     if field == RaceFields.bib.value:
                         bib = int(column_val)
                         record[field] = bib
-                    if field in [
+                    elif field in [
                         RaceFields.gender_position.value,
                         RaceFields.division_position.value,
                         RaceFields.overall_position.value,
@@ -129,7 +129,8 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         RaceFields.twenty_floor_gender_position.value,
                         RaceFields.sixty_five_floor_position.value,
                         RaceFields.sixty_five_floor_division_position.value,
-                        RaceFields.sixty_five_floor_gender_position.value
+                        RaceFields.sixty_five_floor_gender_position.value,
+                        RaceFields.age.value
                     ]:
                         try:
                             record[field] = int(column_val)
@@ -306,7 +307,7 @@ class CourseRecords(Enum):
     Female = ('Andrea Mayr', 'Austria', 2006, '11:23')
 
 
-RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
+RACE_RESULTS = Path(__file__).parent.joinpath("results-first-level-2023.csv")
 COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
 
 
