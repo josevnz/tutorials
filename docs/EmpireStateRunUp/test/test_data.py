@@ -103,7 +103,7 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         median_time, wave_series = better_than_median_waves(run_data)
         self.assertIsNotNone(median_time)
-        self.assertEqual(42, wave_series.iloc[0])
+        self.assertEqual(43, wave_series.iloc[0])
 
     def test_raw_copy_paste_read(self):
         clean_data = [record for record in raw_copy_paste_read(RAW_COPY_PASTE_RACE_RESULTS)]

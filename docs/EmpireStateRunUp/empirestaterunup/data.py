@@ -307,7 +307,8 @@ class CourseRecords(Enum):
     Female = ('Andrea Mayr', 'Austria', 2006, '11:23')
 
 
-RACE_RESULTS = Path(__file__).parent.joinpath("results-first-level-2023.csv")
+RACE_RESULTS_FIRST_LEVEL = Path(__file__).parent.joinpath("results-first-level-2023.csv")
+RACE_RESULTS_FULL_LEVEL = Path(__file__).parent.joinpath("results-full-level-2023.csv")
 COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
 
 
@@ -323,12 +324,15 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     if data_file:
         def_file = data_file
     else:
-        def_file = RACE_RESULTS
+        def_file = RACE_RESULTS_FULL_LEVEL
     df = pandas.read_csv(
         def_file
     )
-    df[RaceFields.pace.value] = pandas.to_timedelta(df[RaceFields.pace.value])
-    df[RaceFields.time.value] = pandas.to_timedelta(df[RaceFields.time.value])
+    for field in [RaceFields.pace.value, RaceFields.time.value]:
+        try:
+            df[field] = pandas.to_timedelta(df[field])
+        except ValueError as ve:
+            raise ValueError(f'{field}=df[field]', ve)
     df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)

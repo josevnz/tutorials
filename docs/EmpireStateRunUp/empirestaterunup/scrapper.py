@@ -213,6 +213,30 @@ class RacerDetailsScrapper:
         self.racer[RaceFields.pace.value] = ""
         self.racer[RaceFields.time.value] = ""
         self.racer[RaceFields.level.value] = Level.dnf.value
+
+        # Find the gender and age, influence parsing strategy
+        gender = ""
+        age = ""
+        for div in self.driver.find_elements(By.CSS_SELECTOR, "div[id='ageGender'"):
+            value = div.text.strip().split()
+            gender = value[0]
+            if len(value) > 1:
+                age = value[1]
+
+        for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='col-7']"):
+            value = div.text.strip().split('\n')
+            if len(value) == 2:
+                self.racer[RaceFields.time.value] = value[1]
+            if self.debug_level > 0:
+                print(value)
+
+        for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='col-5']"):
+            value = div.text.strip().split('\n')
+            if len(value) == 2:
+                self.racer[RaceFields.pace.value] = value[1]
+            if self.debug_level > 0:
+                print(value)
+
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='row mx-0']"):
             value = div.text.strip()
             if self.debug_level > 0:
@@ -224,23 +248,26 @@ class RacerDetailsScrapper:
             values = value.split('\n')
             if values[0] == '20th Floor' and values[1] != '--':
                 self.racer[RaceFields.twenty_floor_position.value] = values[1]
-                self.racer[RaceFields.twenty_floor_gender_position.value] = values[3]
-                self.racer[RaceFields.twenty_floor_division_position.value] = values[5]
-                self.racer[RaceFields.twenty_floor_pace.value] = values[7]
-                if len(values) >= 10:
-                    self.racer[RaceFields.twenty_floor_time.value] = values[9]
+                if gender in ['M', 'F']:
+                    self.racer[RaceFields.twenty_floor_gender_position.value] = values[3]
+                if age != "":
+                    self.racer[RaceFields.twenty_floor_division_position.value] = values[5]
+                self.racer[RaceFields.twenty_floor_pace.value] = values[-3]
+                self.racer[RaceFields.twenty_floor_time.value] = values[-1]
             elif values[0] == '65th Floor' and values[1] != '--':
                 self.racer[RaceFields.sixty_five_floor_position.value] = values[1]
-                self.racer[RaceFields.sixty_five_floor_gender_position.value] = values[3]
-                self.racer[RaceFields.sixty_five_floor_division_position.value] = values[5]
-                self.racer[RaceFields.sixty_five_floor_pace.value] = values[7]
-                if len(values) >= 10:
-                    self.racer[RaceFields.sixty_five_floor_time.value] = values[9]
+                if gender in ['M', 'F']:
+                    self.racer[RaceFields.sixty_five_floor_gender_position.value] = values[3]
+                if age != "":
+                    self.racer[RaceFields.sixty_five_floor_division_position.value] = values[5]
+                self.racer[RaceFields.sixty_five_floor_pace.value] = values[-3]
+                self.racer[RaceFields.sixty_five_floor_time.value] = values[-1]
             elif values[0] == 'Full Course' and values[1] != '--':
                 self.racer[RaceFields.level.value] = Level.full.value
                 self.racer[RaceFields.overall_position.value] = values[1]
-                self.racer[RaceFields.gender_position.value] = values[3]
-                self.racer[RaceFields.division_position.value] = values[5]
-                self.racer[RaceFields.pace.value] = values[7]
-                if len(values) >= 10:
-                    self.racer[RaceFields.time.value] = values[9]
+                if gender in ['M', 'F']:
+                    self.racer[RaceFields.gender_position.value] = values[3]
+                if age != "":
+                    self.racer[RaceFields.division_position.value] = values[5]
+                self.racer[RaceFields.pace.value] = values[-3]
+                self.racer[RaceFields.time.value] = values[-1]

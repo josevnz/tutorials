@@ -16,8 +16,8 @@ from textual.widgets import DataTable, Footer, Header, Log, Label, Button, Markd
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields
+from empirestaterunup.data import load_data, to_list_of_tuples, load_country_details, \
+    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL
 
 
 class FiveNumberColumn(VerticalScroll):
@@ -100,7 +100,7 @@ class FiveNumberApp(App):
             time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
 
-        log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
+        log.write_line(f'\nDone processing: {RACE_RESULTS_FULL_LEVEL.absolute()}')
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
@@ -193,7 +193,7 @@ class OutlierApp(App):
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
-        log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
+        log.write_line(f'\nDone processing: {RACE_RESULTS_FULL_LEVEL.absolute()}')
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):

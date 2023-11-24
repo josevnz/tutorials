@@ -19,6 +19,10 @@ class RacerLinksScrapperTestCase(unittest.TestCase):
     def test_runner_detail(self):
         racer_details = [
             {
+                RaceFields.name.value: 'David Kilgore',
+                RaceFields.url.value: 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/106'
+            },
+            {
                 RaceFields.name.value: 'Alejandra Sanchez',
                 RaceFields.url.value: 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/40'
             },
@@ -32,13 +36,19 @@ class RacerLinksScrapperTestCase(unittest.TestCase):
             }
         ]
         for racer in racer_details:
-            print(f"name={racer[RaceFields.name.value]}, url={racer[RaceFields.url.value]}")
+            name = racer[RaceFields.name.value]
+            print(f"name={name}, url={racer[RaceFields.url.value]}")
             with RacerDetailsScrapper(
                 racer=racer,
                 debug_level=0,
             ) as rds:
                 self.assertIsNotNone(rds)
                 self.assertIsNotNone(rds.racer)
+                for field in [
+                    RaceFields.time.value,
+                    RaceFields.pace.value
+                ]:
+                    self.assertRegex(rds.racer[field], "\\d+:\\d+", f"{name}: {field}={rds.racer[field]}")
                 pprint.pp(rds.racer)
 
 

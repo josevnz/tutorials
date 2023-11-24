@@ -167,13 +167,7 @@ def run_browser():
 
 
 def run_scrapper():
-    parser = ArgumentParser(description="Scrapper Website")
-    parser.add_argument(
-        '--verbose',
-        action='store_true',
-        default=False,
-        help='Enable verbose mode'
-    )
+    parser = ArgumentParser(description="Website scrapper for race results")
     parser.add_argument(
         "report_file",
         action="store",
@@ -198,9 +192,7 @@ def run_scrapper():
                         position = link_scrapper.racers[bib][RaceFields.overall_position.value]
                         name = link_scrapper.racers[bib][RaceFields.name.value]
                         writer.writerow(rds.racer)
-                        logging.info("Wrote: name=%s, position=%s", name, position)
-                        if options.verbose:
-                            logging.warning(rds.racer)
+                        logging.info("Wrote: name=%s, position=%s, %s", name, position, rds.racer)
                     except ValueError as ve:
                         raise ValueError(f"row={rds.racer}", ve)
 
