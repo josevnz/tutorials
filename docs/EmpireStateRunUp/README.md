@@ -45,7 +45,9 @@ pip install --editable .
 For example, playing with the 'esru_outlier' application:
 
 ```shell
+. ~/virtualenv/EmpireStateRunUp/bin/activate
 pip install textual-dev
+# On another terminal: . ~/virtualenv/EmpireStateRunUp/bin/activate && textual console
 textual run --dev empirestaterunup.apps:run_outlier 
 ```
 
