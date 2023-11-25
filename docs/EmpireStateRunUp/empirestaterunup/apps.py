@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Type
 
 from pandas import DataFrame
+from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
 from textual.containers import HorizontalScroll, VerticalScroll
@@ -339,7 +340,9 @@ class BrowserApp(App):
         columns_raw, rows = to_list_of_tuples(self.df)
         for column in columns_raw:
             table.add_column(column.title(), key=column)
-        table.add_rows(rows)
+        for number, row in enumerate(rows[0:], start=1):
+            label = Text(str(number), style="#B0FC38 italic")
+            table.add_row(*row, label=label)
         table.sort('overall position')
 
     @on(DataTable.HeaderSelected, '#runners')
