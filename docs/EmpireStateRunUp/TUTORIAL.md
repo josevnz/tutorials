@@ -415,11 +415,8 @@ Once data was loaded, I was able to start asking questions. For example, to dete
 ```python
 from pandas import DataFrame
 import numpy as np
-Z_FILTER = ['name', 'level', 'gender', 'city','state', 'country', 'wave', 'overall position', 'gender position', 'division position']
-def get_zscore(df: DataFrame, z_filter=None):
-    if z_filter is None:
-        z_filter = Z_FILTER
-    filtered = df.drop(z_filter, axis=1)
+def get_zscore(df: DataFrame, column: str):
+    filtered = df[column]
     return filtered.sub(filtered.mean()).div(filtered.std(ddof=0))
 
 def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFrame:
@@ -427,7 +424,7 @@ def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFram
     Use the z-score, anything further away than 3 standard deviations is considered an outlier.
     """
     filtered_df = df[column]
-    z_scores = get_zscore(df)[column]
+    z_scores = get_zscore(df=df, column=column)
     is_over = np.abs(z_scores) > std_threshold
     return filtered_df[is_over]
 ```

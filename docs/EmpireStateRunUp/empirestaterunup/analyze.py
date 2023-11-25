@@ -12,25 +12,6 @@ from datetime import timedelta
 from empirestaterunup.data import RaceFields
 
 SUMMARY_METRICS = (RaceFields.age.value, RaceFields.time.value, RaceFields.pace.value)
-Z_SCORE_IGNORED_COLUMNS = [
-    RaceFields.level.value,
-    RaceFields.name.value,
-    RaceFields.gender.value,
-    RaceFields.city.value,
-    RaceFields.state.value,
-    RaceFields.country.value,
-    RaceFields.wave.value,
-    RaceFields.overall_position.value,
-    RaceFields.gender_position.value,
-    RaceFields.division_position.value,
-    RaceFields.twenty_floor_position.value,
-    RaceFields.twenty_floor_gender_position.value,
-    RaceFields.twenty_floor_division_position.value,
-    RaceFields.sixty_five_floor_position.value,
-    RaceFields.sixty_five_floor_gender_position.value,
-    RaceFields.sixty_five_floor_division_position.value,
-    RaceFields.url.value
-]
 
 
 def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
