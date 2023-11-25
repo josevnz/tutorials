@@ -41,7 +41,7 @@ class DataTestCase(unittest.TestCase):
         header, rows = to_list_of_tuples(data)
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
-        self.assertEqual(374, len(rows))
+        self.assertEqual(376, len(rows))
 
         header, rows = to_list_of_tuples(data, bibs=[537, 19])
         self.assertIsNotNone(header)
@@ -82,21 +82,21 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         df = get_times(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_get_positions(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_positions(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_get_categories(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_categories(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_better_than_median_waves(self):
         run_data = load_data()
