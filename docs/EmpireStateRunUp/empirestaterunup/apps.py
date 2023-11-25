@@ -138,24 +138,54 @@ class RunnerDetailScreen(ModalScreen):
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
         row_markdown = ""
-        position_markdown = ""
-        split_markdown = ""
+        position_markdown = {
+            'full': '',
+            '20th': '',
+            '65th': ''
+        }
+        split_markdown = {
+            'full': '',
+            '20th': '',
+            '65th': ''
+        }
         for i in range(0, len(columns)):
-            if re.search('pace|time', columns[i]):
-                split_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
-            elif re.search('position', columns[i]):
-                position_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
-            elif re.search('url|bib', columns[i]):
+            column = columns[i]
+            detail = details[0][i]
+            if re.search('pace|time', column):
+                if re.search('20th', column):
+                    split_markdown['20th'] += f"\n* **{column.title()}:** {detail}"
+                elif re.search('65th', column):
+                    split_markdown['65th'] += f"\n* **{column.title()}:** {detail}"
+                else:
+                    split_markdown['full'] += f"\n* **{column.title()}:** {detail}"
+            elif re.search('position', column):
+                if re.search('20th', column):
+                    position_markdown['20th'] += f"\n* **{column.title()}:** {detail}"
+                elif re.search('65th', column):
+                    position_markdown['65th'] += f"\n* **{column.title()}:** {detail}"
+                else:
+                    position_markdown['full'] += f"\n* **{column.title()}:** {detail}"
+            elif re.search('url|bib', column):
                 pass  # Skip uninteresting columns
             else:
-                row_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
+                row_markdown += f"\n* **{column.title()}:** {detail}"
         yield MarkdownViewer(f"""# Full Course Race details     
 ## Runner BIO (BIB: {bibs[0]})
 {row_markdown}
-## Positions        
-{position_markdown}                
-## Race split        
-{split_markdown}
+## Positions
+### 20th floor        
+{position_markdown['20th']}
+### 65th floor        
+{position_markdown['65th']}
+### Full course        
+{position_markdown['full']}                
+## Race time split   
+### 20th floor        
+{split_markdown['20th']}
+### 65th floor        
+{split_markdown['65th']}
+### Full course        
+{split_markdown['full']}         
         """)
         yield Button("Close", variant="primary", id="close")
 
