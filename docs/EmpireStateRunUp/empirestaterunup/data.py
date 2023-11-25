@@ -355,7 +355,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 
 
-def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
+def to_list_of_tuples(df: DataFrame, bibs: list[int] = None, extended: bool = False) -> Union[Tuple | list[Tuple]]:
     bib_as_column = df.reset_index(level=0, inplace=False)
     if not bibs:
         filtered = bib_as_column
@@ -378,20 +378,20 @@ def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | li
         RaceFields.age.value
     ]
     rows = [(
-        r.level,
+        r[RaceFields.level.value],
         r[RaceFields.name.value],
-        r.gender,
-        r.bib,
-        r.state,
-        r.country,
-        r.wave,
+        r[RaceFields.gender.value],
+        r[RaceFields.bib.value],
+        r[RaceFields.state.value],
+        r[RaceFields.country.value],
+        r[RaceFields.wave.value],
         r[RaceFields.overall_position.value],
         r[RaceFields.gender_position.value],
         r[RaceFields.division_position.value],
-        r.pace,
-        r.time,
-        r.city,
-        r.age
+        r[RaceFields.pace.value],
+        r[RaceFields.time.value],
+        r[RaceFields.city.value],
+        r[RaceFields.age.value]
     ) for _, r in filtered.iterrows()]
     return tuple(column_names), rows
 
