@@ -336,14 +336,17 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)
+
     # Normalize Age
     median_age = df[RaceFields.age.value].median()
     df[RaceFields.age.value].fillna(median_age, inplace=True)
     df[RaceFields.age.value] = df[RaceFields.age.value].astype(int)
+
     # Normalize state and city
     df.replace({RaceFields.state.value: {'-': ''}}, inplace=True)
     df[RaceFields.state.value].fillna('', inplace=True)
     df[RaceFields.city.value].fillna('', inplace=True)
+
     # Normalize position, 3 levels
     median_pos = df[RaceFields.overall_position.value].median()
     df[RaceFields.overall_position.value].fillna(median_pos, inplace=True)
@@ -354,6 +357,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     median_pos = df[RaceFields.sixty_five_floor_position.value].median()
     df[RaceFields.sixty_five_floor_position.value].fillna(median_pos, inplace=True)
     df[RaceFields.sixty_five_floor_position.value] = df[RaceFields.sixty_five_floor_position.value].astype(int)
+
     # Normalize gender position, 3 levels
     median_gender_pos = df[RaceFields.gender_position.value].median()
     df[RaceFields.gender_position.value].fillna(median_gender_pos, inplace=True)
@@ -364,6 +368,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     median_gender_pos = df[RaceFields.sixty_five_floor_gender_position.value].median()
     df[RaceFields.sixty_five_floor_gender_position.value].fillna(median_gender_pos, inplace=True)
     df[RaceFields.sixty_five_floor_gender_position.value] = df[RaceFields.sixty_five_floor_gender_position.value].astype(int)
+
     # Normalize age/ division position, 3 levels
     median_div_pos = df[RaceFields.division_position.value].median()
     df[RaceFields.division_position.value].fillna(median_div_pos, inplace=True)
