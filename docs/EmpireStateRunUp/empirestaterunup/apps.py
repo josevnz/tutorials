@@ -2,7 +2,7 @@
 Collection of applications to display race findings
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
-import textwrap
+import re
 from pathlib import Path
 from typing import Type
 
@@ -138,11 +138,25 @@ class RunnerDetailScreen(ModalScreen):
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
         row_markdown = ""
+        position_markdown = ""
+        split_markdown = ""
         for i in range(0, len(columns)):
-            row_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
-        yield MarkdownViewer(textwrap.dedent(f"""# Runner details        
-        {row_markdown}
-        """))
+            if re.search('pace|time', columns[i]):
+                split_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
+            elif re.search('position', columns[i]):
+                position_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
+            elif re.search('url|bib', columns[i]):
+                pass  # Skip uninteresting columns
+            else:
+                row_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
+        yield MarkdownViewer(f"""# Full Course Race details     
+## Runner BIO (BIB: {bibs[0]})
+{row_markdown}
+## Positions        
+{position_markdown}                
+## Race split        
+{split_markdown}
+        """)
         yield Button("Close", variant="primary", id="close")
 
     @on(Button.Pressed, "#close")

@@ -8,7 +8,7 @@ import math
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, Any, Dict, Tuple, Union
+from typing import Iterable, Any, Dict, Tuple, Union, List
 
 import pandas
 from pandas import DataFrame
@@ -80,7 +80,7 @@ class RaceFields(Enum):
     twenty_floor_position = "20th floor position"
     twenty_floor_gender_position = "20th floor gender position"
     twenty_floor_division_position = "20th floor division position"
-    twenty_floor_pace = '20th floor Pace'
+    twenty_floor_pace = '20th floor pace'
     twenty_floor_time = '20th floor time'
     sixty_five_floor_position = "65th floor position"
     sixty_five_floor_gender_position = "65th floor gender position"
@@ -355,44 +355,30 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 
 
-def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
+def to_list_of_tuples(
+        df: DataFrame,
+        bibs: list[int] = None
+) -> Union[Tuple | list[Tuple]]:
+    """
+    Take a DataFrame and return a more friendly structure to be used by a DataTable
+    :param df DataFrame to convert
+    :param bibs List of racing BIB to filter
+    :return list of Tuple of rows, Tuple with columns
+    """
     bib_as_column = df.reset_index(level=0, inplace=False)
     if not bibs:
         filtered = bib_as_column
     else:
         filtered = bib_as_column[bib_as_column[RaceFields.bib.value].isin(bibs)]
-    column_names = [
-        RaceFields.level.value,
-        RaceFields.name.value,
-        RaceFields.gender.value,
-        RaceFields.bib.value,
-        RaceFields.state.value,
-        RaceFields.country.value,
-        RaceFields.wave.value,
-        RaceFields.overall_position.value,
-        RaceFields.gender_position.value,
-        RaceFields.division_position.value,
-        RaceFields.pace.value,
-        RaceFields.time.value,
-        RaceFields.city.value,
-        RaceFields.age.value
-    ]
-    rows = [(
-        r[RaceFields.level.value],
-        r[RaceFields.name.value],
-        r[RaceFields.gender.value],
-        r[RaceFields.bib.value],
-        r[RaceFields.state.value],
-        r[RaceFields.country.value],
-        r[RaceFields.wave.value],
-        r[RaceFields.overall_position.value],
-        r[RaceFields.gender_position.value],
-        r[RaceFields.division_position.value],
-        r[RaceFields.pace.value],
-        r[RaceFields.time.value],
-        r[RaceFields.city.value],
-        r[RaceFields.age.value]
-    ) for _, r in filtered.iterrows()]
+    column_names = FIELD_NAMES
+    rows = []
+    for _, r in filtered.iterrows():
+        ind_row: List[Any] = []
+        for col in column_names:
+            ind_row.append(r[col])
+        tpl = tuple(ind_row)
+        rows.append(tpl)
+
     return tuple(column_names), rows
 
 
