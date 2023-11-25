@@ -188,7 +188,9 @@ class RunnerDetailScreen(ModalScreen):
 ### Full course        
 {split_markdown['full']}         
         """)
-        yield Button("Close", variant="primary", id="close")
+        btn = Button("Close", variant="primary", id="close")
+        btn.tooltip = "Back to main screen"
+        yield btn
 
     @on(Button.Pressed, "#close")
     def on_button_pressed(self, _) -> None:
@@ -206,6 +208,7 @@ class OutlierColumn(VerticalScroll):
         table = DataTable(id=f'{self.column}_outlier')
         table.cursor_type = 'row'
         table.zebra_stripes = True
+        table.tooltip = "Get runner details"
         yield table
 
 
