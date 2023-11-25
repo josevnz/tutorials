@@ -355,7 +355,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 
 
-def to_list_of_tuples(df: DataFrame, bibs: list[int] = None, extended: bool = False) -> Union[Tuple | list[Tuple]]:
+def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
     bib_as_column = df.reset_index(level=0, inplace=False)
     if not bibs:
         filtered = bib_as_column
