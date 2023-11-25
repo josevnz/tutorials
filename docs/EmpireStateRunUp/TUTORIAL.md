@@ -167,9 +167,11 @@ To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py)
 ...
 ```
 
-I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes.
+I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes:
 
-Data needs some cleaning up and that is the next step.
+![](website-scrapper.png)
+
+Data cannot be used as-is, needs cleaning up and that is the next step on this article.
 
 ## Cleaning up the data
 
@@ -255,7 +257,7 @@ record: Iterable[str] = []
 record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).name.upper()
 ```
 
-I used enums to make it more clear on what type of data I was working on.
+I used enums to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
 
 At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
 
@@ -278,13 +280,13 @@ So before throwing a single line of code, I took a piece of paper and asked myse
 
 I decided to use [Python Pandas](https://pandas.pydata.org/) for this task. The framework has an arsenal of tools to manipulate the data and to calculate statistics. It also has good tools to perform additional cleanup if needed.
 
-So how Pandas work?
+So _how Pandas work_?
 
 #### Crash course on Pandas
 
 I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. 
 
-In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) looked like:
+In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) loading loked like:
 
 ```shell
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ python3
@@ -293,7 +295,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> from empirestaterunup.data import load_data
 ```
 
-And the resulting **DataFrame**:
+And the resulting **DataFrame** instance:
 
 ```shell
 from empirestaterunup.data import load_data
@@ -315,7 +317,7 @@ bib                                                                   ...
 [374 rows x 14 columns]
 ```
 
-The code above shows a custom function I wrote to load the CSV file into a DataFrame, with some manipulations:
+I made the bib an index as it is unique, and it has no special value for aggregation functions, The code below shows a custom function I wrote to load the CSV file into a DataFrame, with some manipulations:
 
 ```python
 # Not importing some definitions here, you can check the data.py file to see the real code
@@ -403,12 +405,11 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 ```
 
-I do a few things here after loading the CSV into a Dataframe:
-* Converting 'Not a Number (nan)' values with empty values, among other things.
-* Drop rows for runners that did not reach floor 86. Make the analysis easier
-* Convert strings into native data types like integers, timestamps
+I do a few things here after giving back the converted CSV back to the user, as a DataFrame:
+* Replacing "Not a Number" (nan) values with the median, to avoid affecting the aggregation results. Makes analysis easier.
+* Drop rows for runners that did not reach floor 86. Makes the analysis easier, and it is too few of them.
+* Convert some string columns into native data types like integers, timestamps
 * A few entries did not have the gender defined. That affected other fields like 'gender_position'. To avoid distortions, these were filled with the median.
-* The BIB number is unique for each runner, so that became the new DataFrame index
 
 Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a Z-score:
 
@@ -439,18 +440,20 @@ def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
 
 All the analysis logic [was kep together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
 
+Testing is part integral of writing code, and as I kept adding more of it and went back to write unit tests.
+
 Let's check how to test our code (feel free to skip next section if you are familiar with unit testing)
 
 ### Testing, testing and after that ... testing
 
-Quickly things got a little bit complicated as I started writing more code to answer questions. That is the right moment to write unit tests:
+I assume you are familiar writing small, self-contained pieces of code to test your code. These are called unit tests.
 
 > The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
 
 I tried to have a simple [unit test](https://docs.python.org/3/library/unittest.html) for every method I wrote on the code. This saved me lots of headaches down the road, 
 as I refactored code I found better ways to get the same results, producing correct numbers.
 
-A Unit test is a class that extends 'unittest.TestCase'. Each method that starts with 'test_' is a test that must pass several assertions:
+A Unit test on this context is a class that extends 'unittest.TestCase'. Each method that starts with 'test_' is a test that must pass several assertions:
 
 ```python
 import unittest
@@ -478,13 +481,13 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-Get the data, make sure [it meets the expectations](test/test_data.py). Move on [the next type of tests about the data](test/test_analyze.py).
+So far we got the data, made sure [it meets the expectations](test/test_data.py)and wrote [more test](test/test_analyze.py) on the analytics.
 
 Now that we have some results we can try to visualize them.
 
 ## Visualizing the results
 
-I wanted to use the terminal as much as possible to visualize my findings. I decided to use the [Textual](https://textual.textualize.io/) framework to accomplish that.
+I wanted to use the terminal as much as possible to visualize my findings, to keep requirements to the minimum. I decided to use the [Textual](https://textual.textualize.io/) framework to accomplish that.
 This framework is very complete and allows you to build text applications that are responsive and beautiful to look at.
 
 They are also easy to write, so before we go deeper into the resulting applications let's make a pause to learn about Textual.
