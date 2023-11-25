@@ -38,7 +38,7 @@ class AnalyzeTestCase(unittest.TestCase):
         self.assertLess(0, len(ndf_dict))
 
     def test_get_zscore(self):
-        z_score = get_zscore(AnalyzeTestCase.df)
+        z_score = get_zscore(df=AnalyzeTestCase.df, column=SUMMARY_METRICS[0])
         self.assertIsNotNone(z_score)
 
     def test_get_outliers(self):

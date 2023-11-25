@@ -11,18 +11,25 @@ from datetime import timedelta
 
 from empirestaterunup.data import RaceFields
 
-SUMMARY_METRICS = ('age', 'time', 'pace')
-Z_FILTER = [
-    'name',
-    'level',
-    'gender',
-    'city',
-    'state',
-    'country',
-    'wave',
-    'overall position',
-    'gender position',
-    'division position'
+SUMMARY_METRICS = (RaceFields.age.value, RaceFields.time.value, RaceFields.pace.value)
+Z_SCORE_IGNORED_COLUMNS = [
+    RaceFields.level.value,
+    RaceFields.name.value,
+    RaceFields.gender.value,
+    RaceFields.city.value,
+    RaceFields.state.value,
+    RaceFields.country.value,
+    RaceFields.wave.value,
+    RaceFields.overall_position.value,
+    RaceFields.gender_position.value,
+    RaceFields.division_position.value,
+    RaceFields.twenty_floor_position.value,
+    RaceFields.twenty_floor_gender_position.value,
+    RaceFields.twenty_floor_division_position.value,
+    RaceFields.sixty_five_floor_position.value,
+    RaceFields.sixty_five_floor_gender_position.value,
+    RaceFields.sixty_five_floor_division_position.value,
+    RaceFields.url.value
 ]
 
 
@@ -46,10 +53,8 @@ def dt_to_sorted_dict(df: Union[DataFrame | Series]) -> dict:
     return {k: v for k, v in sorted(df.to_dict().items(), key=lambda item: item[1], reverse=True)}
 
 
-def get_zscore(df: DataFrame, z_filter=None):
-    if z_filter is None:
-        z_filter = Z_FILTER
-    filtered = df.drop(z_filter, axis=1)
+def get_zscore(df: DataFrame, column: str):
+    filtered = df[column]
     return filtered.sub(filtered.mean()).div(filtered.std(ddof=0))
 
 
@@ -58,7 +63,7 @@ def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFram
     Use the z-score, anything further away than 3 standard deviations is considered an outlier.
     """
     filtered_df = df[column]
-    z_scores = get_zscore(df)[column]
+    z_scores = get_zscore(df=df, column=column)
     is_over = np.abs(z_scores) > std_threshold
     return filtered_df[is_over]
 
