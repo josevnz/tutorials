@@ -2,7 +2,7 @@ import logging
 import pprint
 import unittest
 
-from empirestaterunup.data import RaceFields
+from empirestaterunup import RaceFields
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logger = logging.getLogger('selenium')

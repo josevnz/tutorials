@@ -1,7 +1,9 @@
 [build-system]
 requires = [
-    "setuptools >= 40.9.0",
+    "setuptools >= 67.8.0",
     "wheel",
+    "build",
+    "twine",
     "textual-dev"
 ]
 build-backend = "setuptools.build_meta"
@@ -30,7 +32,7 @@ dependencies = [
     "numpy==1.26.0",
     "matplotlib==3.8.0",
     "selenium==4.15.2",
-    'importlib-metadata; python_version>"3.8"',
+    'importlib-metadata; python_version>"3.11"',
 ]
 
 [project.scripts]
@@ -41,3 +43,13 @@ esru_outlier = "empirestaterunup.runners:run_outlier"
 esru_browser = "empirestaterunup.runners:run_browser"
 simple_plot = "empirestaterunup.runners:simple_plot"
 esru_scrapper = "empirestaterunup.runners:run_scrapper"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["test*"]
+
+[tool.setuptools.package-data]
+empirestaterunup = ["*.txt", "*.tcss", "*.csv"]

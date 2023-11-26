@@ -459,7 +459,8 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_country_counts
-from empirestaterunup.data import load_data
+from empirestaterunup import load_data
+
 
 class AnalyzeTestCase(unittest.TestCase):
     df: DataFrame
@@ -467,6 +468,7 @@ class AnalyzeTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.df = load_data()
+
     def test_get_country_counts(self):
         country_counts, min_countries, max_countries = get_country_counts(df=AnalyzeTestCase.df)
         self.assertIsNotNone(country_counts)
@@ -475,6 +477,7 @@ class AnalyzeTestCase(unittest.TestCase):
         self.assertEqual(3, min_countries.shape[0])
         self.assertIsNotNone(max_countries)
         self.assertEqual(14, max_countries.shape[0])
+
 
 if __name__ == '__main__':
     unittest.main()
@@ -751,7 +754,9 @@ The class `Plotter` does all the heavy lifting
 
 ```python
 from pathlib import Path
-from empirestaterunup.data import load_data, RaceFields
+from empirestaterunup import load_data, RaceFields
+
+
 class Plotter:
 
     def __init__(self, data_file: Path = None):
