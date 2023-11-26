@@ -10,7 +10,7 @@ from pandas import DataFrame
 from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
-from textual.containers import HorizontalScroll, VerticalScroll
+from textual.containers import HorizontalScroll, VerticalScroll, Vertical
 from textual.driver import Driver
 from textual.screen import ModalScreen
 from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
@@ -40,7 +40,14 @@ class FiveNumberApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
-    TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket' 'Fastest']
+    NUMBERS_TABLES = [
+        'Summary',
+        'Count By Age',
+        'Wave Bucket',
+        'Gender Bucket',
+        'Age Bucket',
+        'Time Bucket'
+    ]
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
@@ -48,17 +55,17 @@ class FiveNumberApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        with HorizontalScroll():
-            for table_id in FiveNumberApp.TABLE_ID:
-                column = FiveNumberColumn()
-                column.column = table_id
-                yield column
-        with HorizontalScroll():
-            yield Log(id='log')
+        for table_id in FiveNumberApp.NUMBERS_TABLES:
+            table = DataTable(id=table_id)
+            table.cursor_type = 'row'
+            table.zebra_stripes = True
+            yield Vertical(
+                Label(table_id),
+                table
+            )
         yield Footer()
 
     def on_mount(self) -> None:
-        log = self.query_one(Log)
 
         summary_table = self.get_widget_by_id('Summary', expect_type=DataTable)
         columns = [x.title() for x in FiveNumberApp.FIVE_NUMBER_FIELDS]
@@ -100,8 +107,6 @@ class FiveNumberApp(App):
         for column in time_cols_head:
             time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
-
-        log.write_line(f'\nDone processing: {RACE_RESULTS_FULL_LEVEL.absolute()}')
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):

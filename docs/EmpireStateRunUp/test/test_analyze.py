@@ -67,11 +67,13 @@ class AnalyzeTestCase(unittest.TestCase):
             self.assertIsNotNone(count)
 
     def test_get_country_counts(self):
-        country_counts, filtered_countries = get_country_counts(df=AnalyzeTestCase.df)
+        country_counts, min_countries, max_countries = get_country_counts(df=AnalyzeTestCase.df)
         self.assertIsNotNone(country_counts)
         self.assertEqual(2, country_counts['JPN'])
-        self.assertIsNotNone(filtered_countries)
-        self.assertEqual(3, filtered_countries.shape[0])
+        self.assertIsNotNone(min_countries)
+        self.assertEqual(3, min_countries.shape[0])
+        self.assertIsNotNone(max_countries)
+        self.assertEqual(14, max_countries.shape[0])
 
 
 if __name__ == '__main__':
