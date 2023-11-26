@@ -16,9 +16,9 @@ from textual.screen import ModalScreen
 from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL
+    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
+from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
+    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL, series_to_list_of_tuples
 
 
 class FiveNumberApp(App):
@@ -32,7 +32,9 @@ class FiveNumberApp(App):
         'Wave Bucket',
         'Gender Bucket',
         'Age Bucket',
-        'Time Bucket'
+        'Time Bucket',
+        'Country Counts',
+        'Better than average Wave Counts'
     ]
     ENABLE_COMMAND_PALETTE = False
 
@@ -94,6 +96,21 @@ class FiveNumberApp(App):
             time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
 
+        country_counts_table = self.get_widget_by_id('Country Counts', expect_type=DataTable)
+        countries_counts, min_country_filter, max_country_filter = get_country_counts(FiveNumberApp.DF)
+        rows = series_to_list_of_tuples(countries_counts)
+        for column in ['Country', 'Count']:
+            country_counts_table.add_column(column, key=column)
+        country_counts_table.add_rows(rows)
+
+        wave_table = self.get_widget_by_id('Better than average Wave Counts', expect_type=DataTable)
+        median, wave_series = better_than_median_waves(FiveNumberApp.DF)
+        wave_table.tooltip = f"Median running time: {median}"
+        rows = series_to_list_of_tuples(wave_series)
+        for column in ['Wave', 'Count']:
+            wave_table.add_column(column, key=column)
+        wave_table.add_rows(rows)
+
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
@@ -126,12 +143,12 @@ class RunnerDetailScreen(ModalScreen):
         table = self.detail.data_table
         row = table.get_row(self.detail.row_key)
         bibs = [row[0]]
-        columns, details = to_list_of_tuples(self.df, bibs)
+        columns, details = df_to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
         row_markdown = ""
         position_markdown = {}
-        split_markdown= {}
+        split_markdown = {}
         for legend in ['full', '20th', '65th']:
             position_markdown[legend] = ''
             split_markdown[legend] = ''
@@ -311,7 +328,7 @@ class BrowserApp(App):
         table = self.get_widget_by_id(f'runners', expect_type=DataTable)
         table.zebra_stripes = True
         table.cursor_type = 'row'
-        columns_raw, rows = to_list_of_tuples(self.df)
+        columns_raw, rows = df_to_list_of_tuples(self.df)
         for column in columns_raw:
             table.add_column(column.title(), key=column)
         for number, row in enumerate(rows[0:], start=1):

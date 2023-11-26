@@ -2,10 +2,12 @@ import pprint
 import unittest
 from pathlib import Path
 
+from pandas import Series
+
 from empirestaterunup.analyze import better_than_median_waves
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
-    to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES
+    df_to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
+    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples
 
 RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
 RAW_CSV_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.csv")
@@ -38,20 +40,27 @@ class DataTestCase(unittest.TestCase):
         data = load_data()
         self.assertIsNotNone(data)
 
-        header, rows = to_list_of_tuples(data)
+        header, rows = df_to_list_of_tuples(data)
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(376, len(rows))
 
-        header, rows = to_list_of_tuples(data, bibs=[537, 19])
+        header, rows = df_to_list_of_tuples(data, bibs=[537, 19])
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(2, len(rows))
 
-        header, rows = to_list_of_tuples(data, bibs=[999, 10004])
+        header, rows = df_to_list_of_tuples(data, bibs=[999, 10004])
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(0, len(rows))
+
+    def test_series_to_list_of_tuples(self):
+        data = load_data()
+        self.assertIsNotNone(data)
+        countries: Series = data[RaceFields.country.value]
+        rows = series_to_list_of_tuples(countries)
+        self.assertIsNotNone(rows)
 
     def test_load_country_details(self):
         data = load_country_details()
@@ -66,7 +75,7 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         country_data = load_country_details()
         self.assertIsNotNone(country_data)
-        header, rows = to_list_of_tuples(run_data)
+        header, rows = df_to_list_of_tuples(run_data)
         for row in rows:
             country_code = row[5]
             country_df = lookup_country_by_code(

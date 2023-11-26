@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterable, Any, Dict, Tuple, Union, List
 
 import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 """
 Runners started on waves, but for basic analysis we will assume all runners were able to run
@@ -367,7 +367,8 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.twenty_floor_gender_position.value] = df[RaceFields.twenty_floor_gender_position.value].astype(int)
     median_gender_pos = df[RaceFields.sixty_five_floor_gender_position.value].median()
     df[RaceFields.sixty_five_floor_gender_position.value].fillna(median_gender_pos, inplace=True)
-    df[RaceFields.sixty_five_floor_gender_position.value] = df[RaceFields.sixty_five_floor_gender_position.value].astype(int)
+    df[RaceFields.sixty_five_floor_gender_position.value] = df[
+        RaceFields.sixty_five_floor_gender_position.value].astype(int)
 
     # Normalize age/ division position, 3 levels
     median_div_pos = df[RaceFields.division_position.value].median()
@@ -375,10 +376,12 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.division_position.value] = df[RaceFields.division_position.value].astype(int)
     median_div_pos = df[RaceFields.twenty_floor_division_position.value].median()
     df[RaceFields.twenty_floor_division_position.value].fillna(median_div_pos, inplace=True)
-    df[RaceFields.twenty_floor_division_position.value] = df[RaceFields.twenty_floor_division_position.value].astype(int)
+    df[RaceFields.twenty_floor_division_position.value] = df[RaceFields.twenty_floor_division_position.value].astype(
+        int)
     median_div_pos = df[RaceFields.sixty_five_floor_division_position.value].median()
     df[RaceFields.sixty_five_floor_division_position.value].fillna(median_div_pos, inplace=True)
-    df[RaceFields.sixty_five_floor_division_position.value] = df[RaceFields.sixty_five_floor_division_position.value].astype(int)
+    df[RaceFields.sixty_five_floor_division_position.value] = df[
+        RaceFields.sixty_five_floor_division_position.value].astype(int)
 
     # Normalize BIB and make it the index
     df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
@@ -386,7 +389,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 
 
-def to_list_of_tuples(
+def df_to_list_of_tuples(
         df: DataFrame,
         bibs: list[int] = None
 ) -> Union[Tuple | list[Tuple]]:
@@ -411,6 +414,14 @@ def to_list_of_tuples(
         rows.append(tpl)
 
     return tuple(column_names), rows
+
+
+def series_to_list_of_tuples(series: Series) -> list[Tuple]:
+    dct = series.to_dict()
+    rows = []
+    for key, value in dct.items():
+        rows.append(tuple([key, value]))
+    return rows
 
 
 def load_country_details(data_file: Path = None) -> DataFrame:
