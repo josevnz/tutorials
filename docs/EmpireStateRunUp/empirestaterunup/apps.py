@@ -21,20 +21,6 @@ from empirestaterunup.data import load_data, to_list_of_tuples, load_country_det
     lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL
 
 
-class FiveNumberColumn(VerticalScroll):
-
-    def __init__(self):
-        super().__init__()
-        self.column = None
-
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.column}:".title())
-        table = DataTable(id=f'{self.column}')
-        table.cursor_type = 'row'
-        table.zebra_stripes = True
-        yield table
-
-
 class FiveNumberApp(App):
     DF: DataFrame = None
     BINDINGS = [("q", "quit_app", "Quit")]
@@ -202,21 +188,6 @@ class RunnerDetailScreen(ModalScreen):
         self.app.pop_screen()
 
 
-class OutlierColumn(VerticalScroll):
-
-    def __init__(self):
-        super().__init__()
-        self.column = None
-
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.column} outliers:".title())
-        table = DataTable(id=f'{self.column}_outlier')
-        table.cursor_type = 'row'
-        table.zebra_stripes = True
-        table.tooltip = "Get runner details"
-        yield table
-
-
 class OutlierApp(App):
     DF: DataFrame = None
     BINDINGS = [
@@ -230,23 +201,23 @@ class OutlierApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        with HorizontalScroll():
-            for column_name in SUMMARY_METRICS:
-                column = OutlierColumn()
-                column.column = column_name
-                yield column
-        with HorizontalScroll():
-            yield Log(id='log')
+        for column_name in SUMMARY_METRICS:
+            table = DataTable(id=f'{column_name}_outlier')
+            table.cursor_type = 'row'
+            table.zebra_stripes = True
+            table.tooltip = "Get runner details"
+            yield Vertical(
+                Label(f"{column_name} outliers:".title()),
+                table
+            )
         yield Footer()
 
     def on_mount(self) -> None:
-        log = self.query_one(Log)
         for column in SUMMARY_METRICS:
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
-        log.write_line(f'\nDone processing: {RACE_RESULTS_FULL_LEVEL.absolute()}')
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
