@@ -14,10 +14,10 @@ import logging
 
 from matplotlib import pyplot as plt
 
-from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp, ScrapperApp
+from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
 from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields, \
     raw_csv_read
-from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper, EMPIRE_STATE_2013_RACE_RESULTS
+from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
 
@@ -177,10 +177,23 @@ def run_scrapper():
     options = parser.parse_args()
     report_file = Path(options.report_file)
     logging.info("Saving results to %s", report_file)
-    app = ScrapperApp(report_file=report_file)
-    app.title = f"Race results scrapper".title()
-    app.sub_title = f"Website: {EMPIRE_STATE_2013_RACE_RESULTS}"
-    app.run()
+    with RacerLinksScrapper(headless=True, debug=False) as link_scrapper:
+        total = len(link_scrapper.racers)
+        logging.info(f"Got {total} racer results")
+        with open(report_file, 'w') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
+            writer.writeheader()
+            for bib in link_scrapper.racers:
+                url = link_scrapper.racers[bib][RaceFields.url.value]
+                logging.info(f"Processing BIB: {bib}, will fetch: {url}")
+                with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
+                    try:
+                        position = link_scrapper.racers[bib][RaceFields.overall_position.value]
+                        name = link_scrapper.racers[bib][RaceFields.name.value]
+                        writer.writerow(rds.racer)
+                        logging.info(f"Wrote: name={name}, position={position}, {rds.racer}")
+                    except ValueError as ve:
+                        raise ValueError(f"row={rds.racer}", ve)
 
 
 def run_csv_cleaner():

@@ -49,16 +49,6 @@ def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFram
     return filtered_df[is_over]
 
 
-def get_fastest(df: DataFrame, limit: int = 20) -> DataFrame:
-    return df[
-        [RaceFields.time.value,
-         RaceFields.age.value,
-         RaceFields.gender.value,
-         RaceFields.country.value
-         ]
-    ].groupby(RaceFields.time.value).value_counts().nlargest(limit)
-
-
 def age_bins(df: DataFrame) -> tuple[Categorical, tuple]:
     """
     Group ages into age buckets
@@ -94,6 +84,7 @@ def get_country_counts(df: DataFrame, max_participants: int = 5) -> Tuple[Series
 
 def better_than_median_waves(df: DataFrame) -> Tuple[float, Series]:
     """
+    Get runners whose race time is better than the median
     :param df Dataframe to analyze
     :return Tuple of median run time, Wave value counts series for values smaller than the median
     """

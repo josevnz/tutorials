@@ -167,9 +167,7 @@ To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py)
 ...
 ```
 
-I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes:
-
-![](website-scrapper.png)
+I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes
 
 Data cannot be used as-is, needs cleaning up and that is the next step on this article.
 

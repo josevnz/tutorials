@@ -2,26 +2,23 @@
 Collection of applications to display race findings
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
-import csv
 import re
 from pathlib import Path
-from typing import Type, Union, Dict, Any
+from typing import Type
 
 from pandas import DataFrame
 from rich.text import Text
-from textual import on, work
+from textual import on
 from textual.app import ComposeResult, App, CSSPathType
 from textual.containers import HorizontalScroll, VerticalScroll
 from textual.driver import Driver
 from textual.screen import ModalScreen
-from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer, ProgressBar
-from textual.worker import Worker, WorkerState
+from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins
 from empirestaterunup.data import load_data, to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL, FIELD_NAMES
-from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
+    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL
 
 
 class FiveNumberColumn(VerticalScroll):
@@ -43,7 +40,7 @@ class FiveNumberApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
-    TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket']
+    TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket' 'Fastest']
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
@@ -355,73 +352,3 @@ class BrowserApp(App):
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
-
-
-class ScrapperApp(App):
-    ENABLE_COMMAND_PALETTE = False
-    BINDINGS = [("q", "quit_app", "Quit")]
-    CSS_PATH = "scrapper.tcss"
-
-    def __init__(
-            self,
-            driver_class: Type[Driver] | None = None,
-            css_path: CSSPathType | None = None,
-            watch_css: bool = False,
-            report_file: Union[Path | None] = None
-    ):
-        super().__init__(driver_class, css_path, watch_css)
-        self.racers: Union[Dict[str, Any] | None] = None
-        self.report_file: Union[Path | None] = report_file
-
-    def action_quit_app(self):
-        self.exit(0)
-
-    def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
-        yield ProgressBar(show_eta=False, id="progress")
-        yield VerticalScroll(id="details")
-        yield Footer()
-
-    @work(exclusive=True)
-    async def get_links(self):
-        details = self.query_one("#details", VerticalScroll)
-        with RacerLinksScrapper(headless=True, debug=False) as link_scrapper:
-            total = len(link_scrapper.racers)
-            progres = self.query_one("#progress", ProgressBar)
-            progres.total = total
-            details.loading = False
-            await details.mount(Label(f"Got {total} racer results"))
-            self.racers = link_scrapper.racers
-
-    @work(exclusive=True)
-    async def get_racer_details(self):
-        progres = self.query_one("#progress", ProgressBar)
-        details = self.query_one("#details", VerticalScroll)
-        with open(self.report_file, 'w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
-            writer.writeheader()
-            for bib in self.racers:
-                url = self.racers[bib][RaceFields.url.value]
-                await details.mount(Label(f"Processing BIB: {bib}, will fetch: {url}"))
-                with RacerDetailsScrapper(racer=self.racers[bib], debug_level=0) as rds:
-                    try:
-                        position = self.racers[bib][RaceFields.overall_position.value]
-                        name = self.racers[bib][RaceFields.name.value]
-                        writer.writerow(rds.racer)
-                        await details.mount(Label(f"Wrote: name={name}, position={position}, {rds.racer}"))
-                        progres.advance(1)
-                    except ValueError as ve:
-                        raise ValueError(f"row={rds.racer}", ve)
-
-    async def on_mount(self) -> None:
-        details = self.query_one("#details", VerticalScroll)
-        if not self.report_file.parent.exists():
-            self.report_file.parent.mkdir(exist_ok=True)
-        self.run_worker(details.mount(Label(f"Saving results to {self.report_file}")))
-        self.get_links()
-
-    def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
-        self.log(f"Got an event: {event}")
-        if event.worker.name == "get_links" and event.worker.state == WorkerState.SUCCESS:
-            self.log(f"Launching: get_racer_details()")
-            self.get_racer_details()
