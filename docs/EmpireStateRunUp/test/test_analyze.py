@@ -3,8 +3,8 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_zscore, get_outliers, get_fastest, age_bins, time_bins, get_country_counts
-from empirestaterunup.data import load_data
+    dt_to_sorted_dict, get_zscore, get_outliers, age_bins, time_bins, get_country_counts
+from empirestaterunup import load_data
 
 
 class AnalyzeTestCase(unittest.TestCase):
@@ -38,7 +38,7 @@ class AnalyzeTestCase(unittest.TestCase):
         self.assertLess(0, len(ndf_dict))
 
     def test_get_zscore(self):
-        z_score = get_zscore(AnalyzeTestCase.df)
+        z_score = get_zscore(df=AnalyzeTestCase.df, column=SUMMARY_METRICS[0])
         self.assertIsNotNone(z_score)
 
     def test_get_outliers(self):
@@ -47,12 +47,6 @@ class AnalyzeTestCase(unittest.TestCase):
             self.assertIsNotNone(outliers)
             self.assertLess(0, outliers.shape[0])
             print(outliers)
-
-    def test_get_fastest(self):
-        fastest = get_fastest(df=AnalyzeTestCase.df)
-        self.assertIsNotNone(fastest)
-        self.assertEqual(20, fastest.shape[0])
-        print(fastest)
 
     def test_age_bins(self):
         cat, _ = age_bins(df=AnalyzeTestCase.df)
@@ -73,11 +67,13 @@ class AnalyzeTestCase(unittest.TestCase):
             self.assertIsNotNone(count)
 
     def test_get_country_counts(self):
-        country_counts, filtered_countries = get_country_counts(df=AnalyzeTestCase.df)
+        country_counts, min_countries, max_countries = get_country_counts(df=AnalyzeTestCase.df)
         self.assertIsNotNone(country_counts)
         self.assertEqual(2, country_counts['JPN'])
-        self.assertIsNotNone(filtered_countries)
-        self.assertEqual(3, filtered_countries.shape[0])
+        self.assertIsNotNone(min_countries)
+        self.assertEqual(3, min_countries.shape[0])
+        self.assertIsNotNone(max_countries)
+        self.assertEqual(14, max_countries.shape[0])
 
 
 if __name__ == '__main__':

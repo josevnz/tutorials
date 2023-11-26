@@ -1,5 +1,5 @@
 Header {
-        height: 3;
+        height: 2;
         dock: top;
 }
 
@@ -8,9 +8,10 @@ Footer {
         dock: bottom;
 }
 
-Label {
-        width: 100%;
-        margin: 0 0;
+Screen {
+    layout: grid;
+    grid-size: 1;
+
 }
 
 DataTable {
@@ -18,9 +19,4 @@ DataTable {
         width: 100%;
         margin: 0 0;
         border: solid green;
-}
-
-Log {
-    height: 100%;
-    border: solid yellow;
 }

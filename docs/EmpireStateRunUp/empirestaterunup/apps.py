@@ -1,35 +1,24 @@
-import textwrap
-from argparse import ArgumentParser
+"""
+Collection of applications to display race findings
+author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+"""
+import re
 from pathlib import Path
 from typing import Type
 
 from pandas import DataFrame
+from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
-from textual.containers import HorizontalScroll, VerticalScroll
+from textual.containers import Vertical
 from textual.driver import Driver
 from textual.screen import ModalScreen
-from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
-import matplotlib.pyplot as plt
+from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_outliers, age_bins, time_bins
-from empirestaterunup.data import load_data, RACE_RESULTS, to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields
-
-
-class FiveNumberColumn(VerticalScroll):
-
-    def __init__(self):
-        super().__init__()
-        self.column = None
-
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.column}:".title())
-        table = DataTable(id=f'{self.column}')
-        table.cursor_type = 'row'
-        table.zebra_stripes = True
-        yield table
+    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
+from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples
 
 
 class FiveNumberApp(App):
@@ -37,7 +26,16 @@ class FiveNumberApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
-    TABLE_ID = ['Summary', 'Count By Age', 'Wave Bucket', 'Gender Bucket', 'Age Bucket', 'Time Bucket']
+    NUMBERS_TABLES = [
+        'Summary',
+        'Count By Age',
+        'Wave Bucket',
+        'Gender Bucket',
+        'Age Bucket',
+        'Time Bucket',
+        'Country Counts',
+        'Better than average Wave Counts'
+    ]
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
@@ -45,17 +43,25 @@ class FiveNumberApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        with HorizontalScroll():
-            for table_id in FiveNumberApp.TABLE_ID:
-                column = FiveNumberColumn()
-                column.column = table_id
-                yield column
-        with HorizontalScroll():
-            yield Log(id='log')
+        for table_id in FiveNumberApp.NUMBERS_TABLES:
+            table = DataTable(id=table_id)
+            table.cursor_type = 'row'
+            table.zebra_stripes = True
+            yield Vertical(
+                Label(table_id),
+                table
+            )
         yield Footer()
 
     def on_mount(self) -> None:
-        log = self.query_one(Log)
+
+        wave_table = self.get_widget_by_id('Better than average Wave Counts', expect_type=DataTable)
+        median_run_time, wave_series = better_than_median_waves(FiveNumberApp.DF)
+        wave_table.tooltip = f"Median running time: {median_run_time}"
+        rows = series_to_list_of_tuples(wave_series)
+        for column in ['Wave', 'Count']:
+            wave_table.add_column(column, key=column)
+        wave_table.add_rows(rows)
 
         summary_table = self.get_widget_by_id('Summary', expect_type=DataTable)
         columns = [x.title() for x in FiveNumberApp.FIVE_NUMBER_FIELDS]
@@ -91,40 +97,27 @@ class FiveNumberApp(App):
         for column in age_cols_head:
             age_bucket_table.add_column(column, key=column)
         age_bucket_table.add_rows(dt_to_sorted_dict(age_categories.value_counts()).items())
+        age_bucket_table.tooltip = f"Median running time: {median_run_time}"
 
         time_bucket_table = self.get_widget_by_id('Time Bucket', expect_type=DataTable)
         time_categories, time_cols_head = time_bins(FiveNumberApp.DF)
         for column in time_cols_head:
             time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
+        time_bucket_table.tooltip = f"Median running time: {median_run_time}"
 
-        log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
+        country_counts_table = self.get_widget_by_id('Country Counts', expect_type=DataTable)
+        countries_counts, min_country_filter, max_country_filter = get_country_counts(FiveNumberApp.DF)
+        rows = series_to_list_of_tuples(countries_counts)
+        for column in ['Country', 'Count']:
+            country_counts_table.add_column(column, key=column)
+        country_counts_table.add_rows(rows)
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         if table.id != 'Summary':  # Not supported yet
             table.sort(event.column_key)
-
-
-def run_5_number():
-    parser = ArgumentParser(description="5 key indicators report")
-    parser.add_argument(
-        "results",
-        action="store",
-        type=Path,
-        nargs="*",
-        help="Race results."
-    )
-    options = parser.parse_args()
-    app = FiveNumberApp()
-    if options.results:
-        FiveNumberApp.DF = load_data(options.results[0])
-    else:
-        FiveNumberApp.DF = load_data()
-    app.title = f"Five Number Summary".title()
-    app.sub_title = f"Runners: {FiveNumberApp.DF.shape[0]}"
-    app.run()
 
 
 class RunnerDetailScreen(ModalScreen):
@@ -152,34 +145,61 @@ class RunnerDetailScreen(ModalScreen):
         table = self.detail.data_table
         row = table.get_row(self.detail.row_key)
         bibs = [row[0]]
-        columns, details = to_list_of_tuples(self.df, bibs)
+        columns, details = df_to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
         row_markdown = ""
+        position_markdown = {}
+        split_markdown = {}
+        for legend in ['full', '20th', '65th']:
+            position_markdown[legend] = ''
+            split_markdown[legend] = ''
         for i in range(0, len(columns)):
-            row_markdown += f"\n* **{columns[i].title()}:** {details[0][i]}"
-        yield MarkdownViewer(textwrap.dedent(f"""# Runner details        
-        {row_markdown}
-        """))
-        yield Button("Close", variant="primary", id="close")
+            column = columns[i]
+            detail = details[0][i]
+            if re.search('pace|time', column):
+                if re.search('20th', column):
+                    split_markdown['20th'] += f"\n* **{column.title()}:** {detail}"
+                elif re.search('65th', column):
+                    split_markdown['65th'] += f"\n* **{column.title()}:** {detail}"
+                else:
+                    split_markdown['full'] += f"\n* **{column.title()}:** {detail}"
+            elif re.search('position', column):
+                if re.search('20th', column):
+                    position_markdown['20th'] += f"\n* **{column.title()}:** {detail}"
+                elif re.search('65th', column):
+                    position_markdown['65th'] += f"\n* **{column.title()}:** {detail}"
+                else:
+                    position_markdown['full'] += f"\n* **{column.title()}:** {detail}"
+            elif re.search('url|bib', column):
+                pass  # Skip uninteresting columns
+            else:
+                row_markdown += f"\n* **{column.title()}:** {detail}"
+        yield MarkdownViewer(f"""# Full Course Race details     
+## Runner BIO (BIB: {bibs[0]})
+{row_markdown}
+## Positions
+### 20th floor        
+{position_markdown['20th']}
+### 65th floor        
+{position_markdown['65th']}
+### Full course        
+{position_markdown['full']}                
+## Race time split   
+### 20th floor        
+{split_markdown['20th']}
+### 65th floor        
+{split_markdown['65th']}
+### Full course        
+{split_markdown['full']}         
+        """)
+        btn = Button("Close", variant="primary", id="close")
+        btn.tooltip = "Back to main screen"
+        yield btn
 
     @on(Button.Pressed, "#close")
     def on_button_pressed(self, _) -> None:
         self.app.pop_screen()
-
-
-class OutlierColumn(VerticalScroll):
-
-    def __init__(self):
-        super().__init__()
-        self.column = None
-
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.column} outliers:".title())
-        table = DataTable(id=f'{self.column}_outlier')
-        table.cursor_type = 'row'
-        table.zebra_stripes = True
-        yield table
 
 
 class OutlierApp(App):
@@ -195,23 +215,23 @@ class OutlierApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        with HorizontalScroll():
-            for column_name in SUMMARY_METRICS:
-                column = OutlierColumn()
-                column.column = column_name
-                yield column
-        with HorizontalScroll():
-            yield Log(id='log')
+        for column_name in SUMMARY_METRICS:
+            table = DataTable(id=f'{column_name}_outlier')
+            table.cursor_type = 'row'
+            table.zebra_stripes = True
+            table.tooltip = "Get runner details"
+            yield Vertical(
+                Label(f"{column_name} outliers:".title()),
+                table
+            )
         yield Footer()
 
     def on_mount(self) -> None:
-        log = self.query_one(Log)
         for column in SUMMARY_METRICS:
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
-        log.write_line(f'\nDone processing: {RACE_RESULTS.absolute()}')
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
@@ -222,26 +242,6 @@ class OutlierApp(App):
     def on_row_clicked(self, event: DataTable.RowSelected) -> None:
         runner_detail = RunnerDetailScreen(df=OutlierApp.DF, detail=event)
         self.push_screen(runner_detail)
-
-
-def run_outlier():
-    parser = ArgumentParser(description="Show race outliers")
-    parser.add_argument(
-        "results",
-        action="store",
-        type=Path,
-        nargs="*",
-        help="Race results."
-    )
-    options = parser.parse_args()
-    if options.results:
-        OutlierApp.DF = load_data(options.results[0])
-    else:
-        OutlierApp.DF = load_data()
-    app = OutlierApp()
-    app.title = f"Outliers Summary".title()
-    app.sub_title = f"Runners: {OutlierApp.DF.shape[0]}"
-    app.run()
 
 
 class Plotter:
@@ -280,43 +280,6 @@ class Plotter:
             subplots=True,
             autopct="%.2f"
         )
-
-
-def simple_plot():
-    parser = ArgumentParser(description="Different Age plots for Empire State RunUp")
-    parser.add_argument(
-        "--type",
-        action="store",
-        default="box",
-        choices=["box", "hist"],
-        help="Plot type. Not all reports honor this choice (like country)"
-    )
-    parser.add_argument(
-        "--report",
-        action="store",
-        default="age",
-        choices=["age", "country", "gender"],
-        help="Report type"
-    )
-    parser.add_argument(
-        "results",
-        action="store",
-        type=Path,
-        nargs="*",
-        help="Race results."
-    )
-    options = parser.parse_args()
-    if options.results:
-        pzs = Plotter(options.results[0])
-    else:
-        pzs = Plotter()
-    if options.report == 'age':
-        pzs.plot_age(options.type)
-    elif options.report == 'country':
-        pzs.plot_country()
-    elif options.report == 'gender':
-        pzs.plot_gender()
-    plt.show()
 
 
 class BrowserApp(App):
@@ -367,45 +330,15 @@ class BrowserApp(App):
         table = self.get_widget_by_id(f'runners', expect_type=DataTable)
         table.zebra_stripes = True
         table.cursor_type = 'row'
-        columns_raw, rows = to_list_of_tuples(self.df)
+        columns_raw, rows = df_to_list_of_tuples(self.df)
         for column in columns_raw:
             table.add_column(column.title(), key=column)
-        table.add_rows(rows)
+        for number, row in enumerate(rows[0:], start=1):
+            label = Text(str(number), style="#B0FC38 italic")
+            table.add_row(*row, label=label)
         table.sort('overall position')
 
     @on(DataTable.HeaderSelected, '#runners')
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
-
-
-def run_browser():
-    parser = ArgumentParser(description="Browse user results")
-    parser.add_argument(
-        "--country",
-        action="store",
-        type=Path,
-        required=False,
-        help="Country details"
-    )
-    parser.add_argument(
-        "results",
-        action="store",
-        type=Path,
-        nargs="*",
-        help="Race results."
-    )
-    options = parser.parse_args()
-    df = None
-    country_df = None
-    if options.results:
-        df = load_data(options.results[0])
-    if options.country:
-        country_df = load_country_details(options.country)
-    app = BrowserApp(
-        df=df,
-        country_data=country_df
-    )
-    app.title = f"Race runners".title()
-    app.sub_title = f"Browse details: {app.df.shape[0]}"
-    app.run()

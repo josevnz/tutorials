@@ -1,14 +1,16 @@
 [build-system]
 requires = [
-    "setuptools >= 40.9.0",
+    "setuptools >= 67.8.0",
     "wheel",
+    "build",
+    "twine",
     "textual-dev"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "EmpireStateRunUp"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
     {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
 ]
@@ -26,14 +28,28 @@ classifiers = [
 dependencies = [
     "pandas==2.1.1",
     "textual==0.41.0",
+    "rich==13.6.0",
     "numpy==1.26.0",
     "matplotlib==3.8.0",
-    'importlib-metadata; python_version>"3.8"',
+    "selenium==4.15.2",
+    'importlib-metadata; python_version>"3.11"',
 ]
 
 [project.scripts]
-es_normalizer = "empirestaterunup.data_normalizer:main"
-esru_numbers = "empirestaterunup.apps:run_5_number"
-esru_outlier = "empirestaterunup.apps:run_outlier"
-esru_browser = "empirestaterunup.apps:run_browser"
-simple_plot = "empirestaterunup.apps:simple_plot"
+esru_raw_cleanup = "empirestaterunup.runners:run_raw_cleaner"
+esru_csv_cleanup = "empirestaterunup.runners:run_csv_cleaner"
+esru_numbers = "empirestaterunup.runners:run_5_number"
+esru_outlier = "empirestaterunup.runners:run_outlier"
+esru_browser = "empirestaterunup.runners:run_browser"
+simple_plot = "empirestaterunup.runners:simple_plot"
+esru_scrapper = "empirestaterunup.runners:run_scrapper"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["test*"]
+
+[tool.setuptools.package-data]
+empirestaterunup = ["*.txt", "*.tcss", "*.csv"]

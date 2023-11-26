@@ -1,12 +1,17 @@
+"""
+Data loading logic, after web scrapping process is completed.
+author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+"""
+import csv
 import datetime
 import math
 import re
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, Any, Dict, Tuple, Union
+from typing import Iterable, Any, Dict, Tuple, Union, List
 
 import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 """
 Runners started on waves, but for basic analysis we will assume all runners were able to run
@@ -47,6 +52,16 @@ class Waves(Enum):
     Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
 
 
+"""
+Interested only in people who completed the 86 floors. So is either full course or dnf
+"""
+
+
+class Level(Enum):
+    full = "Full Course"
+    dnf = "DNF"
+
+
 class RaceFields(Enum):
     level = "level"
     name = "name"
@@ -62,6 +77,17 @@ class RaceFields(Enum):
     time = "time"
     city = "city"
     age = "age"
+    twenty_floor_position = "20th floor position"
+    twenty_floor_gender_position = "20th floor gender position"
+    twenty_floor_division_position = "20th floor division position"
+    twenty_floor_pace = '20th floor pace'
+    twenty_floor_time = '20th floor time'
+    sixty_five_floor_position = "65th floor position"
+    sixty_five_floor_gender_position = "65th floor gender position"
+    sixty_five_floor_division_position = "65th floor division position"
+    sixty_five_floor_pace = '65th floor pace'
+    sixty_five_floor_time = '65th floor time'
+    url = "url"
 
 
 FIELD_NAMES = [x.value for x in RaceFields]
@@ -83,9 +109,74 @@ def get_wave_start_time(wave: Waves) -> datetime:
     return wave.value[2]
 
 
-def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
+def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
+    record = {}
+    with open(raw_file, 'r') as raw_csv_file:
+        reader = csv.DictReader(raw_csv_file)
+        for row in reader:
+            try:
+                for field in FIELD_NAMES:
+                    column_val = row[field].strip()
+                    if field == RaceFields.bib.value:
+                        bib = int(column_val)
+                        record[field] = bib
+                    elif field in [
+                        RaceFields.gender_position.value,
+                        RaceFields.division_position.value,
+                        RaceFields.overall_position.value,
+                        RaceFields.twenty_floor_position.value,
+                        RaceFields.twenty_floor_division_position.value,
+                        RaceFields.twenty_floor_gender_position.value,
+                        RaceFields.sixty_five_floor_position.value,
+                        RaceFields.sixty_five_floor_division_position.value,
+                        RaceFields.sixty_five_floor_gender_position.value,
+                        RaceFields.age.value
+                    ]:
+                        try:
+                            record[field] = int(column_val)
+                        except ValueError:
+                            record[field] = math.nan
+                    elif field == RaceFields.wave.value:
+                        record[field] = get_wave_from_bib(bib).name.upper()
+                    elif field in [
+                        RaceFields.gender.value,
+                        RaceFields.country.value
+                    ]:
+                        record[field] = column_val.upper()
+                    elif field in [
+                        RaceFields.city.value,
+                        RaceFields.state.value,
+
+                    ]:
+                        record[field] = column_val.capitalize()
+                    elif field in [
+                        RaceFields.sixty_five_floor_pace.value,
+                        RaceFields.sixty_five_floor_time.value,
+                        RaceFields.twenty_floor_pace.value,
+                        RaceFields.twenty_floor_time.value,
+                        RaceFields.pace.value,
+                        RaceFields.time.value
+                    ]:
+                        parts = column_val.strip().split(':')
+                        for idx in range(0, len(parts)):
+                            if len(parts[idx]) == 1:
+                                parts[idx] = f"0{parts[idx]}"
+                        if len(parts) == 2:
+                            parts.insert(0, "00")
+                        record[field] = ":".join(parts)
+                    else:
+                        record[field] = column_val
+                if record[field] in ['-', '--']:
+                    record[field] = ""
+                yield record
+            except IndexError:
+                raise
+
+
+def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
-    Read the whole RAW file, return a normalized version
+    Read the whole RAW file, product of a manual copy and paste, return a clean version.
+    You should use the raw_csv_read() method on the file produced by the scrapper.
     Each record looks like this (copy and paste from the website):
 
     NAME
@@ -107,7 +198,7 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     MIN/MI
     10:36
     ```
-    :param raw_file:
+    :param raw_file: Yes, copied and pasted all the 8 pages when started the project, before writing a scrapper :D
     :return:
     """
     with open(raw_file, 'r') as file_data:
@@ -135,9 +226,9 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.bib.value] = int(matcher.group(3))
                         if record[RaceFields.bib.value] in DNF_BIB:
                             record[
-                                RaceFields.level.value] = "DNF"  # Interested only in people who completed the 86 floors
+                                RaceFields.level.value] = Level.dnf.value
                         else:
-                            record[RaceFields.level.value] = "Full Course"
+                            record[RaceFields.level.value] = Level.full.value
                         location = matcher.group(4).split(',')
                         if len(location) == 3:
                             record[RaceFields.city.value] = location[0].strip().capitalize()
@@ -173,8 +264,9 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                     try:
                         record[RaceFields.gender_position.value] = int(line.strip())
                     except ValueError:
+                        # If GENDER is not specified the position is missing.
                         record[
-                            RaceFields.gender_position.value] = math.nan  # If GENDER is not specified the position is missing.
+                            RaceFields.gender_position.value] = math.nan
                 elif tk_cnt == 5:
                     record[RaceFields.division_position.value] = int(line.strip())
                 elif tk_cnt == 6:
@@ -192,6 +284,19 @@ def raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.time.value] = line.strip()
                     else:
                         record[RaceFields.time.value] = f"00:{line.strip()}"
+
+                    # None of the fields below are available on the first level copy and paste
+                    record[RaceFields.twenty_floor_position.value] = ""
+                    record[RaceFields.twenty_floor_gender_position.value] = ""
+                    record[RaceFields.twenty_floor_division_position.value] = ""
+                    record[RaceFields.twenty_floor_pace.value] = ""
+                    record[RaceFields.twenty_floor_time.value] = ""
+                    record[RaceFields.sixty_five_floor_position.value] = ""
+                    record[RaceFields.sixty_five_floor_gender_position.value] = ""
+                    record[RaceFields.sixty_five_floor_division_position.value] = ""
+                    record[RaceFields.sixty_five_floor_pace.value] = ""
+                    record[RaceFields.sixty_five_floor_time.value] = ""
+
                     yield record
             except ValueError as ve:
                 raise ValueError(f"ln_cnt={ln_cnt}, tk_cnt={tk_cnt},{record}", ve)
@@ -202,7 +307,8 @@ class CourseRecords(Enum):
     Female = ('Andrea Mayr', 'Austria', 2006, '11:23')
 
 
-RACE_RESULTS = Path(__file__).parent.joinpath("results-2023.csv")
+RACE_RESULTS_FIRST_LEVEL = Path(__file__).parent.joinpath("results-first-level-2023.csv")
+RACE_RESULTS_FULL_LEVEL = Path(__file__).parent.joinpath("results-full-level-2023.csv")
 COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
 
 
@@ -218,27 +324,64 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     if data_file:
         def_file = data_file
     else:
-        def_file = RACE_RESULTS
+        def_file = RACE_RESULTS_FULL_LEVEL
     df = pandas.read_csv(
         def_file
     )
-    df[RaceFields.pace.value] = pandas.to_timedelta(df[RaceFields.pace.value])
-    df[RaceFields.time.value] = pandas.to_timedelta(df[RaceFields.time.value])
+    for field in [RaceFields.pace.value, RaceFields.time.value]:
+        try:
+            df[field] = pandas.to_timedelta(df[field])
+        except ValueError as ve:
+            raise ValueError(f'{field}=df[field]', ve)
     df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.time.value]
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)
+
     # Normalize Age
     median_age = df[RaceFields.age.value].median()
     df[RaceFields.age.value].fillna(median_age, inplace=True)
     df[RaceFields.age.value] = df[RaceFields.age.value].astype(int)
+
     # Normalize state and city
     df.replace({RaceFields.state.value: {'-': ''}}, inplace=True)
     df[RaceFields.state.value].fillna('', inplace=True)
     df[RaceFields.city.value].fillna('', inplace=True)
-    # Normalize gender position
+
+    # Normalize position, 3 levels
+    median_pos = df[RaceFields.overall_position.value].median()
+    df[RaceFields.overall_position.value].fillna(median_pos, inplace=True)
+    df[RaceFields.overall_position.value] = df[RaceFields.overall_position.value].astype(int)
+    median_pos = df[RaceFields.twenty_floor_position.value].median()
+    df[RaceFields.twenty_floor_position.value].fillna(median_pos, inplace=True)
+    df[RaceFields.twenty_floor_position.value] = df[RaceFields.twenty_floor_position.value].astype(int)
+    median_pos = df[RaceFields.sixty_five_floor_position.value].median()
+    df[RaceFields.sixty_five_floor_position.value].fillna(median_pos, inplace=True)
+    df[RaceFields.sixty_five_floor_position.value] = df[RaceFields.sixty_five_floor_position.value].astype(int)
+
+    # Normalize gender position, 3 levels
     median_gender_pos = df[RaceFields.gender_position.value].median()
     df[RaceFields.gender_position.value].fillna(median_gender_pos, inplace=True)
     df[RaceFields.gender_position.value] = df[RaceFields.gender_position.value].astype(int)
+    median_gender_pos = df[RaceFields.twenty_floor_gender_position.value].median()
+    df[RaceFields.twenty_floor_gender_position.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.twenty_floor_gender_position.value] = df[RaceFields.twenty_floor_gender_position.value].astype(int)
+    median_gender_pos = df[RaceFields.sixty_five_floor_gender_position.value].median()
+    df[RaceFields.sixty_five_floor_gender_position.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.sixty_five_floor_gender_position.value] = df[
+        RaceFields.sixty_five_floor_gender_position.value].astype(int)
+
+    # Normalize age/ division position, 3 levels
+    median_div_pos = df[RaceFields.division_position.value].median()
+    df[RaceFields.division_position.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.division_position.value] = df[RaceFields.division_position.value].astype(int)
+    median_div_pos = df[RaceFields.twenty_floor_division_position.value].median()
+    df[RaceFields.twenty_floor_division_position.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.twenty_floor_division_position.value] = df[RaceFields.twenty_floor_division_position.value].astype(
+        int)
+    median_div_pos = df[RaceFields.sixty_five_floor_division_position.value].median()
+    df[RaceFields.sixty_five_floor_division_position.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.sixty_five_floor_division_position.value] = df[
+        RaceFields.sixty_five_floor_division_position.value].astype(int)
 
     # Normalize BIB and make it the index
     df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
@@ -246,29 +389,39 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     return df
 
 
-def to_list_of_tuples(df: DataFrame, bibs: list[int] = None) -> Union[Tuple | list[Tuple]]:
+def df_to_list_of_tuples(
+        df: DataFrame,
+        bibs: list[int] = None
+) -> Union[Tuple | list[Tuple]]:
+    """
+    Take a DataFrame and return a more friendly structure to be used by a DataTable
+    :param df DataFrame to convert
+    :param bibs List of racing BIB to filter
+    :return list of Tuple of rows, Tuple with columns
+    """
     bib_as_column = df.reset_index(level=0, inplace=False)
     if not bibs:
         filtered = bib_as_column
     else:
         filtered = bib_as_column[bib_as_column[RaceFields.bib.value].isin(bibs)]
-    rows = [(
-        r.level,
-        r[RaceFields.name.value],
-        r.gender,
-        r.bib,
-        r.state,
-        r.country,
-        r.wave,
-        r[RaceFields.overall_position.value],
-        r[RaceFields.gender_position.value],
-        r[RaceFields.division_position.value],
-        r.pace,
-        r.time,
-        r.city,
-        r.age
-    ) for _, r in filtered.iterrows()]
-    return tuple(FIELD_NAMES), rows
+    column_names = FIELD_NAMES
+    rows = []
+    for _, r in filtered.iterrows():
+        ind_row: List[Any] = []
+        for col in column_names:
+            ind_row.append(r[col])
+        tpl = tuple(ind_row)
+        rows.append(tpl)
+
+    return tuple(column_names), rows
+
+
+def series_to_list_of_tuples(series: Series) -> list[Tuple]:
+    dct = series.to_dict()
+    rows = []
+    for key, value in dct.items():
+        rows.append(tuple([key, value]))
+    return rows
 
 
 def load_country_details(data_file: Path = None) -> DataFrame:

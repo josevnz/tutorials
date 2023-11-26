@@ -1,9 +1,16 @@
+import pprint
 import unittest
+from pathlib import Path
+
+from pandas import Series
 
 from empirestaterunup.analyze import better_than_median_waves
-from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
-    to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, RaceFields
+from empirestaterunup import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
+    df_to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
+    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples
+
+RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
+RAW_CSV_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.csv")
 
 
 class DataTestCase(unittest.TestCase):
@@ -33,20 +40,27 @@ class DataTestCase(unittest.TestCase):
         data = load_data()
         self.assertIsNotNone(data)
 
-        header, rows = to_list_of_tuples(data)
+        header, rows = df_to_list_of_tuples(data)
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
-        self.assertEqual(374, len(rows))
+        self.assertEqual(376, len(rows))
 
-        header, rows = to_list_of_tuples(data, bibs=[537, 19])
+        header, rows = df_to_list_of_tuples(data, bibs=[537, 19])
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(2, len(rows))
 
-        header, rows = to_list_of_tuples(data, bibs=[999, 10004])
+        header, rows = df_to_list_of_tuples(data, bibs=[999, 10004])
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
         self.assertEqual(0, len(rows))
+
+    def test_series_to_list_of_tuples(self):
+        data = load_data()
+        self.assertIsNotNone(data)
+        countries: Series = data[RaceFields.country.value]
+        rows = series_to_list_of_tuples(countries)
+        self.assertIsNotNone(rows)
 
     def test_load_country_details(self):
         data = load_country_details()
@@ -61,7 +75,7 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         country_data = load_country_details()
         self.assertIsNotNone(country_data)
-        header, rows = to_list_of_tuples(run_data)
+        header, rows = df_to_list_of_tuples(run_data)
         for row in rows:
             country_code = row[5]
             country_df = lookup_country_by_code(
@@ -77,28 +91,48 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         df = get_times(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_get_positions(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_positions(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_get_categories(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_categories(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(374, df.shape[0])
+        self.assertEqual(376, df.shape[0])
 
     def test_better_than_median_waves(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         median_time, wave_series = better_than_median_waves(run_data)
         self.assertIsNotNone(median_time)
-        self.assertEqual(42, wave_series.iloc[0])
+        self.assertEqual(43, wave_series.iloc[0])
+        print(median_time)
+        print(wave_series)
+
+    def test_raw_copy_paste_read(self):
+        clean_data = [record for record in raw_copy_paste_read(RAW_COPY_PASTE_RACE_RESULTS)]
+        self.assertIsNotNone(clean_data)
+        self.assertEqual(375, len(clean_data))
+
+    def test_raw_csv_read(self):
+        clean_data = [record for record in raw_csv_read(RAW_CSV_RACE_RESULTS)]
+        self.assertIsNotNone(clean_data)
+        self.assertEqual(377, len(clean_data))
+        for record in clean_data:
+            for field in FIELD_NAMES:
+                self.assertTrue(field in record.keys())
+            if record[RaceFields.name.value] == "Kamila Chomanicova":
+                self.assertEqual(record[RaceFields.age.value], 30)
+                self.assertEqual(record[RaceFields.gender.value], "F")
+                self.assertEqual(record[RaceFields.sixty_five_floor_time.value], "00:10:40")
+            pprint.pprint(record)
 
 
 if __name__ == '__main__':
