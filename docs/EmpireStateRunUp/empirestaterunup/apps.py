@@ -55,6 +55,14 @@ class FiveNumberApp(App):
 
     def on_mount(self) -> None:
 
+        wave_table = self.get_widget_by_id('Better than average Wave Counts', expect_type=DataTable)
+        median_run_time, wave_series = better_than_median_waves(FiveNumberApp.DF)
+        wave_table.tooltip = f"Median running time: {median_run_time}"
+        rows = series_to_list_of_tuples(wave_series)
+        for column in ['Wave', 'Count']:
+            wave_table.add_column(column, key=column)
+        wave_table.add_rows(rows)
+
         summary_table = self.get_widget_by_id('Summary', expect_type=DataTable)
         columns = [x.title() for x in FiveNumberApp.FIVE_NUMBER_FIELDS]
         columns.insert(0, 'Summary')
@@ -89,12 +97,14 @@ class FiveNumberApp(App):
         for column in age_cols_head:
             age_bucket_table.add_column(column, key=column)
         age_bucket_table.add_rows(dt_to_sorted_dict(age_categories.value_counts()).items())
+        age_bucket_table.tooltip = f"Median running time: {median_run_time}"
 
         time_bucket_table = self.get_widget_by_id('Time Bucket', expect_type=DataTable)
         time_categories, time_cols_head = time_bins(FiveNumberApp.DF)
         for column in time_cols_head:
             time_bucket_table.add_column(column, key=column)
         time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
+        time_bucket_table.tooltip = f"Median running time: {median_run_time}"
 
         country_counts_table = self.get_widget_by_id('Country Counts', expect_type=DataTable)
         countries_counts, min_country_filter, max_country_filter = get_country_counts(FiveNumberApp.DF)
@@ -102,14 +112,6 @@ class FiveNumberApp(App):
         for column in ['Country', 'Count']:
             country_counts_table.add_column(column, key=column)
         country_counts_table.add_rows(rows)
-
-        wave_table = self.get_widget_by_id('Better than average Wave Counts', expect_type=DataTable)
-        median, wave_series = better_than_median_waves(FiveNumberApp.DF)
-        wave_table.tooltip = f"Median running time: {median}"
-        rows = series_to_list_of_tuples(wave_series)
-        for column in ['Wave', 'Count']:
-            wave_table.add_column(column, key=column)
-        wave_table.add_rows(rows)
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
