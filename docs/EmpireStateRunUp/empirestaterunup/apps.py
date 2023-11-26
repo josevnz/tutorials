@@ -10,15 +10,15 @@ from pandas import DataFrame
 from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
-from textual.containers import HorizontalScroll, VerticalScroll, Vertical
+from textual.containers import Vertical
 from textual.driver import Driver
 from textual.screen import ModalScreen
-from textual.widgets import DataTable, Footer, Header, Log, Label, Button, MarkdownViewer
+from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, RACE_RESULTS_FULL_LEVEL, series_to_list_of_tuples
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples
 
 
 class FiveNumberApp(App):
