@@ -167,7 +167,7 @@ To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py)
 ...
 ```
 
-I do just minimal manipulation on the data from the webpage, the purpose of this code is just to get the data as quickly as possible before the formatting changes
+I do just minimal manipulation on the data from the web page, the purpose of this code is just to get the data as quickly as possible before the formatting changes
 
 Data cannot be used as-is, needs cleaning up and that is the next step on this article.
 
@@ -725,7 +725,7 @@ Some interesting facts about the race:
 * Majority of the people finished the race between 20 and 30 minutes.
 * Youngest runner was 11 years old, oldest 78
 
-![](esru_numbers.png)
+![](esru_numbers.svg)
 
 
 ### Finding outliers
@@ -736,11 +736,11 @@ This application uses the Z-score to find the outliers for several metrics for t
 esru_outlier
 ```
 
-![](esru_outlier-1.png)
+![](esru_outlier-1.svg)
 
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
-![](esru_outlier-2.png)
+![](esru_outlier-2.svg)
 
 Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
 
