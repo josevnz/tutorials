@@ -1,5 +1,7 @@
 # Empire State Run Up
 
+[![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
+
 ![](esru_browser.png)
 
 Hello. I wrote an application to analyse the results of the 'Empire State Run Up', 2013 edition, after I ran the race. 
