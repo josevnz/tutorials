@@ -1,4 +1,7 @@
 # Empire State Building Run-Up (2023 edition)
+
+[![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
+
 ```
 #########################%%%%####################################
 ####################%#%###%##%#+#%%%%###%%#%%%%%%#%###############
