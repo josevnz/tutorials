@@ -89,6 +89,57 @@ josevnz	KodeGeek	glances
 root@cd378ef1f5c3:/# 
 ```
 
+While inside the container we will create an access token that will be used to connect to the database:
+
+```shell
+root@cd378ef1f5c3:/# influx auth create \
+  --org KodeGeek \
+  --read-authorizations \
+  --write-authorizations \ 
+  --read-buckets \
+  --write-buckets \
+  --read-dashboards \
+  --write-dashboards \
+  --read-tasks \
+  --write-tasks \
+  --read-telegrafs \  
+  --write-telegrafs \ 
+  --read-users \
+  --write-users \ 
+  --read-variables \  
+  --write-variables \ 
+  --read-secrets \
+  --write-secrets \
+  --read-labels \
+  --write-labels \
+  --read-views \
+  --write-views \
+  --read-documents \  
+  --write-documents \
+  --read-notificationRules \ 
+  --write-notificationRules \
+  --read-notificationEndpoints \    
+  --write-notificationEndpoints \   
+  --read-checks \ 
+  --write-checks \
+  --read-dbrp \ 
+  --write-dbrp \
+  --read-annotations \
+  --write-annotations \
+  --read-sources \
+  --write-sources \
+  --read-scrapers \
+  --write-scrapers \
+  --read-notebooks \
+  --write-notebooks \
+  --read-remotes \
+  --write-remotes \
+  --read-replications \
+  --write-replications
+ID			Description	Token												User Name	User ID			Permissions
+0ae9b2f1ea468000			F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==	josevnz		0ae9b2131d868000	[read:orgs/b38ef4c091e3eca2/authorizations write:orgs/b38ef4c091e3eca2/authorizations read:orgs/b38ef4c091e3eca2/buckets write:orgs/b38ef4c091e3eca2/buckets read:orgs/b38ef4c091e3eca2/dashboards write:orgs/b38ef4c091e3eca2/dashboards read:orgs/b38ef4c091e3eca2/tasks write:orgs/b38ef4c091e3eca2/tasks read:orgs/b38ef4c091e3eca2/telegrafs write:orgs/b38ef4c091e3eca2/telegrafs read:/users write:/users read:orgs/b38ef4c091e3eca2/variables write:orgs/b38ef4c091e3eca2/variables read:orgs/b38ef4c091e3eca2/secrets write:orgs/b38ef4c091e3eca2/secrets read:orgs/b38ef4c091e3eca2/labels write:orgs/b38ef4c091e3eca2/labels read:orgs/b38ef4c091e3eca2/views write:orgs/b38ef4c091e3eca2/views read:orgs/b38ef4c091e3eca2/documents write:orgs/b38ef4c091e3eca2/documents read:orgs/b38ef4c091e3eca2/notificationRules write:orgs/b38ef4c091e3eca2/notificationRules read:orgs/b38ef4c091e3eca2/notificationEndpoints write:orgs/b38ef4c091e3eca2/notificationEndpoints read:orgs/b38ef4c091e3eca2/checks write:orgs/b38ef4c091e3eca2/checks read:orgs/b38ef4c091e3eca2/dbrp write:orgs/b38ef4c091e3eca2/dbrp read:orgs/b38ef4c091e3eca2/annotations write:orgs/b38ef4c091e3eca2/annotations read:orgs/b38ef4c091e3eca2/sources write:orgs/b38ef4c091e3eca2/sources read:orgs/b38ef4c091e3eca2/scrapers write:orgs/b38ef4c091e3eca2/scrapers read:orgs/b38ef4c091e3eca2/notebooks write:orgs/b38ef4c091e3eca2/notebooks read:orgs/b38ef4c091e3eca2/remotes write:orgs/b38ef4c091e3eca2/remotes read:orgs/b38ef4c091e3eca2/replications write:orgs/b38ef4c091e3eca2/replications]
+```
+
 
 ## What is next
 
