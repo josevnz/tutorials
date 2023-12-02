@@ -69,7 +69,7 @@ If we want to record out activity with Glances, we need to setup a InfluxDB, so 
 First step is to connect to our InfluxDB instance and create the bucket:
 
 ```shell
-josevnz@server2:~$ podman exec --tty --interactive mydb /bin/bash
+josevnz@raspberrypi:~$ podman exec --tty --interactive mydb /bin/bash
 root@cd378ef1f5c3:/# influx setup
 > Welcome to InfluxDB 2.4.7!
 ? Please type your primary username josevnz
@@ -139,6 +139,43 @@ root@cd378ef1f5c3:/# influx auth create \
 ID			Description	Token												User Name	User ID			Permissions
 0ae9b2f1ea468000			F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==	josevnz		0ae9b2131d868000	[read:orgs/b38ef4c091e3eca2/authorizations write:orgs/b38ef4c091e3eca2/authorizations read:orgs/b38ef4c091e3eca2/buckets write:orgs/b38ef4c091e3eca2/buckets read:orgs/b38ef4c091e3eca2/dashboards write:orgs/b38ef4c091e3eca2/dashboards read:orgs/b38ef4c091e3eca2/tasks write:orgs/b38ef4c091e3eca2/tasks read:orgs/b38ef4c091e3eca2/telegrafs write:orgs/b38ef4c091e3eca2/telegrafs read:/users write:/users read:orgs/b38ef4c091e3eca2/variables write:orgs/b38ef4c091e3eca2/variables read:orgs/b38ef4c091e3eca2/secrets write:orgs/b38ef4c091e3eca2/secrets read:orgs/b38ef4c091e3eca2/labels write:orgs/b38ef4c091e3eca2/labels read:orgs/b38ef4c091e3eca2/views write:orgs/b38ef4c091e3eca2/views read:orgs/b38ef4c091e3eca2/documents write:orgs/b38ef4c091e3eca2/documents read:orgs/b38ef4c091e3eca2/notificationRules write:orgs/b38ef4c091e3eca2/notificationRules read:orgs/b38ef4c091e3eca2/notificationEndpoints write:orgs/b38ef4c091e3eca2/notificationEndpoints read:orgs/b38ef4c091e3eca2/checks write:orgs/b38ef4c091e3eca2/checks read:orgs/b38ef4c091e3eca2/dbrp write:orgs/b38ef4c091e3eca2/dbrp read:orgs/b38ef4c091e3eca2/annotations write:orgs/b38ef4c091e3eca2/annotations read:orgs/b38ef4c091e3eca2/sources write:orgs/b38ef4c091e3eca2/sources read:orgs/b38ef4c091e3eca2/scrapers write:orgs/b38ef4c091e3eca2/scrapers read:orgs/b38ef4c091e3eca2/notebooks write:orgs/b38ef4c091e3eca2/notebooks read:orgs/b38ef4c091e3eca2/remotes write:orgs/b38ef4c091e3eca2/remotes read:orgs/b38ef4c091e3eca2/replications write:orgs/b38ef4c091e3eca2/replications]
 ```
+
+The last line shows the token we will use for authorization and authentication. Save it a safe place:
+
+```text
+F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==
+```
+
+Then we need to bridge glances with InfluxDB. For that we can add the following to the Glances configuration file:
+
+```shell
+mkdir ~/.config/glances/
+/bin/cat<<GLANCES>~/.config/glances/glances.conf
+[global]
+refresh=2
+check_update=false
+history_size=28800
+[influxdb2]
+# server2 is where InfluxDB is running
+host=raspberrypi
+port=8086
+protocol=http
+org=KodeGeek
+bucket=glances
+# And here you put the tocken we generated on the previous step
+token=F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==
+GLANCES
+```
+
+Now we just need to run Glances again:
+
+```shell
+. ~/virtualenv/glances/bin/activate
+glances -t 5 --export influxdb2
+```
+
+At 'glance' not much is happening (pun intended) but if we go to the InfluxDB we will see a new bucket there:
+
 
 
 ## What is next
