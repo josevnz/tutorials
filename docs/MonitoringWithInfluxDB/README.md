@@ -5,8 +5,8 @@ I will demonstrate how you can use existing performance collection tools with In
 
 ## What you will require for this tutorial
  
-* A Docker or [Podman](https://podman.io/) installation, so you can run the Influxdb; you can also do a bare metal installation, but I won't cover that here and instead will use Podman.
-* Influxdb 2.4.0 or better.
+* A Docker or [Podman](https://podman.io/) installation, so you can run and instance of Influxdb; you can also do a bare metal installation, but I won't cover that here and instead will use a container.
+* Influxdb 2.7.4 or better.
 * A linux distribution. I used Fedora Linux.
 * Python3 and [some experience writing scripts](https://www.redhat.com/sysadmin/python-scripting-intro).
 
@@ -16,11 +16,11 @@ This is maybe the easiest way to get you started; We will use an external volume
 
 ```shell=
 podman pull influxdb:latest
-podman run --detach --volume /data/influxdb:/var/lib/influxdb --volumne /data:/data:rw  --name influxdb_raspberrypi --restart always --publish 8086:8086 influxdb:latest
+podman run --detach --volume /data/influxdb:/var/lib/influxdb --volumne /data:/data:rw  --name influxdb_raspberrypi --restart always --publish 8086:8086 influxdb:latest --reporting-disabled
 podman logs --follow influxdb_raspberrypi
 ```
 
-Also, we are mapping an additional volume called /data directory inside the container, to import some CSV files later.
+Also, we are mapping an additional volume called /data directory inside the container, just in case we want to import some custom data later on.
 
 
 ## Integration with Prometheus
@@ -39,7 +39,55 @@ Prometheus is a great solution to record metrics for your hosts, but what if you
 
 1) Cannot deploy a node exporter agent because you lack the privileges
 2) Want to get insight on the host performance but for limited time and don't want to deal with a formal deployment
+3) You already use Glances for monitoring and want to persist this information for later analysis
 
+### A quick demonstration of Glances
+
+Installation is pretty simple with pip:
+
+```shell
+[josevnz@dmaf5 ~]$ python -m venv ~/virtualenv/glances
+[josevnz@dmaf5 ~]$ . ~/virtualenv/glances/bin/activate
+(glances) [josevnz@dmaf5 ~]$ pip install --upgrade glance
+...
+Successfully installed glances-3.4.0.3
+```
+
+The normally you call glances without any options, to capture stats:
+
+```shell
+# Running in standalone mode
+(glances) [josevnz@dmaf5 ~]$ glance
+```
+
+![](glances-snapshot.png)
+
+If we want to record out activity with Glances, we need to setup a InfluxDB, so it can accept our activity data.
+
+### Creating a Glances bucket to store our activity data
+
+First step is to connect to our InfluxDB instance and create the bucket:
+
+```shell
+josevnz@server2:~$ podman exec --tty --interactive mydb /bin/bash
+root@cd378ef1f5c3:/# influx setup
+> Welcome to InfluxDB 2.4.7!
+? Please type your primary username josevnz
+? Please type your password *********
+? Please type your password again *********
+? Please type your primary organization name KodeGeek
+? Please type your primary bucket name glances
+? Please type your retention period in hours, or 0 for infinite 0
+? Setup with these parameters?
+  Username:   josevnz
+  Organization:KodeGeek
+  Bucket:     glances
+  Retention Period:  infinite
+ Yes
+User	Organization	Bucket
+josevnz	KodeGeek	glances
+root@cd378ef1f5c3:/# 
+```
 
 
 ## What is next
