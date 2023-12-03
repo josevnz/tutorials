@@ -114,7 +114,7 @@ go_goroutines 8
 go_info{version="go1.19.3"} 1
 ```
 
-### Connecting Prometheus
+### Connecting Prometheus with node-exporter
 
 Prometheus is in charge is collecting metrics from agents on our Linux machine and other servers. Time to install it:
 
@@ -198,7 +198,79 @@ We can check now the prometheus web interface on localhost://9000:
 
 ![prometheus-localhost.png](prometheus-localhost.png)
 
+### Connecting Prometheus with InfluxDB
 
+Prometheus [cannot talk directly with InfluxDB 2.xx](https://www.influxdata.com/blog/prometheus-remote-write-support-with-influxdb-2-0/), so we need a third component, it is called 'Telegraf'
+
+```shell
+curl --location --fail --silent --output ~josevnz/Downloads/telegraf-1.28.5_linux_amd64.tar.gz  https://dl.influxdata.com/telegraf/releases/telegraf-1.28.5_linux_amd64.tar.gz
+sudo tar --extract --verbose --directory /opt --file ~josevnz/Downloads/telegraf-1.28.5_linux_amd64.tar.gz
+sudo useradd --system --comment  'Telegraf account' --no-create-home --shell /sbin/nologin telegraf
+sudo mkdir -p /etc/telegraf/
+sudo touch /etc/default/telegraf /etc/telegraf/telegraf.conf
+sudo chown -R telegraf /opt/telegraf-1.28.5 /etc/telegraf /etc/default/telegraf
+```
+
+I borrowed the systemd unit from [Telegraf](https://github.com/influxdata/telegraf/blob/master/scripts/telegraf.service):
+
+```shell
+sudo EDITOR=vi systemctl edit --full --force telegraf.service
+```
+The resulting text:
+
+```text
+[Unit]
+Description=Telegraf
+Documentation=https://github.com/influxdata/telegraf
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+EnvironmentFile=-/etc/default/telegraf
+User=telegraf
+ImportCredential=telegraf.*
+ExecStart=/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartForceExitStatus=SIGPIPE
+KillMode=mixed
+TimeoutStopSec=5
+LimitMEMLOCK=8M:8M
+PrivateMounts=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+We also need to connect Telegraf with the InfluxDB instance. This requires changes on `/etc/telegraf/telegraf.conf`:
+
+```yaml
+# TODO, add connection to dedicated telegraf bucket
+```
+
+Then start it:
+
+```shell
+sudo systemctl daemon-reload
+sudo systemctl enable telegraf.service --now
+```
+
+The final step is to connect our Prometheus installation with Telegraf:
+
+```yaml
+# TODO, add remote read and write properties
+```
+
+The final step is to restart Prometheus:
+
+```shell
+systemct restart prometheus.service
+```
+
+Now we can check on the InfluxDB GUI some of the captured metrics:
+
+# TODO snapshot
 
 ## Integration with Glances
 
@@ -339,10 +411,12 @@ At 'glance' not much is happening (_pun intended_) but if we go to the InfluxDB 
 
 ![](influxdb-glances-capture.png)
 
-This particular time series shows memory utilization over time, where Glances is running.
+This particular time series shows **memory utilization over time**, where Glances is running. Glances by default collects many interesting metrics out of the box.
 
 ## What did we learn
 
 * If you are still curious about the Prometheus and InfluxDB overlapping functionalities, [you should read this comparison](https://prometheus.io/docs/introduction/comparison/).
-* We used tshark for troubleshooting. This tool [is a must](https://tshark.dev/) in your back of tricks. 
+* I showed you how to use tshark for troubleshooting. This tool [is a must](https://tshark.dev/) in your back of tricks.
+* There are RPM available for Fedora to install node-exporter, Prometheus, Telegram. Feel free to try them, I wanted extra flexibility for my installation, so I decided to perform most of the installation steps manually.
+* Glances and Prometheus _are not the only possible integrations with InfluxDB_. Many more are supported thanks to the [Telegraf plugins](https://docs.influxdata.com/telegraf/v1/plugins/).
 * Source code for the Glances and InfluxDB integration can [be downloaded from here](https://github.com/josevnz/GlancesAndInfluxDB), with examples.
