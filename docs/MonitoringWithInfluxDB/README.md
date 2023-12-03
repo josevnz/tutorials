@@ -216,7 +216,7 @@ I borrowed the systemd unit from [Telegraf](https://github.com/influxdata/telegr
 ```shell
 sudo EDITOR=vi systemctl edit --full --force telegraf.service
 ```
-The resulting text:
+The resulting systemd unit:
 
 ```text
 [Unit]
