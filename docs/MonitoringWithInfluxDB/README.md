@@ -20,6 +20,8 @@ podman run --detach --volume /data/influxdb:/var/lib/influxdb --volumne /data:/d
 podman logs --follow influxdb_raspberrypi
 ```
 
+If you run this container on Fedora or Red Hat Enterprise Linux (RHEL), use option Z when mounting a volume to ensure it receives the correct [SELinux labels](https://www.redhat.com/en/topics/linux/what-is-selinux?intcmp=701f20000012ngPAAQ).
+
 Our running container is called 'influxdb_raspberrypi', and with the `podman logs` command we do a quick check to make sure there are no errors. 
 
 
@@ -53,11 +55,11 @@ Installation is pretty simple with pip:
 Successfully installed glances-3.4.0.3
 ```
 
-The normally you call glances without any options, to capture stats:
+Normally you call glances without any options, to capture stats:
 
 ```shell
 # Running in standalone mode
-(glances) [josevnz@dmaf5 ~]$ glance
+(glances) [josevnz@dmaf5 ~]$ glances
 ```
 
 ![](glances-snapshot.png)
@@ -80,7 +82,6 @@ ID			Name	Retention	Shard group duration	Organization ID		Schema Type
 ```
 
 Our bucket has the id '305430cf2f5de6fd'. We will use that to create an authorization token we can use to insert/ read data remotely from Glances:
-
 
 ```shell
 josevnz@raspberrypi:~$ podman exec --tty --interactive influxdb_raspberrypi /bin/bash
@@ -111,6 +112,31 @@ bucket=glances
 token=UnmEgl1HQ7AiZB8_QrCJFYkm2tE_e82_Sd9jnkrMsj1nA0YONpazx2HHuoPK3b_GnP7WX2qNURDnUfvcQyfagw==
 GLANCES
 ```
+
+Install now the [InfluxDB Python client](https://pypi.org/project/influxdb/), which allows Glances to export the metrics directly to InfluxDB:
+
+```shell
+(glances) [josevnz@dmaf5 MonitoringWithInfluxDB]$ pip install --upgrade influxdb-client
+Requirement already satisfied: influxdb-client in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (1.36.1)
+Collecting influxdb-client
+  Downloading influxdb_client-1.38.0-py3-none-any.whl (743 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 743.5/743.5 kB 8.1 MB/s eta 0:00:00
+Requirement already satisfied: reactivex>=4.0.4 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from influxdb-client) (4.0.4)
+Requirement already satisfied: certifi>=14.05.14 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from influxdb-client) (2022.12.7)
+Requirement already satisfied: python-dateutil>=2.5.3 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from influxdb-client) (2.8.2)
+Requirement already satisfied: setuptools>=21.0.0 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from influxdb-client) (67.6.0)
+Requirement already satisfied: urllib3>=1.26.0 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from influxdb-client) (1.26.15)
+Requirement already satisfied: six>=1.5 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from python-dateutil>=2.5.3->influxdb-client) (1.16.0)
+Requirement already satisfied: typing-extensions<5.0.0,>=4.1.1 in /home/josevnz/virtualenv/glances/lib64/python3.11/site-packages (from reactivex>=4.0.4->influxdb-client) (4.5.0)
+Installing collected packages: influxdb-client
+  Attempting uninstall: influxdb-client
+    Found existing installation: influxdb-client 1.36.1
+    Uninstalling influxdb-client-1.36.1:
+      Successfully uninstalled influxdb-client-1.36.1
+Successfully installed influxdb-client-1.38.0
+
+```
+
 
 Now we just need to run Glances again:
 
