@@ -134,9 +134,7 @@ Installing collected packages: influxdb-client
     Uninstalling influxdb-client-1.36.1:
       Successfully uninstalled influxdb-client-1.36.1
 Successfully installed influxdb-client-1.38.0
-
 ```
-
 
 Now we just need to run Glances again:
 
