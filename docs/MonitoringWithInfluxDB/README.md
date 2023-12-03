@@ -33,6 +33,171 @@ What is Prometheus?
 
 The InfluxDB website has good documentation that explains [how to integrate Prometheus with InfluxDB](https://www.influxdata.com/integration/prometheus-monitoring-tool/) as the database backend/
 
+### Setting up the node-exporter agent
+
+We will run a program called [node-exporter](https://prometheus.io/docs/guides/node-exporter/), who will be responsible for catpuring Linux metrics:
+
+```shell
+curl --location --silent --output ~josevnz/Downloads/node_exporter-1.7.0.linux-amd64.tar.gz --fail https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+sudo tar --directory /opt --extract --verbose --file ~josevnz/Downloads/node_exporter-1.7.0.linux-amd64.tar.gz
+rm ~/Downloads/node_exporter-1.7.0.linux-amd64.tar.gz
+```
+
+Then to make it easier to start automatically across reboots, we create a systemd unit:
+
+```shell
+sudo useradd --system --comment  'Prometheus account' --no-create-home --shell /sbin/nologin prometheus
+sudo chown -R prometheus /opt/prometheus
+sudo EDITOR=vi systemctl edit --force --full node_exporter.service
+```
+
+And then save the following:
+
+```text
+[Unit]
+Description=Node exporter Server
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+After=network-online.target
+
+[Service]
+Restart=always
+User=prometheus
+EnvironmentFile=/etc/default/prometheus-node-exporter
+ExecStart=/opt/prometheus/node_exporter-1.7.0.linux-amd64/node_exporter $ARGS
+ExecReload=/bin/kill -HUP $MAINPID
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Bring it up:
+
+```shell
+# Basic settings for the exporter
+sudo echo 'ARGS="--web.listen-address=:9100"' > /etc/default/prometheus-node-exporter
+# Enable the service
+sudo systemctl daemon-reload
+sudo systemctl enable --now node_exporter.service
+[josevnz@dmaf5 MonitoringWithInfluxDB]$ sudo systemctl status node_exporter.service
+● node_exporter.service - Node exporter Server
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; preset: disabled)
+     Active: active (running) since Sun 2023-12-03 07:43:39 EST; 6h ago
+       Docs: https://prometheus.io/docs/guides/node-exporter/
+   Main PID: 1624 (node_exporter)
+      Tasks: 5 (limit: 18743)
+     Memory: 18.0M
+        CPU: 44ms
+     CGroup: /system.slice/node_exporter.service
+             └─1624 /opt/prometheus/node_exporter-1.5.0.linux-amd64/node_exporter --web.listen-address=:9100
+```
+
+Then you can open your browser on http://localhost:9100. For example, using curl:
+
+```shell
+[josevnz@dmaf5 MonitoringWithInfluxDB]$ curl --fail --silent http://dmaf5:9100/metrics
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 3.228e-05
+go_gc_duration_seconds{quantile="0.25"} 3.228e-05
+go_gc_duration_seconds{quantile="0.5"} 5.1216e-05
+go_gc_duration_seconds{quantile="0.75"} 5.1216e-05
+go_gc_duration_seconds{quantile="1"} 5.1216e-05
+go_gc_duration_seconds_sum 8.3496e-05
+go_gc_duration_seconds_count 2
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 8
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.19.3"} 1
+```
+
+### Connecting Prometheus
+
+Prometheus is in charge is collecting metrics from agents on our Linux machine and other servers. Time to install it:
+
+```shell
+curl --fail --silent --location --output ~/Downloads/prometheus-2.45.1.linux-amd64.tar.gz  https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz && echo OK|| echo FAIL
+sudo tar --extract --file --verbose ~josevnz/Downloads/prometheus-2.45.1.linux-amd64.tar.gz
+sudo chown -R prometheus /opt/prometheus-2.45.1.linux-amd64
+rm ~/Downloads/prometheus-2.45.1.linux-amd64.tar.gz
+```
+
+Prometheus needs details where to scrape the data, we define settings like this:
+```shell
+sudo vi /etc/prometheus/prometheus.yaml
+```
+
+The resulting `/etc/prometheus/prometheus.yaml` file:
+
+```yaml
+---
+global:
+    scrape_interval: 30s
+    evaluation_interval: 30s
+    scrape_timeout: 10s
+    external_labels:
+        monitor: 'nunez-family-monitor'
+
+scrape_configs:
+    - job_name: 'node-exporter'
+      static_configs:
+          - targets: ['dmaf5.home:9100']
+```
+
+I strongly recommend you validate your syntax using `yamllint /etc/promethus/prometheus.yaml`.
+
+Once the vi editor is open, you can then define the following systemd unit for it:
+
+```shell
+sudo EDITOR=vi systemctl edit --force --full prometheus.service
+```
+
+Then add the following:
+
+```text
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/guides/
+After=network-online.target
+
+[Service]
+Restart=always
+User=prometheus
+EnvironmentFile=/etc/default/prometheus-node-exporter
+ExecStart=/opt/prometheus-2.45.1.linux-amd64/prometheus $ARGS
+ExecReload=/bin/kill -HUP $MAINPID
+TimeoutStopSec=20s
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable it and check the logs:
+
+```shell
+sudo systemctl daemon-reload
+sudo systemctl enable prometheus.service --now
+[josevnz@dmaf5 MonitoringWithInfluxDB]$ sudo systemctl status prometheus.service
+● prometheus.service - Prometheus Server
+     Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; preset: disabled)
+     Active: active (running) since Sun 2023-12-03 14:59:13 EST; 4s ago
+       Docs: https://prometheus.io/docs/guides/
+   Main PID: 34580 (prometheus)
+      Tasks: 13 (limit: 18743)
+     Memory: 15.5M
+        CPU: 107ms
+     CGroup: /system.slice/prometheus.service
+             └─34580 /opt/prometheus-2.45.1.linux-amd64/prometheus --config.file /etc/prometheus/prometheus.yaml --storage.tsdb.path=/opt/prometheus-2.45.1.linux-amd64/data
+```
+
+We can check now the prometheus web interface on localhost://9000:
+
+![prometheus-localhost.png](prometheus-localhost.png)
+
 
 
 ## Integration with Glances
