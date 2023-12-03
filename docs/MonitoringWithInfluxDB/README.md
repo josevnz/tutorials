@@ -20,7 +20,7 @@ podman run --detach --volume /data/influxdb:/var/lib/influxdb --volumne /data:/d
 podman logs --follow influxdb_raspberrypi
 ```
 
-Also, we are mapping an additional volume called /data directory inside the container, just in case we want to import some custom data later on.
+Our running container is called 'influxdb_raspberrypi', and with the `podman logs` command we do a quick check to make sure there are no errors. 
 
 
 ## Integration with Prometheus
@@ -66,85 +66,30 @@ If we want to record out activity with Glances, we need to setup a InfluxDB, so 
 
 ### Creating a Glances bucket to store our activity data
 
-First step is to connect to our InfluxDB instance and create the bucket:
+First step is to connect to our InfluxDB instance and create a bucket, I called mine `glances`.
+
+Most likely you already have several buckets in your InfluxDB database, we will create a new  bucket.
+
+Get inside the influxdb_raspberrypi running container we will create a bucket, with a retention policy to keep our data forever:
 
 ```shell
-josevnz@raspberrypi:~$ podman exec --tty --interactive mydb /bin/bash
-root@cd378ef1f5c3:/# influx setup
-> Welcome to InfluxDB 2.4.7!
-? Please type your primary username josevnz
-? Please type your password *********
-? Please type your password again *********
-? Please type your primary organization name KodeGeek
-? Please type your primary bucket name glances
-? Please type your retention period in hours, or 0 for infinite 0
-? Setup with these parameters?
-  Username:   josevnz
-  Organization:KodeGeek
-  Bucket:     glances
-  Retention Period:  infinite
- Yes
-User	Organization	Bucket
-josevnz	KodeGeek	glances
-root@cd378ef1f5c3:/# 
+josevnz@raspberrypi:~$ podman exec --tty --interactive influxdb_raspberrypi /bin/bash
+root@raspberrypi:/# influx bucket create --org Kodegeek --name glances  --description 'Glances storage' --retention 0
+ID			Name	Retention	Shard group duration	Organization ID		Schema Type
+305430cf2f5de6fd	glances	infinite	168h0m0s		c334619ae2cd7b3d	implicit
 ```
 
-While inside the container we will create an access token that will be used to connect to the database:
+Our bucket has the id '305430cf2f5de6fd'. We will use that to create an authorization token we can use to insert/ read data remotely from Glances:
+
 
 ```shell
-root@cd378ef1f5c3:/# influx auth create \
-  --org KodeGeek \
-  --read-authorizations \
-  --write-authorizations \ 
-  --read-buckets \
-  --write-buckets \
-  --read-dashboards \
-  --write-dashboards \
-  --read-tasks \
-  --write-tasks \
-  --read-telegrafs \  
-  --write-telegrafs \ 
-  --read-users \
-  --write-users \ 
-  --read-variables \  
-  --write-variables \ 
-  --read-secrets \
-  --write-secrets \
-  --read-labels \
-  --write-labels \
-  --read-views \
-  --write-views \
-  --read-documents \  
-  --write-documents \
-  --read-notificationRules \ 
-  --write-notificationRules \
-  --read-notificationEndpoints \    
-  --write-notificationEndpoints \   
-  --read-checks \ 
-  --write-checks \
-  --read-dbrp \ 
-  --write-dbrp \
-  --read-annotations \
-  --write-annotations \
-  --read-sources \
-  --write-sources \
-  --read-scrapers \
-  --write-scrapers \
-  --read-notebooks \
-  --write-notebooks \
-  --read-remotes \
-  --write-remotes \
-  --read-replications \
-  --write-replications
-ID			Description	Token												User Name	User ID			Permissions
-0ae9b2f1ea468000			F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==	josevnz		0ae9b2131d868000	[read:orgs/b38ef4c091e3eca2/authorizations write:orgs/b38ef4c091e3eca2/authorizations read:orgs/b38ef4c091e3eca2/buckets write:orgs/b38ef4c091e3eca2/buckets read:orgs/b38ef4c091e3eca2/dashboards write:orgs/b38ef4c091e3eca2/dashboards read:orgs/b38ef4c091e3eca2/tasks write:orgs/b38ef4c091e3eca2/tasks read:orgs/b38ef4c091e3eca2/telegrafs write:orgs/b38ef4c091e3eca2/telegrafs read:/users write:/users read:orgs/b38ef4c091e3eca2/variables write:orgs/b38ef4c091e3eca2/variables read:orgs/b38ef4c091e3eca2/secrets write:orgs/b38ef4c091e3eca2/secrets read:orgs/b38ef4c091e3eca2/labels write:orgs/b38ef4c091e3eca2/labels read:orgs/b38ef4c091e3eca2/views write:orgs/b38ef4c091e3eca2/views read:orgs/b38ef4c091e3eca2/documents write:orgs/b38ef4c091e3eca2/documents read:orgs/b38ef4c091e3eca2/notificationRules write:orgs/b38ef4c091e3eca2/notificationRules read:orgs/b38ef4c091e3eca2/notificationEndpoints write:orgs/b38ef4c091e3eca2/notificationEndpoints read:orgs/b38ef4c091e3eca2/checks write:orgs/b38ef4c091e3eca2/checks read:orgs/b38ef4c091e3eca2/dbrp write:orgs/b38ef4c091e3eca2/dbrp read:orgs/b38ef4c091e3eca2/annotations write:orgs/b38ef4c091e3eca2/annotations read:orgs/b38ef4c091e3eca2/sources write:orgs/b38ef4c091e3eca2/sources read:orgs/b38ef4c091e3eca2/scrapers write:orgs/b38ef4c091e3eca2/scrapers read:orgs/b38ef4c091e3eca2/notebooks write:orgs/b38ef4c091e3eca2/notebooks read:orgs/b38ef4c091e3eca2/remotes write:orgs/b38ef4c091e3eca2/remotes read:orgs/b38ef4c091e3eca2/replications write:orgs/b38ef4c091e3eca2/replications]
+josevnz@raspberrypi:~$ podman exec --tty --interactive influxdb_raspberrypi /bin/bash
+root@raspberrypi:/# influx auth create --org Kodegeek --description 'Authorization for Glances' --write-bucket 305430cf2f5de6fd --read-bucket 305430cf2f5de6fd --write-buckets --read-buckets
+ID			Description			Token												User Name	User ID			Permissions
+0c37feccff400000	Authorization for Glances	UnmEgl1HQ7AiZB8_QrCJFYkm2tE_e82_Sd9jnkrMsj1nA0YONpazx2HHuoPK3b_GnP7WX2qNURDnUfvcQyfagw==	josevnz		09ff917433270000	[read:orgs/c334619ae2cd7b3d/buckets/305430cf2f5de6fd write:orgs/c334619ae2cd7b3d/buckets/305430cf2f5de6fd read:orgs/c334619ae2cd7b3d/buckets write:orgs/c334619ae2cd7b3d/buckets]
 ```
 
-The last line shows the token we will use for authorization and authentication. Save it a safe place:
-
-```text
-F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==
-```
+Here we got the authorization token 'UnmEgl1HQ7AiZB8_QrCJFYkm2tE_e82_Sd9jnkrMsj1nA0YONpazx2HHuoPK3b_GnP7WX2qNURDnUfvcQyfagw=='. We will use it in our Glances configuration file:
 
 Then we need to bridge glances with InfluxDB. For that we can add the following to the Glances configuration file:
 
@@ -162,8 +107,8 @@ port=8086
 protocol=http
 org=KodeGeek
 bucket=glances
-# And here you put the tocken we generated on the previous step
-token=F8y7eoaPX5gMkWvpxZ-b2LOnJjMO6gdH1ba1HfQV0dXmJm6oBekA7WsPiPk-3zhOxL8Y55_aJB1Ii-kRBDsH6w==
+# And here you put the token we generated on the previous step
+token=UnmEgl1HQ7AiZB8_QrCJFYkm2tE_e82_Sd9jnkrMsj1nA0YONpazx2HHuoPK3b_GnP7WX2qNURDnUfvcQyfagw==
 GLANCES
 ```
 
@@ -171,14 +116,44 @@ Now we just need to run Glances again:
 
 ```shell
 . ~/virtualenv/glances/bin/activate
-glances -t 5 --export influxdb2
+# Refresh every 5 seconds, export to influxdb2
+glances --time 5 --export influxdb2
 ```
 
-At 'glance' not much is happening (pun intended) but if we go to the InfluxDB we will see a new bucket there:
+Make sure that you have set up your authorization configuration properly. On the InfluxDB container you should not see these:
 
+```shell
+podman logs --follow influxdb_raspberrypi
+2023-12-03T13:10:49.944038Z	info	Unauthorized	{"log_id": "0lVhMguW000", "error": "authorization not found"}
+2023-12-03T13:11:33.357711Z	info	Unauthorized	{"log_id": "0lVhMguW000", "error": "token required"}
+```
 
+Optionally you could run [tshark](https://tshark.dev/analyze/packet_hunting/packet_hunting/) and confirm that glances is making POST requests to the InfluxDB endpoint:
 
-## What is next
+```shell
+[josevnz@dmaf5 ~]$ tshark -i eno1 -Y http.request -f "host 192.168.68.60 and tcp port 8086"
+Capturing on 'eno1'
+ ** (tshark:18229) 09:58:47.993686 [Main MESSAGE] -- Capture started.
+ ** (tshark:18229) 09:58:47.994375 [Main MESSAGE] -- File: "/var/tmp/wireshark_eno19kN1jG.pcapng"
+   11 2.690111928 192.168.68.73 → 192.168.68.60 HTTP 881 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+   24 3.824977400 192.168.68.73 → 192.168.68.60 HTTP 891 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+   37 4.128239147 192.168.68.73 → 192.168.68.60 HTTP 901 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+   51 5.872746588 192.168.68.73 → 192.168.68.60 HTTP 907 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+   71 6.120250641 192.168.68.73 → 192.168.68.60 HTTP 868 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+   91 6.503915790 192.168.68.73 → 192.168.68.60 HTTP 870 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+  104 7.838737858 192.168.68.73 → 192.168.68.60 HTTP 883 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+  117 8.576475158 192.168.68.73 → 192.168.68.60 HTTP 884 POST /api/v2/write?org=Kodegeek&bucket=glances&precision=ns HTTP/1.1  (text/plain)
+
+```
+
+At 'glance' not much is happening (_pun intended_) but if we go to the InfluxDB data explorer we will see a new bucket there, along with few collections:
+
+![](influxdb-glances-capture.png)
+
+This particular time series shows memory utilization over time, where Glances is running.
+
+## What did we learn
 
 * If you are still curious about the Prometheus and InfluxDB overlapping functionalities, [you should read this comparison](https://prometheus.io/docs/introduction/comparison/).
+* We used tshark for troubleshooting. This tool [is a must](https://tshark.dev/) in your back of tricks. 
 * Source code for the Glances and InfluxDB integration can [be downloaded from here](https://github.com/josevnz/GlancesAndInfluxDB), with examples.
