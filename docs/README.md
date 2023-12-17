@@ -59,6 +59,7 @@ I tried my best to group them by categories.
 * [Influxdb Introduction, with Dashboards](influxdb_intro/README.md)
 * [Influxdb Datasets of the state of CT, with dashboards](influxdb_datasets/README.md)
 * [Glances and InfluxDB for monitoring and troubleshooting](GlancesAndInfluxDB/README.md)
+* [Monitoring with InfluxDB, Prometheus and Glances](MonitoringWithInfluxDB/README.md)
 * [Spy on NFS](SpyOnNfs//README.md)
 
 ## Blog En Español
