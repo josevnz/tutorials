@@ -22,8 +22,7 @@ podman logs --follow influxdb_raspberrypi
 
 If you run this container on Fedora or Red Hat Enterprise Linux (RHEL), use option Z when mounting a volume to ensure it receives the correct [SELinux labels](https://www.redhat.com/en/topics/linux/what-is-selinux?intcmp=701f20000012ngPAAQ).
 
-Our running container is called 'influxdb_raspberrypi', and with the `podman logs` command we do a quick check to make sure there are no errors. 
-
+Our running container is called 'influxdb_raspberrypi', and with the `podman logs` command we do a quick check to make sure there are no errors.
 
 ## Integration with Prometheus
 
@@ -116,7 +115,7 @@ go_info{version="go1.19.3"} 1
 
 ### Connecting Prometheus with node-exporter
 
-Prometheus is in charge is collecting metrics from agents on our Linux machine and other servers. Time to install it:
+Prometheus is in charge is collecting metrics from agents on our Linux machine, like node-exporter, and other servers too!. Time to install it:
 
 ```shell
 curl --fail --silent --location --output ~/Downloads/prometheus-2.45.1.linux-amd64.tar.gz  https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz && echo OK|| echo FAIL
@@ -147,9 +146,9 @@ scrape_configs:
           - targets: ['dmaf5.home:9100']
 ```
 
-I strongly recommend you validate your syntax using `yamllint /etc/promethus/prometheus.yaml`.
+I strongly recommend you validate your basic syntax using `yamllint /etc/promethus/prometheus.yaml`.
 
-Once the vi editor is open, you can then define the following systemd unit for it:
+Once the favourite editor is open (I use vim), you can then define the following systemd unit for it:
 
 ```shell
 sudo EDITOR=vi systemctl edit --force --full prometheus.service
@@ -194,13 +193,13 @@ sudo systemctl enable prometheus.service --now
              └─34580 /opt/prometheus-2.45.1.linux-amd64/prometheus --config.file /etc/prometheus/prometheus.yaml --storage.tsdb.path=/opt/prometheus-2.45.1.linux-amd64/data
 ```
 
-We can check now the prometheus web interface on localhost://9000:
+We can check now the Prometheus web interface on http://dmaf5:9090 (note that we connect to Prometheus and not node-exporter directly):
 
 ![prometheus-localhost.png](prometheus-localhost.png)
 
 ### Connecting Prometheus with InfluxDB
 
-Prometheus [cannot talk directly with InfluxDB 2.xx](https://www.influxdata.com/blog/prometheus-remote-write-support-with-influxdb-2-0/), so we need a third component, it is called 'Telegraf'
+Prometheus [cannot talk directly with InfluxDB 2.xx](https://www.influxdata.com/blog/prometheus-remote-write-support-with-influxdb-2-0/), so we need a third component, it is called '[Telegraf](https://github.com/influxdata/telegraf/blob/master/scripts/telegraf.service)' and we will install it next:
 
 ```shell
 curl --location --fail --silent --output ~josevnz/Downloads/telegraf-1.28.5_linux_amd64.tar.gz  https://dl.influxdata.com/telegraf/releases/telegraf-1.28.5_linux_amd64.tar.gz
@@ -230,7 +229,7 @@ Type=notify
 EnvironmentFile=-/etc/default/telegraf
 User=telegraf
 ImportCredential=telegraf.*
-ExecStart=/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
+ExecStart=/opt/telegraf-1.28.5/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d $TELEGRAF_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartForceExitStatus=SIGPIPE
@@ -243,42 +242,94 @@ PrivateMounts=true
 WantedBy=multi-user.target
 ```
 
-We also need to connect Telegraf with the InfluxDB instance. This requires changes on `/etc/telegraf/telegraf.conf`:
+Telegraph can scrape data **directly** from Node exporter without talking to Prometheus , and then [it can relay it back to InfluxDB](https://docs.influxdata.com/influxdb/cloud/write-data/developer-tools/scrape-prometheus-metrics/). Telegraf is the glue that will allow us to connect together both services.
 
-```yaml
-# TODO, add connection to dedicated telegraf bucket
-```
-
-Then start it:
+We need to store the data into a bucket and also an authentication token is required. Both can be created on the command line as follows (using the InfluxDB docker container):
 
 ```shell
-sudo systemctl daemon-reload
-sudo systemctl enable telegraf.service --now
+josevnz@raspberrypi:~$ podman exec --tty --interactive influxdb_raspberrypi /bin/bash
+root@raspberrypi:/#
+# Create a bucket called 'prometheus' 
+root@raspberrypi:/# influx bucket create --org Kodegeek --name prometheus  --description 'Prometheus storage' --retention 0
+ID			Name		Retention	Shard group duration	Organization ID		Schema Type
+5efea066b05e584d	prometheus	infinite	168h0m0s		c334619ae2cd7b3d	implicit
+# Now create an authentication token for the new bucket, id = 5efea066b05e584d
+root@raspberrypi:/# influx auth create --org Kodegeek --description 'Authorization for Prometheus' --write-bucket 5efea066b05e584d --read-bucket 5efea066b05e584d --write-buckets --read-buckets
+ID			Description			Token												User Name	User ID			Permissions
+0c49edb275400000	Authorization for Prometheus	bo1-N1Ythhpxj0oAh14TDfEM66Ty0Iz7bmLkxEcUdune3pSj8Or7Lzoe-PCWr-yqyabxBukOIurjdTnSCSsUFw==	josevnz		09ff917433270000	[read:orgs/c334619ae2cd7b3d/buckets/5efea066b05e584d write:orgs/c334619ae2cd7b3d/buckets/5efea066b05e584d read:orgs/c334619ae2cd7b3d/buckets write:orgs/c334619ae2cd7b3d/buckets]
 ```
 
-The final step is to connect our Prometheus installation with Telegraf:
+Time to connect Telegraf with the InfluxDB instance. This requires changes on `/etc/telegraf/telegraf.conf` running on dmaf5:
 
 ```yaml
-# TODO, add remote read and write properties
+## Collect Node-exporter Prometheus formatted metrics on dmaf5. In this case node-exporter service
+## http://dmaf5:9100/metrics (Node exporter) != http://dmaf5:9090/metrics Prometheus scrapper 
+[[inputs.prometheus]]
+  urls = ["http://dmaf5:9100/metrics"]
+  metric_version = 2
+
+## Write Prometheus formatted metrics to InfluxDB prometheus bucket
+[[outputs.influxdb_v2]]
+  urls = ["http://raspberrypi:8086"]
+  token = "bo1-N1Ythhpxj0oAh14TDfEM66Ty0Iz7bmLkxEcUdune3pSj8Or7Lzoe-PCWr-yqyabxBukOIurjdTnSCSsUFw=="
+  organization = "Kodegeek"
+  bucket = "prometheus"
 ```
 
-The final step is to restart Prometheus:
+Now connect our Prometheus installation with Telegraf:
 
 ```shell
-systemct restart prometheus.service
+systemctl daemon-reload
+systemctl enable telegraf.service --now
 ```
 
-Now we can check on the InfluxDB GUI some of the captured metrics:
+Confirm that is running:
 
-# TODO snapshot
+```shell
+[root@dmaf5 ~]# systemctl enable telegraf.service --now
+[root@dmaf5 ~]# systemctl status telegraf.service 
+● telegraf.service - Telegraf
+     Loaded: loaded (/etc/systemd/system/telegraf.service; enabled; preset: disabled)
+     Active: active (running) since Sun 2023-12-17 07:28:07 EST; 7s ago
+       Docs: https://github.com/influxdata/telegraf
+   Main PID: 9290 (telegraf)
+      Tasks: 13 (limit: 18743)
+     Memory: 217.6M
+        CPU: 303ms
+     CGroup: /system.slice/telegraf.service
+             ├─9290 /opt/telegraf-1.28.5/usr/bin/telegraf -config /etc/telegraf/telegraf.conf -config-directory /etc/telegraf/telegraf.d
+             └─9305 /usr/bin/dbus-daemon --syslog --fork --print-pid 4 --print-address 6 --session
+
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Available plugins: 240 inputs, 9 aggregators, 29 processors, 24 parsers, 59 outputs, 5 secret-stores
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Loaded inputs: prometheus
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Loaded aggregators:
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Loaded processors:
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Loaded secretstores:
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Loaded outputs: influxdb_v2
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! Tags enabled: host=dmaf5
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! [agent] Config: Interval:10s, Quiet:false, Hostname:"dmaf5", Flush Interval:10s
+Dec 17 07:28:07 dmaf5 telegraf[9290]: 2023-12-17T12:28:07Z I! [inputs.prometheus] Using the label selector:  and field selector:
+Dec 17 07:28:07 dmaf5 systemd[1]: Started telegraf.service - Telegraf.
+
+```
+
+Now we can check on the InfluxDB GUI some of the captured metrics, using the Data explorer menu. For example, number of bytes read from my NVME drives:
+
+![Prometheus Telegraf InfluxDB Data explorer panel](prometheus-telegraf-influxdb.png)
+
+As you can see we can now skip using the Prometheus scrapper with no changes to your existing Prometheus configuration, instead we let Telegraf collect the data for us directly into the InfluxDB database.
+
+But, are these the only integration possible with InfluxDB?
 
 ## Integration with Glances
 
-Prometheus is a great solution to record metrics for your hosts, but what if you are in one of the following scenarios:
+[Glances](https://nicolargo.github.io/glances/) is another great monitoring tool, written in Python, and it is a great alternative to Prometheus on the following scenarios:
 
-1) Cannot deploy a node exporter agent because you lack the privileges
-2) Want to get insight on the host performance but for limited time and don't want to deal with a formal deployment
-3) You already use Glances for monitoring and want to persist this information for later analysis
+1) Cannot deploy a node exporter agent because you lack the privileges, or have a company policy you must follow (like another agent running)
+2) Want to get insight on the host performance but for limited time and don't want to deal with a formal deployment. Run it for a while, then shut it down.
+3) You already use Glances for monitoring and want to persist this information for later analysis.
+
+Will show you next how you can integrate both tools.
 
 ### A quick demonstration of Glances
 
