@@ -2,54 +2,7 @@
 
 [![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
 
-```
-#########################%%%%####################################
-####################%#%###%##%#+#%%%%###%%#%%%%%%#%###############
-###############%%%%%%%%%%%%%%%#=*%%%%%%%%%#%%%%%%%%%%%%###########
-###############%#%%%%%%%%%%%%%#=#%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%###
-#################%%%%%%%%%%%%%*=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-################%%%%%%%%%%%%%%*+*%#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#################%###%%%%%%%%#**+=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#######################%%%%#*==-=-+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#########################%%-:.--+=*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#**#**#####################:+=+=-:+#%%%%%%%%%%%%%%%%%%%%%%%##%####
-******###################*==*=+==:+#%%%%%%%%%%%%%%%%%%%###########
-*********################*++#++=+-+###%%%%%%%%%%%##%#%############
-**********###############***#++==-=%%#%%%%%######%################
-***************##########**+#*+=#==%%%%%%#%#######################
-***************#########+:+*#*+=#-=%%%%%%##%######################
-***************####*####+-+*#*++#-=%%%%%%#########################
-*+*******************###+-+*##++*-=%%%%%%#########################
-++++++++****************+-+*##=**-=%%%%%%########################*
-++++++++++++++++********=-++#*=**-=%%%%%%########*****#########***
-==+++++++++++++++***+***+-++#*=*+:=%%%%%####**********#######*****
-====+++++++++++++++++++*=-++#*=*+-+%%%%%%##**********#######******
-=====+++++++++++++++++++=-++#*=*+:+%%%%%#***********#######*******
-=========++=+=====++++++=-++#*=*+-*%%%%%#*************************
----=================++++=-++#*=*+-*##%%%#*************************
--------===============++=-++#+-++-*##%%%#****************+++*****+
-----------===============-++#+-+*-#####%#***************+++*****++
----------------==========-++#=-+*=####%%#*********************++=+
--------------------=====--++#+=+*=####%%#*********************++==
--------------------=====--=+#+=+#+##%%%%%*+*******************+===
--------------------======-=+#==+#+##%%%%%*++***********+****++++==
---------------------------++#==+#**#%%%%%*++++**+++++++++++++++===
----------------=*---------++#==+#**%%%%%%*+++++++++++++++++++=====
--------:------==#---------+++-+*##**+#%%%#++++++++++++++++++======
----:-----==---=+#+-++=====+*+=*###***#%%%%*+++*#*++++++++++++=====
-======*###%#*++*#+=#%==+==**+=****+*##%##*#%##*##++***+++*******++
-#*==--*%%#%%%#%*+**++#*+=+#*+=*+*#+#%%%%#*%%%%%%***%###*#****#***+
-**====#%%#%%%#%*+*+==#=+==#*+=*+*#=#*+*###%%#%**##+*%##%%%%%%%%%%*
-**+==-*%%#%%%###*%%%%#++**###=#++%=*+:*##%%%%#**####%%%%%%%%%%%%%#
-###*#*##*+++=======-==++%%%%%##*+#-*+-#*#%%%%#%%%==#%%%**###%%*+++
-########*+++++++++*#***#%%%%%%+:##-++=#*#%%%%%%%%%*+==+=#*++#%%%#*
-*+*#####***#*##*#+***+*+*%%%%%#*##**++##%%%%%%%%%%*+-:-:#*:-+%%#*+
-++*#####+*+#++*+%****+#**%%%%##+*+**+*##%%%%%%%%%%*==--:#*-++#%%##
-**#######%+*+***%*##*=#+*%%%#:=###---*#%%%%%%%%%%%+==-=:*#****+*##
-*##***+++##-:+*#*+#****+#%#**=-###:::#*=+**#%%%%%*+#%%%%***+***###
-..:-=+=-=#+.-#*###**+*****####*#%*#+:++==++====+=+++++++=:::**::+:
-=--=---=+=+==#*%%%%%%%#%###%#######:::::::--====+***++*+*-::**++++
-```
+![empire_state_runup.png](empire_state_runup.png)
 
 > The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
@@ -60,21 +13,58 @@
 Most of us have run a regular race (5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
 the top on one of the most famous building of the world.
 
-Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners. Add to that fact that demand to run is high, and then
-you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5000 applicants).
+Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners (or should I say _climbers_?). Add to that fact that demand to participate is high, and then
+you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5,000 applicants).
 
 You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
 
-God news: I wasn't totally unprepared. But I had to adjust my exercise routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical race.
+And then I panicked. Have you ever been at the base of that building and looked up? Some days when is cloudy you cannot even see the top of the building.
 
-The day of the race came and here are some tough's about it:
+God news: I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical run.
+
+Long story/ short story, the day of the race came and here are some tough's about how it went:
 
 * I didn't die. Seriously. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
 * You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
-* Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. I got passed and I passed a lot of people that forgot the 'pace yourself' rule.
+* Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. 
+* I got passed and I passed a lot of people that forgot the 'pace yourself' rule. If you sprint, you will be toasted before floor 25, for sure.
 
-I felt compelled to scrap the data from the website with the race results, I wanted to analyze the data to see what other interesting facts where there.
+After the race felt compelled to scrap the data from the website with the race results, wanted to analyze the data to see what other interesting facts where there.
+
+## What do you need to follow this tutorial
+
+Like the race, most of the challenges to write the application were mental. You only need to break the main problem into smaller pieces and then tackle each one at the time:
+
+1) Get the data, scraping the website (very few sites allow you to export race results as CSV)
+2) Clean up the data, normalize it
+3) Ask questions. Then translate those questions into code and tests
+4) Present the results. A UI (Text or Graphic) will do wonders.
+
+You should have some experience in a programing language, my code is writen in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
+
+I strongly recommend you [get the source code](https://github.com/josevnz/tutorials/tree/main/docs/EmpireStateRunUp) (It is [Open Source](https://github.com/josevnz/tutorials/tree/main?tab=Apache-2.0-1-ov-file#readme)!). Get your hands dirty, break the scripts, have fun. You will need git to clone the repository:
+
+````shell
+git clone https://github.com/josevnz/tutorials.git
+cd tutorials/docs/EmpireStateRunUp/
+python -m ~/virtualenv/EmpireStateRunUp
+. ~/virtualenv/EmpireStateRunUp/bin/activate
+pip install --upgrade pip
+pip install --upgrade build
+pip install --upgrade wheel
+pip install --editable .
+````
+
+Or if you just want to run the code while reading this tutorial (using my latest version from [Pypi](https://pypi.org/project/EmpireStateRunUp/)):
+
+```shell
+python -m ~/virtualenv/EmpireStateRunUp
+. ~/virtualenv/EmpireStateRunUp/bin/activate 
+pip install EmpireStateRunUp
+```
+
+We can now move to the next stage, getting the data.
 
 ## Getting the data using web scrapping
 
@@ -85,15 +75,15 @@ into a format I could use later for data analysis.
 
 ### The rules of web scrapping
 
-There are very 4 simple rules:
+There are very 3 simple rules:
 
 1) Rule #1: **Don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. Lots of it.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
 3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
 
-I decided to use Selenium Web Driver as it calls a real browser, like FireFox, to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
+I decided to use [Selenium Web Driver](https://www.selenium.dev/documentation/webdriver/) as it calls a real browser, like [FireFox](https://www.mozilla.org/en-US/firefox/new/), to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
 
-Selenium is a complex tool and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
+Selenium _is a complex tool_ and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
 
 ```python
 import re
@@ -179,7 +169,7 @@ Data cannot be used as-is, needs cleaning up and that is the next step on this a
 [Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
-Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
+Luckily for me the dataset is very small (374+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
 
 I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
 
@@ -258,7 +248,7 @@ record: Iterable[str] = []
 record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).name.upper()
 ```
 
-I used enums to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
+I used [enums](https://docs.python.org/3/library/enum.html) to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
 
 At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
 
@@ -266,7 +256,7 @@ At the end, I ran the `es_normalizer` script, which takes the raw captured data 
 es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-first-level-2023.csv
 ```
 
-Now with the data ready we can proceed to do some analysis.
+Now with the data ready we can proceed to ask some questions about the race.
 
 ## Analyzing the data
 
@@ -412,7 +402,7 @@ I do a few things here after giving back the converted CSV back to the user, as 
 * Convert some string columns into native data types like integers, timestamps
 * A few entries did not have the gender defined. That affected other fields like 'gender_position'. To avoid distortions, these were filled with the median.
 
-Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a Z-score:
+Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a [Z-score](https://en.wikipedia.org/wiki/Standard_score):
 
 ```python
 from pandas import DataFrame
@@ -697,6 +687,8 @@ As you can see, Textual is a pretty powerful framework that reminds me a lot of 
 
 ## Running the applications
 
+Finally, time to get some facts about the race.
+
 ### Browsing through the data
 
 The 'esru_browser' is a simple browser that lets you navigate through the race raw data.
@@ -710,7 +702,7 @@ The application shows all the race details for every Runner, on a table that all
 ![](esru_browser.png)
 
 
-### Running summary reports
+### Summary reports
 
 This application provides details about the following:
 
@@ -733,7 +725,7 @@ Some interesting facts about the race:
 
 ### Finding outliers
 
-This application uses the Z-score to find the outliers for several metrics for this race
+This application uses the _Z-score_ to find the outliers for several metrics for this race
 
 ```shell
 esru_outlier
@@ -749,7 +741,7 @@ Textual as excellent support for rendering Markdown, programing languages. Take 
 
 ### A few plot graphics for you
 
-These were made with matplotlib. The code to generate the plots os very straightforward.
+I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots os very straightforward.
 
 The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphics to help you visualize the data.
 
@@ -804,13 +796,13 @@ Each method basically ingest a Panda Dataframe to produce the desired plot.
 
 The program can generate two flavors for the same data, one is a Box diagram:
 
-![](age_plot.png)
+![Age plot](age_plot.png)
 
 And the second is a regular histogram:
 
-![](age_histogram.png)
+![Age histogram](age_histogram.png)
 
-You can see from both graphics that the group age with most partipants is the 40-45 year old bracket, and the outliers
+You can see from both graphics that the group age with most participants is the 40-45 year old bracket, and the outliers
 are on the 10-20 and 70-80 year old groups.
 
 #### Participants per country plot
@@ -818,7 +810,7 @@ are on the 10-20 and 70-80 year old groups.
 ![](participants_per_country.png)
 
 No surprises here, the overwhelming majority of racers come from the United States, followed by Mexico. Interestingly 
-the winner of the 2013 race is from Malaysia, with only 2 runners. 
+the winner of the 2013 race is from Malaysia, with only 2 runners participating. 
 
 #### Gender distribution
 
@@ -833,6 +825,7 @@ There is plenty more to learn about the tools you just saw on this tutorial:
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
 * [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
+* Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of races. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?.
 
 
 
