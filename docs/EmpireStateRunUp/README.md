@@ -66,7 +66,7 @@ pip install --upgrade wheel
 python -m build .
 ```
 
-### Instalation from PiPy
+### Installation from PiPy
 
 For your user:
 ```shell
