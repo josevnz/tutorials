@@ -277,7 +277,7 @@ So _how Pandas work_?
 
 I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. 
 
-In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) loading loked like:
+In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) loading looked like:
 
 ```shell
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ python3
@@ -681,7 +681,7 @@ Time to dissect what each method of the `BrowserApp` class does:
 * Method `action_quit_app` is what is called a method binding. If you press the letter 'q' it will exit the app
 * The `compose` method creates the TUI components, it 'yields' components back to the framework, and they get added to the screen in that order. I return a header, a table and a footer
 * Method `on_mount` is more interesting, here you can get your components and change their behaviour. I add columns, populate data into the table, define sorting columns
-* I allow the table to sort by column by defining a method called `on_header_clicked` and by using an annotation which is just a function decorator that tells the framework to call this method when a 'DataTable.HeaderSelected' ocurrs.
+* I allow the table to sort by column by defining a method called `on_header_clicked` and by using an annotation which is just a function decorator that tells the framework to call this method when a 'DataTable.HeaderSelected' occurs.
 
 As you can see, Textual is a pretty powerful framework that reminds me a lot of Java Swing, but without the complexity.
 
