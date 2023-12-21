@@ -2,54 +2,7 @@
 
 [![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
 
-```
-#########################%%%%####################################
-####################%#%###%##%#+#%%%%###%%#%%%%%%#%###############
-###############%%%%%%%%%%%%%%%#=*%%%%%%%%%#%%%%%%%%%%%%###########
-###############%#%%%%%%%%%%%%%#=#%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%###
-#################%%%%%%%%%%%%%*=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-################%%%%%%%%%%%%%%*+*%#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#################%###%%%%%%%%#**+=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#######################%%%%#*==-=-+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#########################%%-:.--+=*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##
-#**#**#####################:+=+=-:+#%%%%%%%%%%%%%%%%%%%%%%%##%####
-******###################*==*=+==:+#%%%%%%%%%%%%%%%%%%%###########
-*********################*++#++=+-+###%%%%%%%%%%%##%#%############
-**********###############***#++==-=%%#%%%%%######%################
-***************##########**+#*+=#==%%%%%%#%#######################
-***************#########+:+*#*+=#-=%%%%%%##%######################
-***************####*####+-+*#*++#-=%%%%%%#########################
-*+*******************###+-+*##++*-=%%%%%%#########################
-++++++++****************+-+*##=**-=%%%%%%########################*
-++++++++++++++++********=-++#*=**-=%%%%%%########*****#########***
-==+++++++++++++++***+***+-++#*=*+:=%%%%%####**********#######*****
-====+++++++++++++++++++*=-++#*=*+-+%%%%%%##**********#######******
-=====+++++++++++++++++++=-++#*=*+:+%%%%%#***********#######*******
-=========++=+=====++++++=-++#*=*+-*%%%%%#*************************
----=================++++=-++#*=*+-*##%%%#*************************
--------===============++=-++#+-++-*##%%%#****************+++*****+
-----------===============-++#+-+*-#####%#***************+++*****++
----------------==========-++#=-+*=####%%#*********************++=+
--------------------=====--++#+=+*=####%%#*********************++==
--------------------=====--=+#+=+#+##%%%%%*+*******************+===
--------------------======-=+#==+#+##%%%%%*++***********+****++++==
---------------------------++#==+#**#%%%%%*++++**+++++++++++++++===
----------------=*---------++#==+#**%%%%%%*+++++++++++++++++++=====
--------:------==#---------+++-+*##**+#%%%#++++++++++++++++++======
----:-----==---=+#+-++=====+*+=*###***#%%%%*+++*#*++++++++++++=====
-======*###%#*++*#+=#%==+==**+=****+*##%##*#%##*##++***+++*******++
-#*==--*%%#%%%#%*+**++#*+=+#*+=*+*#+#%%%%#*%%%%%%***%###*#****#***+
-**====#%%#%%%#%*+*+==#=+==#*+=*+*#=#*+*###%%#%**##+*%##%%%%%%%%%%*
-**+==-*%%#%%%###*%%%%#++**###=#++%=*+:*##%%%%#**####%%%%%%%%%%%%%#
-###*#*##*+++=======-==++%%%%%##*+#-*+-#*#%%%%#%%%==#%%%**###%%*+++
-########*+++++++++*#***#%%%%%%+:##-++=#*#%%%%%%%%%*+==+=#*++#%%%#*
-*+*#####***#*##*#+***+*+*%%%%%#*##**++##%%%%%%%%%%*+-:-:#*:-+%%#*+
-++*#####+*+#++*+%****+#**%%%%##+*+**+*##%%%%%%%%%%*==--:#*-++#%%##
-**#######%+*+***%*##*=#+*%%%#:=###---*#%%%%%%%%%%%+==-=:*#****+*##
-*##***+++##-:+*#*+#****+#%#**=-###:::#*=+**#%%%%%*+#%%%%***+***###
-..:-=+=-=#+.-#*###**+*****####*#%*#+:++==++====+=+++++++=:::**::+:
-=--=---=+=+==#*%%%%%%%#%###%#######:::::::--====+***++*+*-::**++++
-```
+![empire_state_runup.png](empire_state_runup.png)
 
 > The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
@@ -60,21 +13,58 @@
 Most of us have run a regular race (5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
 the top on one of the most famous building of the world.
 
-Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners. Add to that fact that demand to run is high, and then
-you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5000 applicants).
+Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners (or should I say _climbers_?). Add to that fact that demand to participate is high, and then
+you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5,000 applicants).
 
 You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
 
-God news: I wasn't totally unprepared. But I had to adjust my exercise routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical race.
+And then I panicked. Have you ever been at the base of that building and looked up? Some days when is cloudy you cannot even see the top of the building.
 
-The day of the race came and here are some tough's about it:
+God news: I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical run.
+
+Long story/ short story, the day of the race came and here are some tough's about how it went:
 
 * I didn't die. Seriously. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
 * You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
-* Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. I got passed and I passed a lot of people that forgot the 'pace yourself' rule.
+* Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. 
+* I got passed and I passed a lot of people that forgot the 'pace yourself' rule. If you sprint, you will be toasted before floor 25, for sure.
 
-I felt compelled to scrap the data from the website with the race results, I wanted to analyze the data to see what other interesting facts where there.
+After the race felt compelled to scrap the data from the website with the race results, wanted to analyze the data to see what other interesting facts where there.
+
+## What do you need to follow this tutorial
+
+Like the race, most of the challenges to write the application were mental. You only need to break the main problem into smaller pieces and then tackle each one at the time:
+
+1) Get the data, scraping the website (very few sites allow you to export race results as CSV)
+2) Clean up the data, normalize it
+3) Ask questions. Then translate those questions into code and tests
+4) Present the results. A UI (Text or Graphic) will do wonders.
+
+You should have some experience in a programing language, my code is writen in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
+
+I strongly recommend you [get the source code](https://github.com/josevnz/tutorials/tree/main/docs/EmpireStateRunUp) (It is [Open Source](https://github.com/josevnz/tutorials/tree/main?tab=Apache-2.0-1-ov-file#readme)!). Get your hands dirty, break the scripts, have fun. You will need git to clone the repository:
+
+````shell
+git clone https://github.com/josevnz/tutorials.git
+cd tutorials/docs/EmpireStateRunUp/
+python -m ~/virtualenv/EmpireStateRunUp
+. ~/virtualenv/EmpireStateRunUp/bin/activate
+pip install --upgrade pip
+pip install --upgrade build
+pip install --upgrade wheel
+pip install --editable .
+````
+
+Or if you just want to run the code while reading this tutorial (using my latest version from [Pypi](https://pypi.org/project/EmpireStateRunUp/)):
+
+```shell
+python -m ~/virtualenv/EmpireStateRunUp
+. ~/virtualenv/EmpireStateRunUp/bin/activate 
+pip install EmpireStateRunUp
+```
+
+We can now move to the next stage, getting the data.
 
 ## Getting the data using web scrapping
 
@@ -85,15 +75,15 @@ into a format I could use later for data analysis.
 
 ### The rules of web scrapping
 
-There are very 4 simple rules:
+There are very 3 simple rules:
 
 1) Rule #1: **Don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. Lots of it.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
 3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
 
-I decided to use Selenium Web Driver as it calls a real browser, like FireFox, to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
+I decided to use [Selenium Web Driver](https://www.selenium.dev/documentation/webdriver/) as it calls a real browser, like [FireFox](https://www.mozilla.org/en-US/firefox/new/), to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
 
-Selenium is a complex tool and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
+Selenium _is a complex tool_ and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
 
 ```python
 import re
