@@ -169,7 +169,7 @@ Data cannot be used as-is, needs cleaning up and that is the next step on this a
 [Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
-Luckily for me the dataset is very small (374 records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
+Luckily for me the dataset is very small (374+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
 
 I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
 
@@ -248,7 +248,7 @@ record: Iterable[str] = []
 record[RaceFields.wave.value] = get_wave_from_bib(record[RaceFields.bib.value]).name.upper()
 ```
 
-I used enums to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
+I used [enums](https://docs.python.org/3/library/enum.html) to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
 
 At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
 
@@ -256,7 +256,7 @@ At the end, I ran the `es_normalizer` script, which takes the raw captured data 
 es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-first-level-2023.csv
 ```
 
-Now with the data ready we can proceed to do some analysis.
+Now with the data ready we can proceed to ask some questions about the race.
 
 ## Analyzing the data
 
@@ -402,7 +402,7 @@ I do a few things here after giving back the converted CSV back to the user, as 
 * Convert some string columns into native data types like integers, timestamps
 * A few entries did not have the gender defined. That affected other fields like 'gender_position'. To avoid distortions, these were filled with the median.
 
-Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a Z-score:
+Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a [Z-score](https://en.wikipedia.org/wiki/Standard_score):
 
 ```python
 from pandas import DataFrame
@@ -687,6 +687,8 @@ As you can see, Textual is a pretty powerful framework that reminds me a lot of 
 
 ## Running the applications
 
+Finally, time to get some facts about the race.
+
 ### Browsing through the data
 
 The 'esru_browser' is a simple browser that lets you navigate through the race raw data.
@@ -700,7 +702,7 @@ The application shows all the race details for every Runner, on a table that all
 ![](esru_browser.png)
 
 
-### Running summary reports
+### Summary reports
 
 This application provides details about the following:
 
@@ -723,7 +725,7 @@ Some interesting facts about the race:
 
 ### Finding outliers
 
-This application uses the Z-score to find the outliers for several metrics for this race
+This application uses the _Z-score_ to find the outliers for several metrics for this race
 
 ```shell
 esru_outlier
@@ -739,7 +741,7 @@ Textual as excellent support for rendering Markdown, programing languages. Take 
 
 ### A few plot graphics for you
 
-These were made with matplotlib. The code to generate the plots os very straightforward.
+I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots os very straightforward.
 
 The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphics to help you visualize the data.
 
@@ -808,7 +810,7 @@ are on the 10-20 and 70-80 year old groups.
 ![](participants_per_country.png)
 
 No surprises here, the overwhelming majority of racers come from the United States, followed by Mexico. Interestingly 
-the winner of the 2013 race is from Malaysia, with only 2 runners. 
+the winner of the 2013 race is from Malaysia, with only 2 runners participating. 
 
 #### Gender distribution
 
@@ -823,6 +825,7 @@ There is plenty more to learn about the tools you just saw on this tutorial:
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
 * [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
+* Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of races. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?.
 
 
 
