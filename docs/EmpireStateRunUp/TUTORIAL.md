@@ -796,11 +796,11 @@ Each method basically ingest a Panda Dataframe to produce the desired plot.
 
 The program can generate two flavors for the same data, one is a Box diagram:
 
-![](age_plot.png)
+![Age plot](age_plot.png)
 
 And the second is a regular histogram:
 
-![](age_histogram.png)
+![Age histogram](age_histogram.png)
 
 You can see from both graphics that the group age with most participants is the 40-45 year old bracket, and the outliers
 are on the 10-20 and 70-80 year old groups.
