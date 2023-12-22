@@ -300,7 +300,6 @@ class Plotter:
         ax.set_xlabel('Gender')
 
 
-
 class BrowserApp(App):
     ENABLE_COMMAND_PALETTE = False
     BINDINGS = [("q", "quit_app", "Quit")]
