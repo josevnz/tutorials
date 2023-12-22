@@ -741,7 +741,7 @@ Textual as excellent support for rendering Markdown, programing languages. Take 
 
 ### A few plot graphics for you
 
-I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots os very straightforward.
+I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots is very straightforward.
 
 The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphics to help you visualize the data.
 
@@ -750,7 +750,7 @@ The class `Plotter` does all the heavy lifting
 ```python
 # Not all imports shown, but enough to explain this code
 from pathlib import Path
-from empirestaterunup.data import load_data, RaceFields
+from empirestaterunup.data import load_data, RaceFields, beautify_race_times
 from empirestaterunup.analyze import find_fastest, FastestFilters
 import matplotlib.pyplot as plt
 
@@ -778,42 +778,21 @@ class Plotter:
             ax.grid(True)
 
     def plot_country(self):
+        fastest = find_fastest(self.df, FastestFilters.Country)
         series = self.df[RaceFields.country.value].value_counts()
         series.sort_values(inplace=True)
         fig, ax = plt.subplots(layout='constrained')
         rects = ax.barh(series.keys(), series.values)
         ax.bar_label(
             rects,
-            [value for value in series.values],
-            padding=5,
-            color='black',
-            fontweight='bold'
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            padding=1,
+            color='black'
         )
         ax.set_title = "Participants per country"
         ax.set_stacked = True
         ax.set_ylabel('Country')
         ax.set_xlabel('Count per country')
-
-    def plot_gender(self):
-        series = self.df[RaceFields.gender.value].value_counts()
-        fig, ax = plt.subplots(layout='constrained')
-        wedges, texts, auto_texts = ax.pie(
-            series.values,
-            labels=series.keys(),
-            autopct="%%%.2f",
-            shadow=True,
-            startangle=90,
-            explode=(0.1, 0, 0)
-        )
-        ax.set_title = "Gender participation"
-        ax.set_xlabel('Gender distribution')
-        # Legend with the fastest runners by gender
-        fastest = find_fastest(self.df, FastestFilters.Gender)
-        fastest_legend = [f"{name} - {details['time']}" for name, details in fastest.items()]
-        ax.legend(wedges, fastest_legend,
-                  title="Fastest by gender",
-                  loc="center left",
-                  bbox_to_anchor=(1, 0, 0.5, 1))
 ```
 
 Each method basically ingest a Panda Dataframe to produce the desired plot.
