@@ -429,7 +429,7 @@ def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
     return data[criteria].describe()
 ```
 
-All the analysis logic [was kep together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
+All the analysis logic [was kept together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
 
 Testing is part integral of writing code, and as I kept adding more of it and went back to write unit tests.
 
