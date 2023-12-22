@@ -14,6 +14,7 @@ from textual.containers import Vertical
 from textual.driver import Driver
 from textual.screen import ModalScreen
 from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
+import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
@@ -251,35 +252,44 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            self.df[RaceFields.age.value].plot.box(
-                title="Age details",
-                grid=True,
-                color={
-                    "boxes": "DarkGreen",
-                    "whiskers": "DarkOrange",
-                    "medians": "DarkBlue",
-                    "caps": "Gray",
-                }
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            ax.boxplot(series)
+            ax.set_title("Age details")
+            ax.set_ylabel('Years')
+            ax.set_xlabel('Age')
+            ax.grid(True)
         elif gtype == 'hist':
-            self.df[RaceFields.age.value].plot.hist(
-                title="Age details",
-                grid=True,
-                color='k'
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            n, bins, patches = ax.hist(series, density=False, facecolor='C0', alpha=0.75)
+            ax.set_xlabel('Age [years]')
+            ax.set_ylabel('Count')
+            ax.set_title(f'Age details for {series.shape[0]} racers\nBins={len(bins)}')
+            ax.grid(True)
 
     def plot_country(self):
-        self.df[RaceFields.country.value].value_counts().plot.barh(
-            title="Participants per country",
-            stacked=True
+        series = self.df[RaceFields.country.value].value_counts()
+        series.sort_values(inplace=True)
+        fig, ax = plt.subplots(layout='constrained')
+        rects = ax.barh(series.keys(), series.values)
+        ax.bar_label(
+            rects,
+            [value for value in series.values],
+            padding=5,
+            color='black',
+            fontweight='bold'
         )
+        ax.set_title = "Participants per country"
+        ax.set_stacked = True
+        ax.set_ylabel('Country')
+        ax.set_xlabel('Count per country')
 
     def plot_gender(self):
-        self.df[RaceFields.gender.value].value_counts().plot.pie(
-            title="Gender participation",
-            subplots=True,
-            autopct="%.2f"
-        )
+        series = self.df[RaceFields.gender.value].value_counts()
+        fig, ax = plt.subplots(layout='constrained')
+        ax.pie(series.values, labels=series.keys(), autopct="%.2f")
+        ax.set_title = "Gender participation"
 
 
 class BrowserApp(App):
