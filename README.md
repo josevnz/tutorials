@@ -18,7 +18,7 @@ Or even better, submit a patch.
 ```shell
 https://github.com/josevnz/tutorials.git && \
 cd tutorials && \
-bin/git submodule sync --recursive
+git submodule sync --recursive
 git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
 ```
 
@@ -26,6 +26,6 @@ git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
 If you want to refresh it with the latest changes
 
 ```shell
-bin/git submodule sync --recursive && \
+git submodule sync --recursive && \
 git -c protocol.version=2 submodule update --init --force --depth=1 --recursive
 ```
