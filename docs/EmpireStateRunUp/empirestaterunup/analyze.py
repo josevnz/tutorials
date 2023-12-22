@@ -123,7 +123,8 @@ def find_fastest(df: DataFrame, criteria: FastestFilters) -> Dict[str, Dict[str,
                 fastest_runner = runners_by_bucket[(runners_by_bucket[RaceFields.time.value]) == fastest_time]
                 name = fastest_runner.name.values[0]
                 age = fastest_runner.age.values[0]
-                results[name] = {
+                results[bucket] = {
+                    "name": name,
                     "age": age,
                     "time": fastest_time
                 }
@@ -135,8 +136,8 @@ def find_fastest(df: DataFrame, criteria: FastestFilters) -> Dict[str, Dict[str,
             fastest_runner = runners_by_gender[(runners_by_gender[RaceFields.time.value]) == fastest_time]
             name = fastest_runner.name.values[0]
             gender = fastest_runner.gender.values[0]
-            results[name] = {
-                "gender": gender,
+            results[gender] = {
+                "name": name,
                 "time": fastest_time
             }
     elif FastestFilters.Country:
@@ -147,8 +148,8 @@ def find_fastest(df: DataFrame, criteria: FastestFilters) -> Dict[str, Dict[str,
             fastest_runner = runners_by_country[(runners_by_country[RaceFields.time.value]) == fastest_time]
             name = fastest_runner.name.values[0]
             country = fastest_runner.country.values[0]
-            results[name] = {
-                "country": country,
+            results[country] = {
+                "name": name,
                 "time": fastest_time
             }
     return results

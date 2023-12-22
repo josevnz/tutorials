@@ -20,7 +20,7 @@ from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age
     dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves, FastestFilters, \
     find_fastest
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times
 
 
 class FiveNumberApp(App):
@@ -270,16 +270,16 @@ class Plotter:
             ax.grid(True)
 
     def plot_country(self):
+        fastest = find_fastest(self.df, FastestFilters.Country)
         series = self.df[RaceFields.country.value].value_counts()
         series.sort_values(inplace=True)
         fig, ax = plt.subplots(layout='constrained')
         rects = ax.barh(series.keys(), series.values)
         ax.bar_label(
             rects,
-            [value for value in series.values],
-            padding=5,
-            color='black',
-            fontweight='bold'
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            padding=1,
+            color='black'
         )
         ax.set_title = "Participants per country"
         ax.set_stacked = True
@@ -301,7 +301,7 @@ class Plotter:
         ax.set_xlabel('Gender distribution')
         # Legend with the fastest runners by gender
         fastest = find_fastest(self.df, FastestFilters.Gender)
-        fastest_legend = [f"{name} - {details['time']}" for name, details in fastest.items()]
+        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in series.keys()]
         ax.legend(wedges, fastest_legend,
                   title="Fastest by gender",
                   loc="center left",
