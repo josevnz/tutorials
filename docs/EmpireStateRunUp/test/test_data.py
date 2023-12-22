@@ -151,7 +151,7 @@ class DataTestCase(unittest.TestCase):
         fastest = find_fastest(run_data, FastestFilters.Age)
         self.assertIsNotNone(fastest)
         self.assertTrue(fastest)
-        self.assertEqual(6, len(fastest))
+        self.assertEqual(7, len(fastest))
 
 
 if __name__ == '__main__':
