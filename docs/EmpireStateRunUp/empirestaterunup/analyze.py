@@ -2,7 +2,9 @@
 Analyze original race results and give back canned reports
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
-from typing import Union, Tuple
+import re
+from enum import Enum
+from typing import Union, Tuple, Dict, Any
 
 import numpy as np
 import pandas
@@ -12,6 +14,12 @@ from datetime import timedelta
 from empirestaterunup.data import RaceFields
 
 SUMMARY_METRICS = (RaceFields.age.value, RaceFields.time.value, RaceFields.pace.value)
+
+
+class FastestFilters(Enum):
+    Gender = 0
+    Age = 1
+    Country = 2
 
 
 def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
@@ -92,3 +100,55 @@ def better_than_median_waves(df: DataFrame) -> Tuple[float, Series]:
     """
     median = df[RaceFields.time.value].median()
     return median, df[df[RaceFields.time.value].values <= median][RaceFields.wave.value].value_counts()
+
+
+def find_fastest(df: DataFrame, criteria: FastestFilters) -> Dict[str, Dict[str, Any]]:
+    """
+    Find the fastest runners, per category
+    :param df Dataframe to analyze
+    :param criteria Filtering rules
+    :return Dictionary with the fastest runners, includes criteria and value
+    """
+    results = {}
+    if criteria == FastestFilters.Age:
+        age_bucket, _ = age_bins(df)
+        buckets = age_bucket.unique()
+        for bucket in buckets:
+            matcher = re.search('(\\d+) - (\\d+)', bucket)
+            if matcher:
+                low = int(matcher.group(1))
+                high = int(matcher.group(2))
+                runners_by_bucket = df[(df[RaceFields.age.value] >= low) & (df[RaceFields.age.value] <= high)]
+                fastest_time = runners_by_bucket[RaceFields.time.value].min()
+                fastest_runner = runners_by_bucket[(runners_by_bucket[RaceFields.time.value]) == fastest_time]
+                name = fastest_runner.name.values[0]
+                age = fastest_runner.age.values[0]
+                results[name] = {
+                    "age": age,
+                    "time": fastest_time
+                }
+    elif criteria == FastestFilters.Gender:
+        genders = df[RaceFields.gender.value].unique()
+        for gender in genders:
+            runners_by_gender = df[(df[RaceFields.gender.value] == gender)]
+            fastest_time = runners_by_gender[RaceFields.time.value].min()
+            fastest_runner = runners_by_gender[(runners_by_gender[RaceFields.time.value]) == fastest_time]
+            name = fastest_runner.name.values[0]
+            gender = fastest_runner.gender.values[0]
+            results[name] = {
+                "gender": gender,
+                "time": fastest_time
+            }
+    elif FastestFilters.Country:
+        countries = df[RaceFields.country.value].unique()
+        for country in countries:
+            runners_by_country = df[(df[RaceFields.country.value] == country)]
+            fastest_time = runners_by_country[RaceFields.time.value].min()
+            fastest_runner = runners_by_country[(runners_by_country[RaceFields.time.value]) == fastest_time]
+            name = fastest_runner.name.values[0]
+            country = fastest_runner.country.values[0]
+            results[name] = {
+                "country": country,
+                "time": fastest_time
+            }
+    return results

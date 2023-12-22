@@ -297,7 +297,7 @@ class Plotter:
             explode=(0.1, 0, 0)
         )
         ax.set_title = "Gender participation"
-        ax.set_xlabel('Gender')
+        ax.set_xlabel('Gender distribution')
 
 
 class BrowserApp(App):
