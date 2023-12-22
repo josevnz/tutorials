@@ -288,8 +288,17 @@ class Plotter:
     def plot_gender(self):
         series = self.df[RaceFields.gender.value].value_counts()
         fig, ax = plt.subplots(layout='constrained')
-        ax.pie(series.values, labels=series.keys(), autopct="%.2f")
+        ax.pie(
+            series.values,
+            labels=series.keys(),
+            autopct="%.2f",
+            shadow=True,
+            startangle=90,
+            explode=(0.1, 0, 0)
+        )
         ax.set_title = "Gender participation"
+        ax.set_xlabel('Gender')
+
 
 
 class BrowserApp(App):
