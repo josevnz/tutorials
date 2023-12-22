@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 from typing import Type
 
+from matplotlib import colors
 from pandas import DataFrame
 from rich.text import Text
 from textual import on
@@ -263,7 +264,12 @@ class Plotter:
         elif gtype == 'hist':
             series = self.df[RaceFields.age.value]
             fig, ax = plt.subplots(layout='constrained')
-            n, bins, patches = ax.hist(series, density=False, facecolor='C0', alpha=0.75)
+            n, bins, patches = ax.hist(series, density=False, alpha=0.75)
+            fracs = n / n.max()
+            norm = colors.Normalize(fracs.min(), fracs.max())
+            for frac, patch in zip(fracs, patches):
+                color = plt.cm.viridis(norm(frac))
+                patch.set_facecolor(color)
             ax.set_xlabel('Age [years]')
             ax.set_ylabel('Count')
             ax.set_title(f'Age details for {series.shape[0]} racers\nBins={len(bins)}')
