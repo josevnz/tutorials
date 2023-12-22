@@ -291,7 +291,7 @@ class Plotter:
         ax.pie(
             series.values,
             labels=series.keys(),
-            autopct="%.2f",
+            autopct="%%%.2f",
             shadow=True,
             startangle=90,
             explode=(0.1, 0, 0)
