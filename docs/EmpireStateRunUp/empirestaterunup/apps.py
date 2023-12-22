@@ -265,7 +265,7 @@ class Plotter:
             series = self.df[RaceFields.age.value]
             fig, ax = plt.subplots(layout='constrained')
             n, bins, patches = ax.hist(series, density=False, alpha=0.75)
-            # Borrowed coloring recipe for histogram from their documentation
+            # Borrowed coloring recipe for histogram from Matplotlib documentation
             fractions = n / n.max()
             norm = colors.Normalize(fractions.min(), fractions.max())
             for frac, patch in zip(fractions, patches):
