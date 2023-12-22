@@ -452,7 +452,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_country_counts
-from empirestaterunup import load_data
+from empirestaterunup.data import load_data
 
 
 class AnalyzeTestCase(unittest.TestCase):
@@ -748,9 +748,11 @@ The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphi
 The class `Plotter` does all the heavy lifting
 
 ```python
+# Not all imports shown, but enough to explain this code
 from pathlib import Path
-from empirestaterunup import load_data, RaceFields
-
+from empirestaterunup.data import load_data, RaceFields
+from empirestaterunup.analyze import find_fastest, FastestFilters
+import matplotlib.pyplot as plt
 
 class Plotter:
 
@@ -759,35 +761,59 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            self.df[RaceFields.age.value].plot.box(
-                title="Age details",
-                grid=True,
-                color={
-                    "boxes": "DarkGreen",
-                    "whiskers": "DarkOrange",
-                    "medians": "DarkBlue",
-                    "caps": "Gray",
-                }
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            ax.boxplot(series)
+            ax.set_title("Age details")
+            ax.set_ylabel('Years')
+            ax.set_xlabel('Age')
+            ax.grid(True)
         elif gtype == 'hist':
-            self.df[RaceFields.age.value].plot.hist(
-                title="Age details",
-                grid=True,
-                color='k'
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            n, bins, patches = ax.hist(series, density=False, facecolor='C0', alpha=0.75)
+            ax.set_xlabel('Age [years]')
+            ax.set_ylabel('Count')
+            ax.set_title(f'Age details for {series.shape[0]} racers\nBins={len(bins)}')
+            ax.grid(True)
 
     def plot_country(self):
-        self.df[RaceFields.country.value].value_counts().plot.barh(
-            title="Participants per country",
-            stacked=True
+        series = self.df[RaceFields.country.value].value_counts()
+        series.sort_values(inplace=True)
+        fig, ax = plt.subplots(layout='constrained')
+        rects = ax.barh(series.keys(), series.values)
+        ax.bar_label(
+            rects,
+            [value for value in series.values],
+            padding=5,
+            color='black',
+            fontweight='bold'
         )
+        ax.set_title = "Participants per country"
+        ax.set_stacked = True
+        ax.set_ylabel('Country')
+        ax.set_xlabel('Count per country')
 
     def plot_gender(self):
-        self.df[RaceFields.gender.value].value_counts().plot.pie(
-            title="Gender participation",
-            subplots=True,
-            autopct="%.2f"
+        series = self.df[RaceFields.gender.value].value_counts()
+        fig, ax = plt.subplots(layout='constrained')
+        wedges, texts, auto_texts = ax.pie(
+            series.values,
+            labels=series.keys(),
+            autopct="%%%.2f",
+            shadow=True,
+            startangle=90,
+            explode=(0.1, 0, 0)
         )
+        ax.set_title = "Gender participation"
+        ax.set_xlabel('Gender distribution')
+        # Legend with the fastest runners by gender
+        fastest = find_fastest(self.df, FastestFilters.Gender)
+        fastest_legend = [f"{name} - {details['time']}" for name, details in fastest.items()]
+        ax.legend(wedges, fastest_legend,
+                  title="Fastest by gender",
+                  loc="center left",
+                  bbox_to_anchor=(1, 0, 0.5, 1))
 ```
 
 Each method basically ingest a Panda Dataframe to produce the desired plot.

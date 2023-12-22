@@ -17,7 +17,8 @@ from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownVi
 import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
+    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves, FastestFilters, \
+    find_fastest
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
     lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples
 
@@ -288,7 +289,7 @@ class Plotter:
     def plot_gender(self):
         series = self.df[RaceFields.gender.value].value_counts()
         fig, ax = plt.subplots(layout='constrained')
-        ax.pie(
+        wedges, texts, auto_texts = ax.pie(
             series.values,
             labels=series.keys(),
             autopct="%%%.2f",
@@ -298,6 +299,13 @@ class Plotter:
         )
         ax.set_title = "Gender participation"
         ax.set_xlabel('Gender distribution')
+        # Annotate the gender distribution with the fastest runners by gender
+        fastest = find_fastest(self.df, FastestFilters.Gender)
+        fastest_legend = [f"{name} - {details['time']}" for name, details in fastest.items()]
+        ax.legend(wedges, fastest_legend,
+                  title="Fastest by gender",
+                  loc="center left",
+                  bbox_to_anchor=(1, 0, 0.5, 1))
 
 
 class BrowserApp(App):
