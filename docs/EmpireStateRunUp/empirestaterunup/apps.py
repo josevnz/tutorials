@@ -266,9 +266,9 @@ class Plotter:
             fig, ax = plt.subplots(layout='constrained')
             n, bins, patches = ax.hist(series, density=False, alpha=0.75)
             # Borrowed coloring recipe for histogram from their documentation
-            fracs = n / n.max()
-            norm = colors.Normalize(fracs.min(), fracs.max())
-            for frac, patch in zip(fracs, patches):
+            fractions = n / n.max()
+            norm = colors.Normalize(fractions.min(), fractions.max())
+            for frac, patch in zip(fractions, patches):
                 color = plt.cm.viridis(norm(frac))
                 patch.set_facecolor(color)
             ax.set_xlabel('Age [years]')
