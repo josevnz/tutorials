@@ -299,7 +299,7 @@ class Plotter:
         )
         ax.set_title = "Gender participation"
         ax.set_xlabel('Gender distribution')
-        # Annotate the gender distribution with the fastest runners by gender
+        # Legend with the fastest runners by gender
         fastest = find_fastest(self.df, FastestFilters.Gender)
         fastest_legend = [f"{name} - {details['time']}" for name, details in fastest.items()]
         ax.legend(wedges, fastest_legend,
