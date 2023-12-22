@@ -277,7 +277,7 @@ So _how Pandas work_?
 
 I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. 
 
-In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) loading loked like:
+In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html) loading looked like:
 
 ```shell
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ python3
@@ -429,7 +429,7 @@ def get_5_number(criteria: str, data: DataFrame) -> DataFrame:
     return data[criteria].describe()
 ```
 
-All the analysis logic [was kep together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
+All the analysis logic [was kept together on a single module](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
 
 Testing is part integral of writing code, and as I kept adding more of it and went back to write unit tests.
 
@@ -452,7 +452,7 @@ import unittest
 from pandas import DataFrame
 
 from empirestaterunup.analyze import get_country_counts
-from empirestaterunup import load_data
+from empirestaterunup.data import load_data
 
 
 class AnalyzeTestCase(unittest.TestCase):
@@ -681,7 +681,7 @@ Time to dissect what each method of the `BrowserApp` class does:
 * Method `action_quit_app` is what is called a method binding. If you press the letter 'q' it will exit the app
 * The `compose` method creates the TUI components, it 'yields' components back to the framework, and they get added to the screen in that order. I return a header, a table and a footer
 * Method `on_mount` is more interesting, here you can get your components and change their behaviour. I add columns, populate data into the table, define sorting columns
-* I allow the table to sort by column by defining a method called `on_header_clicked` and by using an annotation which is just a function decorator that tells the framework to call this method when a 'DataTable.HeaderSelected' ocurrs.
+* I allow the table to sort by column by defining a method called `on_header_clicked` and by using an annotation which is just a function decorator that tells the framework to call this method when a 'DataTable.HeaderSelected' occurs.
 
 As you can see, Textual is a pretty powerful framework that reminds me a lot of Java Swing, but without the complexity.
 
@@ -741,16 +741,18 @@ Textual as excellent support for rendering Markdown, programing languages. Take 
 
 ### A few plot graphics for you
 
-I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots os very straightforward.
+I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots is very straightforward.
 
 The [simple_plot](empirestaterunup/apps.py) application offers a few plot graphics to help you visualize the data.
 
 The class `Plotter` does all the heavy lifting
 
 ```python
+# Not all imports shown, but enough to explain this code
 from pathlib import Path
-from empirestaterunup import load_data, RaceFields
-
+from empirestaterunup.data import load_data, RaceFields, beautify_race_times
+from empirestaterunup.analyze import find_fastest, FastestFilters
+import matplotlib.pyplot as plt
 
 class Plotter:
 
@@ -759,35 +761,38 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            self.df[RaceFields.age.value].plot.box(
-                title="Age details",
-                grid=True,
-                color={
-                    "boxes": "DarkGreen",
-                    "whiskers": "DarkOrange",
-                    "medians": "DarkBlue",
-                    "caps": "Gray",
-                }
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            ax.boxplot(series)
+            ax.set_title("Age details")
+            ax.set_ylabel('Years')
+            ax.set_xlabel('Age')
+            ax.grid(True)
         elif gtype == 'hist':
-            self.df[RaceFields.age.value].plot.hist(
-                title="Age details",
-                grid=True,
-                color='k'
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            n, bins, patches = ax.hist(series, density=False, facecolor='C0', alpha=0.75)
+            ax.set_xlabel('Age [years]')
+            ax.set_ylabel('Count')
+            ax.set_title(f'Age details for {series.shape[0]} racers\nBins={len(bins)}')
+            ax.grid(True)
 
     def plot_country(self):
-        self.df[RaceFields.country.value].value_counts().plot.barh(
-            title="Participants per country",
-            stacked=True
+        fastest = find_fastest(self.df, FastestFilters.Country)
+        series = self.df[RaceFields.country.value].value_counts()
+        series.sort_values(inplace=True)
+        fig, ax = plt.subplots(layout='constrained')
+        rects = ax.barh(series.keys(), series.values)
+        ax.bar_label(
+            rects,
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            padding=1,
+            color='black'
         )
-
-    def plot_gender(self):
-        self.df[RaceFields.gender.value].value_counts().plot.pie(
-            title="Gender participation",
-            subplots=True,
-            autopct="%.2f"
-        )
+        ax.set_title = "Participants per country"
+        ax.set_stacked = True
+        ax.set_ylabel('Country')
+        ax.set_xlabel('Count per country')
 ```
 
 Each method basically ingest a Panda Dataframe to produce the desired plot.

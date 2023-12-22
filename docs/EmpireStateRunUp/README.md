@@ -2,11 +2,15 @@
 
 [![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
 
-![](esru_browser.png)
+![empire_state_runup.png](empire_state_runup.png)
+
+![ESRU browser](esru_browser.png)
+
+
 
 Hello. I wrote an application to analyse the results of the 'Empire State Run Up', 2013 edition, after I ran the race. 
 
-Here you will find my some code, as I was curious about some details about the race.
+Here you will find my code.
 
 ## If you just want to install it
 
@@ -66,7 +70,7 @@ pip install --upgrade wheel
 python -m build .
 ```
 
-### Instalation from PiPy
+### Installation from PiPy
 
 For your user:
 ```shell

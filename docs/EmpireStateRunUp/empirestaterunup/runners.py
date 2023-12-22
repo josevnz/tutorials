@@ -121,6 +121,7 @@ def simple_plot():
         help="Race results."
     )
     options = parser.parse_args()
+    plt.style.use('fivethirtyeight')  # Common style for all the plots
     if options.results:
         pzs = Plotter(options.results[0])
     else:
