@@ -223,8 +223,12 @@ class OutlierApp(App):
             table.cursor_type = 'row'
             table.zebra_stripes = True
             table.tooltip = "Get runner details"
+            if column_name == RaceFields.age.value:
+                label = Label(f"{column_name} (older) outliers:".title())
+            else:
+                label = Label(f"{column_name} (slower) outliers:".title())
             yield Vertical(
-                Label(f"{column_name} outliers:".title()),
+                label,
                 table
             )
         yield Footer()
