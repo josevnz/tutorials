@@ -1,3 +1,20 @@
+Metadata-Version: 2.1
+Name: KodegeekTextualize
+Version: 0.0.2
+Summary: Collection of scripts that show how to use several features of textualize
+Author-email: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+Keywords: running,race
+Classifier: Environment :: Console
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 3
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: textual-dev==1.2.1
+Requires-Dist: textual~=0.41.0
+
 # Textualize
 
 This is my collection of small, self-contained applications that use Textualize to demonstrate features.

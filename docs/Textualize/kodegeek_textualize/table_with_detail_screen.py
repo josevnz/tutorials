@@ -121,7 +121,7 @@ class MyApp(App):
         self.push_screen(runner_detail)
 
 
-def run_myapp():
+def main():
     app = MyApp()
     app.title = f"Summary".title()
     app.sub_title = f"{len(MY_DATA)} users"
@@ -129,4 +129,4 @@ def run_myapp():
 
 
 if __name__ == "__main__":
-    run_myapp()
+    main()
