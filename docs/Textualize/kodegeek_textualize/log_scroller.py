@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+This application shows how to execute several commands from the OS and show the results on a 'tail -f' like screen.
+The application uses async to be able to return the control to the UI as soon as possible, making it more responsive.
 Author: Jose Vicente Nunez
 """
 import asyncio
@@ -104,6 +106,7 @@ class OsApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
+        # Create a list of commands, valid commands are assumed to be on the PATH variable.
         selections = [Selection(name.title(), ' '.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
         yield Header(show_clock=False)
         sel_list = SelectionList(*selections, id='cmds')
