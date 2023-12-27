@@ -15,7 +15,7 @@ from textual.widgets.selection_list import Selection
 from textual.worker import Worker
 
 OS_COMMANDS = {
-    "lSHW": ["lshw", "-json", "-sanitize", "-notime", "-quiet"],
+    "LSHW": ["lshw", "-json", "-sanitize", "-notime", "-quiet"],
     "LSCPU": ["lscpu", "--all", "--extended", "--json"],
     "LSMEM": ["lsmem", "--json", "--all", "--output-all"],
     "NUMASTAT": ["numastat", "-z"]
@@ -26,29 +26,7 @@ class LogScreen(ModalScreen):
     count = reactive(0)
     MAX_LINES = 10_000
     ENABLE_COMMAND_PALETTE = False
-    CSS = """
-        LogScreen {
-        layout: vertical;
-    }
-    
-    RichLog {
-        width: 100%;
-        height: auto;    
-    }
-    
-    Button {
-        dock: bottom;
-        width: 100%;
-        height: auto;
-    }
-    
-    Label {
-        dock: top;
-        width: 100%;
-        height: auto;
-        align: center top;
-    }
-    """
+    CSS_PATH = "log_screen.tcss"
 
     def __init__(
             self,
@@ -61,7 +39,7 @@ class LogScreen(ModalScreen):
         self.selections = selections
 
     def compose(self) -> ComposeResult:
-        yield Label(f"Visiting {len(self.selections)} sites")
+        yield Label(f"Running {len(self.selections)} commands")
         event_log = Log(
             id='event_log',
             max_lines=LogScreen.MAX_LINES,
@@ -75,9 +53,10 @@ class LogScreen(ModalScreen):
 
     async def on_mount(self) -> None:
         event_log = self.query_one('#event_log', Log)
+        event_log.loading = False
         event_log.clear()
         lst = '\n'.join(self.selections)
-        event_log.write(f"Running:\n{lst}")
+        event_log.write(f"Preparing:\n{lst}")
         event_log.write("\n")
 
         for command in self.selections:
@@ -104,6 +83,7 @@ class LogScreen(ModalScreen):
             raise ValueError(f"'{cmd}' finished with errors ({proc.returncode})")
         stdout = stdout.decode(encoding='utf-8', errors='replace')
         if stdout:
+            event_log.write(f'\nOutput of "{cmd}":\n')
             event_log.write(stdout)
         self.count -= 1
 
@@ -124,7 +104,7 @@ class OsApp(App):
 
     def compose(self) -> ComposeResult:
         selections = [Selection(name.title(), ' '.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
-        yield Header(show_clock=True)
+        yield Header(show_clock=False)
         yield SelectionList(*selections, id='cmds')
         yield Button(f"Execute {len(selections)} commands", id="exec", variant="primary")
         yield Footer()
