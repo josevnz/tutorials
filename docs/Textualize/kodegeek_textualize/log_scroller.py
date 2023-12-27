@@ -4,6 +4,7 @@ Author: Jose Vicente Nunez
 """
 import asyncio
 import shlex
+import shutil
 from typing import List
 
 from textual import on, work
@@ -14,13 +15,11 @@ from textual.widgets import Footer, Header, Button, SelectionList, Label, Log
 from textual.widgets.selection_list import Selection
 from textual.worker import Worker
 
-SITES = {
-    "Daily Mail": "https://dailymail.co.uk/",
-    "NY Post": "https://nypost.com/",
-    "The Sun": "https://www.thesun.co.uk/",
-    "DrudgeReport": "https://drudgereport.com/",
-    "CNN": "https://cnn.com",
-    "Fox News": "https://www.foxnews.com/",
+OS_COMMANDS = {
+    "lSHW": ["lshw", "-json", "-sanitize", "-notime", "-quiet"],
+    "LSCPU": ["lscpu", "--all", "--extended", "--json"],
+    "LSMEM": ["lsmem", "--json", "--all", "--output-all"],
+    "NUMASTAT": ["numastat", "-z"]
 }
 
 
@@ -79,11 +78,10 @@ class LogScreen(ModalScreen):
         event_log = self.query_one('#event_log', Log)
         event_log.clear()
         lst = '\n'.join(self.selections)
-        event_log.write(f"Visiting:\n{lst}")
+        event_log.write(f"Running:\n{lst}")
         event_log.write("\n")
 
-        for site in self.selections:
-            command = ' '.join(["/usr/bin/curl", "--verbose", "--location", "--fail", shlex.quote(site)])
+        for command in self.selections:
             self.count += 1
             self.run_process(cmd=command)
 
@@ -97,8 +95,11 @@ class LogScreen(ModalScreen):
     async def run_process(self, cmd: str) -> None:
         event_log = self.query_one('#event_log', Log)
         event_log.write_line(f"Running: {cmd}")
-        proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE,
-                                                     stderr=asyncio.subprocess.STDOUT)
+        proc = await asyncio.create_subprocess_shell(
+            cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
         stdout, _ = await proc.communicate()
         if proc.returncode != 0:
             raise ValueError(f"'{cmd}' finished with errors ({proc.returncode})")
@@ -112,7 +113,7 @@ class LogScreen(ModalScreen):
         self.app.pop_screen()
 
 
-class WebsiteApp(App):
+class OsApp(App):
     BINDINGS = [
         ("q", "quit_app", "Quit"),
     ]
@@ -145,34 +146,34 @@ class WebsiteApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
-        selections = [Selection(name.title(), url, True) for name, url in SITES.items()]
+        selections = [Selection(name.title(), ' '.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
         yield Header(show_clock=True)
-        yield SelectionList(*selections, id='sites')
-        yield Button(f"Visit {len(selections)} websites", id="visit", variant="primary")
+        yield SelectionList(*selections, id='cmds')
+        yield Button(f"Execute {len(selections)} commands", id="exec", variant="primary")
         yield Footer()
 
     @on(SelectionList.SelectedChanged)
     def on_selection(self, event: SelectionList.SelectedChanged) -> None:
-        button = self.query_one("#visit", Button)
+        button = self.query_one("#exec", Button)
         selections = len(event.selection_list.selected)
         if selections:
             button.disabled = False
         else:
             button.disabled = True
-        button.label = f"Visit {selections} websites"
+        button.label = f"Execute {selections} commands"
 
     @on(Button.Pressed)
     def on_button_click(self):
-        selection_list = self.query_one('#sites', SelectionList)
+        selection_list = self.query_one('#cmds', SelectionList)
         selections = selection_list.selected
         log_screen = LogScreen(selections=selections)
         self.push_screen(log_screen)
 
 
 def main():
-    app = WebsiteApp()
-    app.title = f"Output of HTTP data from multiple websites".title()
-    app.sub_title = f"{len(SITES)} websites available"
+    app = OsApp()
+    app.title = f"Output of multiple well known UNIX commands".title()
+    app.sub_title = f"{len(OS_COMMANDS)} commands available"
     app.run()
 
 
