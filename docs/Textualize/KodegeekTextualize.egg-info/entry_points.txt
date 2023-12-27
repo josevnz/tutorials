@@ -1,3 +1,0 @@
-[console_scripts]
-esru_csv_cleanup = kodegeek_textualize.table_with_detail_screen:main
-esru_raw_cleanup = kodegeek_textualize.log_scroller:main
