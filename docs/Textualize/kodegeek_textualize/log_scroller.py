@@ -98,7 +98,7 @@ class OsApp(App):
         ("q", "quit_app", "Quit"),
     ]
     CSS_PATH = "os_app.tcss"
-    ENABLE_COMMAND_PALETTE = False
+    ENABLE_COMMAND_PALETTE = False  # Do not need the command palette
 
     def action_quit_app(self):
         self.exit(0)
@@ -106,7 +106,9 @@ class OsApp(App):
     def compose(self) -> ComposeResult:
         selections = [Selection(name.title(), ' '.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
         yield Header(show_clock=False)
-        yield SelectionList(*selections, id='cmds')
+        sel_list = SelectionList(*selections, id='cmds')
+        sel_list.tooltip = "Select one more more command to execute"
+        yield sel_list
         yield Button(f"Execute {len(selections)} commands", id="exec", variant="primary")
         yield Footer()
 
