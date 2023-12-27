@@ -1,4 +1,4 @@
 **/.idea/*
 **/dist/*
-**/KodegeekTextualize.egg-info
+**/KodegeekTextualize.egg-info/*
 **/*.pyc
