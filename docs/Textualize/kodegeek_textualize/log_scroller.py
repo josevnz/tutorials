@@ -73,6 +73,7 @@ class LogScreen(ModalScreen):
     async def run_process(self, cmd: str) -> None:
         event_log = self.query_one('#event_log', Log)
         event_log.write_line(f"Running: {cmd}")
+        # Combine STDOUT and STDERR output
         proc = await asyncio.create_subprocess_shell(
             cmd,
             stdout=asyncio.subprocess.PIPE,
