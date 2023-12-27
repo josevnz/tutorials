@@ -1,0 +1,22 @@
+Screen {
+        layout: vertical;
+}
+
+Header {
+        dock: top;
+}
+
+Footer {
+        dock: bottom;
+}
+
+SelectionList {
+        padding: 1;
+        border: solid $accent;
+        width: 1fr;
+        height: 80%;
+}
+
+Button {
+        width: 1fr
+}

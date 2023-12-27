@@ -18,19 +18,7 @@ MY_DATA = [
 
 class DetailScreen(ModalScreen):
     ENABLE_COMMAND_PALETTE = False
-    CSS = """
-    MarkdownViewer {
-        dock: top;
-        width: 100%;
-        height: auto;
-    }
-
-    Button {
-        dock: bottom;
-        width: 100%;
-        height: auto;
-    }
-    """
+    CSS_PATH = "details_screen.tcss"
 
     def __init__(
             self,
@@ -63,31 +51,11 @@ class DetailScreen(ModalScreen):
         self.app.pop_screen()
 
 
-class MyApp(App):
+class CompetitorsApp(App):
     BINDINGS = [
         ("q", "quit_app", "Quit"),
     ]
-    CSS = """
-    Screen {
-        layout: vertical;
-    }
-    
-    Header {
-        height: 3;
-        dock: top;
-    }
-
-    Footer {
-        height: 1;
-        dock: bottom;
-    }
-
-    DataTable {
-        width: 100%;
-        height: 100%;
-        border: solid green;
-    }
-    """
+    CSS_PATH = "competitors_app.tcss"
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
@@ -122,7 +90,7 @@ class MyApp(App):
 
 
 def main():
-    app = MyApp()
+    app = CompetitorsApp()
     app.title = f"Summary".title()
     app.sub_title = f"{len(MY_DATA)} users"
     app.run()

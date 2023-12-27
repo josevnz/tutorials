@@ -116,29 +116,7 @@ class OsApp(App):
     BINDINGS = [
         ("q", "quit_app", "Quit"),
     ]
-    CSS = """
-    Screen {
-        layout: vertical;
-    }
-
-    Header {
-        dock: top;
-    }
-
-    Footer {
-        dock: bottom;
-    }
-
-    SelectionList {
-        padding: 1;
-        border: solid $accent;
-        width: 1fr;
-        height: 80%;
-    }
-    Button {
-        width: 1fr
-    }
-    """
+    CSS_PATH = "os_app.tcss"
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
