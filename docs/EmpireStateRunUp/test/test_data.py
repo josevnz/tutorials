@@ -4,8 +4,8 @@ from pathlib import Path
 
 from pandas import Series
 
-from empirestaterunup.analyze import better_than_median_waves
-from empirestaterunup import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
+from empirestaterunup.analyze import better_than_median_waves, find_fastest, FastestFilters
+from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     df_to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
     get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples
 
@@ -133,6 +133,25 @@ class DataTestCase(unittest.TestCase):
                 self.assertEqual(record[RaceFields.gender.value], "F")
                 self.assertEqual(record[RaceFields.sixty_five_floor_time.value], "00:10:40")
             pprint.pprint(record)
+
+    def test_find_fastest(self):
+        run_data = load_data()
+        self.assertIsNotNone(run_data)
+
+        fastest = find_fastest(run_data, FastestFilters.Gender)
+        self.assertIsNotNone(fastest)
+        self.assertTrue(fastest)
+        self.assertEqual(3, len(fastest))
+
+        fastest = find_fastest(run_data, FastestFilters.Country)
+        self.assertIsNotNone(fastest)
+        self.assertTrue(fastest)
+        self.assertEqual(18, len(fastest))
+
+        fastest = find_fastest(run_data, FastestFilters.Age)
+        self.assertIsNotNone(fastest)
+        self.assertTrue(fastest)
+        self.assertEqual(7, len(fastest))
 
 
 if __name__ == '__main__':

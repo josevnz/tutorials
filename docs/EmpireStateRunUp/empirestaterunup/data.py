@@ -475,3 +475,9 @@ def get_positions(df: DataFrame) -> DataFrame:
 
 def get_categories(df: DataFrame) -> DataFrame:
     return df.select_dtypes(include=['object'])
+
+
+def beautify_race_times(time: datetime.timedelta) -> str:
+    mm, ss = divmod(time.total_seconds(), 60)
+    hh, mm = divmod(mm, 60)  # Ignore days part as the race doesn't last more than 24 hours
+    return f"{int(hh)}:{int(mm)}:{int(ss)}"

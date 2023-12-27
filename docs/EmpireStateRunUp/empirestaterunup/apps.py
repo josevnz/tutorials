@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 from typing import Type
 
+from matplotlib import colors
 from pandas import DataFrame
 from rich.text import Text
 from textual import on
@@ -14,11 +15,13 @@ from textual.containers import Vertical
 from textual.driver import Driver
 from textual.screen import ModalScreen
 from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
+import matplotlib.pyplot as plt
 
 from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age, count_by_gender, count_by_wave, \
-    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves
+    dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves, FastestFilters, \
+    find_fastest
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times
 
 
 class FiveNumberApp(App):
@@ -251,35 +254,65 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            self.df[RaceFields.age.value].plot.box(
-                title="Age details",
-                grid=True,
-                color={
-                    "boxes": "DarkGreen",
-                    "whiskers": "DarkOrange",
-                    "medians": "DarkBlue",
-                    "caps": "Gray",
-                }
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            ax.boxplot(series)
+            ax.set_title("Age details")
+            ax.set_ylabel('Years')
+            ax.set_xlabel('Age')
+            ax.grid(True)
         elif gtype == 'hist':
-            self.df[RaceFields.age.value].plot.hist(
-                title="Age details",
-                grid=True,
-                color='k'
-            )
+            series = self.df[RaceFields.age.value]
+            fig, ax = plt.subplots(layout='constrained')
+            n, bins, patches = ax.hist(series, density=False, alpha=0.75)
+            # Borrowed coloring recipe for histogram from Matplotlib documentation
+            fractions = n / n.max()
+            norm = colors.Normalize(fractions.min(), fractions.max())
+            for frac, patch in zip(fractions, patches):
+                color = plt.cm.viridis(norm(frac))
+                patch.set_facecolor(color)
+            ax.set_xlabel('Age [years]')
+            ax.set_ylabel('Count')
+            ax.set_title(f'Age details for {series.shape[0]} racers\nBins={len(bins)}')
+            ax.grid(True)
 
     def plot_country(self):
-        self.df[RaceFields.country.value].value_counts().plot.barh(
-            title="Participants per country",
-            stacked=True
+        fastest = find_fastest(self.df, FastestFilters.Country)
+        series = self.df[RaceFields.country.value].value_counts()
+        series.sort_values(inplace=True)
+        fig, ax = plt.subplots(layout='constrained')
+        rects = ax.barh(series.keys(), series.values)
+        ax.bar_label(
+            rects,
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            padding=1,
+            color='black'
         )
+        ax.set_title = "Participants per country"
+        ax.set_stacked = True
+        ax.set_ylabel('Country')
+        ax.set_xlabel('Count per country')
 
     def plot_gender(self):
-        self.df[RaceFields.gender.value].value_counts().plot.pie(
-            title="Gender participation",
-            subplots=True,
-            autopct="%.2f"
+        series = self.df[RaceFields.gender.value].value_counts()
+        fig, ax = plt.subplots(layout='constrained')
+        wedges, texts, auto_texts = ax.pie(
+            series.values,
+            labels=series.keys(),
+            autopct="%%%.2f",
+            shadow=True,
+            startangle=90,
+            explode=(0.1, 0, 0)
         )
+        ax.set_title = "Gender participation"
+        ax.set_xlabel('Gender distribution')
+        # Legend with the fastest runners by gender
+        fastest = find_fastest(self.df, FastestFilters.Gender)
+        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in series.keys()]
+        ax.legend(wedges, fastest_legend,
+                  title="Fastest by gender",
+                  loc="center left",
+                  bbox_to_anchor=(1, 0, 0.5, 1))
 
 
 class BrowserApp(App):
