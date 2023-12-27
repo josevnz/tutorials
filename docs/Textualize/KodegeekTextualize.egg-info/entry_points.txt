@@ -1,0 +1,3 @@
+[console_scripts]
+log_scroller = kodegeek_textualize.log_scroller:main
+table_detail = kodegeek_textualize.table_with_detail_screen:main

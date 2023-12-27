@@ -28,8 +28,8 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [project.scripts]
-esru_raw_cleanup = "kodegeek_textualize.log_scroller:main"
-esru_csv_cleanup = "kodegeek_textualize.table_with_detail_screen:main"
+log_scroller = "kodegeek_textualize.log_scroller:main"
+table_detail = "kodegeek_textualize.table_with_detail_screen:main"
 
 [tool.setuptools]
 include-package-data = true
