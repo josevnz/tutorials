@@ -31,8 +31,6 @@ Then from another terminal:
 # Terminal 2
 . ~/virtualenv/Textualize/bin/activate
 textual run --dev --command kodegeek_textualize/table_with_detail_screen.py
-# Or (remember to make an editable package)
-textual run --dev table_with_detail_screen
 ```
 
 ## [Log details from an external Linux command](kodegeek_textualize/log_scroller.py)
@@ -43,8 +41,6 @@ the output on near realtime back to the GUI
 ```shell
 . ~/virtualenv/Textualize/bin/activate
 textual run --dev --command kodegeek_textualize/log_scroller.py
-# Or (remember to make an editable package)
-textual run --dev log_scroller
 ```
 
 ## Building
