@@ -5,7 +5,8 @@ This is my collection of small, self-contained applications that use Textualize 
 You must create a virtual environment in order to run the examples:
 
 ```shell
-python3 -m venv ~/virtualenv/Textualize && . ~/virtualenv/Textualize/bin/activate
+python3 -m venv ~/virtualenv/Textualize
+. ~/virtualenv/Textualize/bin/activate
 pip install --upgrade pip
 pip install --upgrade wheel
 pip install --upgrade build
