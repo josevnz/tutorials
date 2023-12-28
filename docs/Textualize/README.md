@@ -50,5 +50,5 @@ If you want to build and install from the wheel project just do this:
 ```shell
 . ~/virtualenv/Textualize/bin/activate
 python -m build
-pip install dist/KodegeekTextualize-0.0.1-py3-none-any.whl
+pip install dist/KodegeekTextualize-*-py3-none-any.whl
 ```
