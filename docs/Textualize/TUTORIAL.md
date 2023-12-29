@@ -133,7 +133,7 @@ Let's quickly dissect the code of the application:
 
 Did you notice the `CSS_PATH = "os_app.tcss"` variable? Textual allows you to control the appearance (colors, position, size) of individual or classes of widgets using CSS:
 
-```css
+```text
 Screen {
         layout: vertical;
 }
@@ -284,15 +284,14 @@ Let's see the application code then:
 """
 Author: Jose Vicente Nunez
 """
-from functools import partial
 from typing import Any, List
 
 from rich.style import Style
 from textual import on
 from textual.app import ComposeResult, App
-from textual.command import Provider, Hit
+from textual.command import Provider
 from textual.screen import ModalScreen, Screen
-from textual.widgets import DataTable, Footer, Header, Button, MarkdownViewer
+from textual.widgets import DataTable, Footer, Header
 
 MY_DATA = [
     ("level", "name", "gender", "country", "age"),
@@ -643,18 +642,6 @@ What is happening the method `test_log_scroller`:
 3) Then close the new screen and pop the old one back
 4) Finally, press 'q' and exit the application
 
-If you run all the tests you will see something like this:
-
-```shell
-(Textualize) [josevnz@dmaf5 Textualize]$ python -m unittest tests/test_log_scroller.py
-.
-----------------------------------------------------------------------
-Ran 1 test in 0.794s
-
-OK
-(Textualize) [josevnz@dmaf5 Textualize]$ 
-```
-
 What about the test table, can be tested?:
 
 ```python
@@ -694,6 +681,17 @@ class TableWithDetailTestCase(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == '__main__':
     unittest.main()
+```
+
+If you run all the tests you will see something like this:
+
+```shell
+(Textualize) [josevnz@dmaf5 Textualize]$ python -m unittest tests/*.py
+..
+----------------------------------------------------------------------
+Ran 2 tests in 2.065s
+
+OK
 ```
 
 Not a bad way to test a TUI, isn't it?
