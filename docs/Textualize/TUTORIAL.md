@@ -148,6 +148,66 @@ What if you want to write [unit tests](https://docs.python.org/3/library/unittes
 
 *TODO*
 
+## Packaging a Textual application
+
+It is not much different than packaging a regular Python application. You need to remember that you want to include also the CSS files that control the appearance of your application:
+
+```shell
+. ~/virtualenv/Textualize/bin/activate
+python -m build
+pip install dist/KodegeekTextualize-*-py3-none-any.whl
+```
+
+This tutorial [pyproject.toml](pyproject.toml) file is a good start that shows you what to do to package your application.
+
+```toml
+[build-system]
+requires = [
+    "setuptools >= 67.8.0",
+    "wheel>=0.42.0",
+    "build>=1.0.3",
+    "twine>=4.0.2",
+    "textual-dev>=1.2.1"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "KodegeekTextualize"
+version = "0.0.3"
+authors = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
+]
+description = "Collection of scripts that show how to use several features of textualize"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["running", "race"]
+classifiers = [
+    "Environment :: Console",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Utilities"
+]
+dynamic = ["dependencies"]
+
+[project.scripts]
+log_scroller = "kodegeek_textualize.log_scroller:main"
+table_detail = "kodegeek_textualize.table_with_detail_screen:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["test*"]
+
+[tool.setuptools.package-data]
+empirestaterunup = ["*.txt", "*.tcss", "*.csv"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+```
+
 ## What is next
 
 * You should definitely take a look at the [official tutorial](https://textual.textualize.io/tutorial/). Lots of examples and pointers to the reference [API](https://textual.textualize.io/api/).
