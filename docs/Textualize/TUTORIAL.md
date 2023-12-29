@@ -124,7 +124,7 @@ if __name__ == "__main__":
 ```
 
 Let's quickly dissect the code of the application:
-1) An application extends the class `App`. It has several methods but the most important are `compose` and `mount`
+1) An application extends the class `App`. It has several methods but the most important are `compose` and `mount`. Only [compose](https://textual.textualize.io/tutorial/#composing-the-widgets) is implemented on this app.
 2) In `compose`, you yield back Widgets, and they get added in the same order to the main screen. Each [Widget](https://textual.textualize.io/widget_gallery/) has options to customize their appearance.
 3) You can define single letter [bindings](https://textual.textualize.io/api/binding/), in this case the letter 'q' allows you to exit the application (see the function `action_quit_app` and the `BINDINGS` list)
 4) We display the list of commands to run on a `SelectionList` widget. You can then tell your application to capture what was selected by using the annotation `@on(SelectionList.SelectedChanged)` and the method `on_selection`.
@@ -158,7 +158,11 @@ Button {
 }
 ```
 
-_This is great_, as you can customize the appearance of your application using a separate [stylesheet](https://textual.textualize.io/guide/styles/).
+Quoting Textual website:
+
+> The dialect of CSS used in Textual is greatly simplified over web based CSS and much easier to learn.
+
+_This is great_, as you can customize the appearance of your application using a separate [stylesheet](https://textual.textualize.io/guide/styles/) without too much effort.
 
 Let's see next how to display the results on a separate screen.
 
@@ -250,13 +254,14 @@ class LogScreen(ModalScreen):
 ```
 
 You will notice the following:
+
 1) The `LogScreen` class extends `ModalScreen` which handles screens in modal mode.
 2) The screen also has a `compose` method where we add widgets to show the contents of the Unix commands.
 3) We have a new method called `mount`. Once you 'compose' the widgets then you can run code to retrieve data and customize their appearance even further
-4) To run the commands we use asyncio, so we give the TUI main worker thread a chance to update the contents as soon results for each command are known.
-5) On the 'workers' topic, please note the `@work(exclusive=False)` annotation on the `run_process` method used to run the commands and capture the STDOUT + STDERR output. Using [workers](https://textual.textualize.io/guide/workers/) to manage concurrency is not complicated, but they do have a dedicated section on the manual. This extra complexity arises because we are running external commands that may or may not take a long time to complete.
+4) To run the commands we use [asyncio](https://docs.python.org/3/library/asyncio.html), so we give the TUI main worker thread a chance to update the contents as soon results for each command are known.
+5) On the '_workers_' topic, please note the `@work(exclusive=False)` annotation on the `run_process` method used to run the commands and capture the STDOUT + STDERR output. Using [workers](https://textual.textualize.io/guide/workers/) to manage concurrency is not complicated, but they do have a dedicated section on the manual. This extra complexity arises because we are running external commands that may or may not take a long time to complete.
 6) On `run_process` we update the `event_log` by calling write with the contents of the command output.
-7) Finally, the `on_button_pressed` takes us back to the previous screen (pop the screen).
+7) Finally, the `on_button_pressed` takes us back to the previous screen (pop the screen from the stack).
 
 This little app showed you how to write a simple front end to run non-python code, in less than 200 lines of code.
 
@@ -268,9 +273,13 @@ Now let's move with a more complex example that uses new features of textual we 
 
 This example shows you how to display race results on a table (Using a DataTable widget). The application allows you to:
 
-* Sort by column 
-* Click on a row to show race details on a full window
-* Search the table and show racer details or run application commands
+* Sort table by column 
+* Select a row to show race details on a full window, using the same 'push screen' technique we saw on the log scroll application.
+* Search the table and show racer details or run other commands like exit the application.
+
+Let's see the application code then:
+
+
 
 ### Using screens to show more complex views
 
