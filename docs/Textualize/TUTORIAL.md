@@ -611,6 +611,52 @@ What if you want to write [unit tests](https://docs.python.org/3/library/unittes
 
 The documentation [shows there are several ways](https://textual.textualize.io/guide/testing/) to test our application.
 
+I will be using [unittest](https://docs.python.org/3/library/unittest.html) for that. We will need the special class `class unittest.IsolatedAsyncioTestCase` to handle our asyncio routines:
+
+```python
+import unittest
+from textual.widgets import Log, Button
+from kodegeek_textualize.log_scroller import OsApp
+
+class LogScrollerTestCase(unittest.IsolatedAsyncioTestCase):
+    async def test_log_scroller(self):
+        app = OsApp()
+        self.assertIsNotNone(app)
+        async with app.run_test() as pilot:
+            # Execute the default commands
+            await pilot.click(Button)
+            await pilot.pause()
+            event_log = app.screen.query(Log).first()  # We pushed the screen, query nodes from there
+            self.assertTrue(event_log.lines)
+            await pilot.click("#close")  # Close the new screen, pop the original one
+            await pilot.press("q")  # Quit the app by pressing q
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+What is happening the method `test_log_scroller`:
+
+1) Get a `Pilot` instance using `app.run_test()`. Then click the main button to run the query with the default commands, and then wait until all the events are processes.
+2) Next get the `Log` from the new screen we pushed and make sure we got some lines back, it is not empty
+3) Then close the new screen and pop the old one back
+4) Finally, press 'q' and exit the application
+
+If you run all the tests you will see something like this:
+
+```shell
+(Textualize) [josevnz@dmaf5 Textualize]$ python -m unittest tests/test_log_scroller.py
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.794s
+
+OK
+(Textualize) [josevnz@dmaf5 Textualize]$ 
+```
+
+Not a bad way to test a TUI, isn't it?
+
 ## Packaging a Textual application
 
 It is not much different than packaging a regular Python application. You need to remember that you want to include also the CSS files that control the appearance of your application:
