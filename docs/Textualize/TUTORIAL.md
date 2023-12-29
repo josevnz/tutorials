@@ -393,7 +393,7 @@ Now let's explore in detail how the racer details are shown
 
 ![Runner details, using a markdown renderer](summary_2023-12-28T19_05_44_404837.svg)
 
-When the user selects a row, the method `on_row_clicked` gets called. It receives a event of type `DataTable.RowSelected`. From there we construct an instance of `class DetailScreen(ModalScreen)` with the contents of the selected row:
+When the user selects a row, the method `on_row_clicked` gets called. It receives instead event of type `DataTable.RowSelected`. From there we construct an instance of `class DetailScreen(ModalScreen)` with the contents of the selected row:
 
 ```python
 from typing import Any, List
@@ -675,7 +675,8 @@ dependencies = {file = ["requirements.txt"]}
 
 * You should definitely take a look at the [official tutorial](https://textual.textualize.io/tutorial/). Lots of examples and pointers to the reference [API](https://textual.textualize.io/api/).
 * Textual can use widgets from the project that started all, [Rich](https://github.com/Textualize/rich). I think some, if not any of these components will get merged into Textual at some point. Textual framework is more capable for complex applications using a high level API, but Rich has lots of nice features.
+* You can also make your own widgets. Also while designing the TUI, grab a piece of paper and draw how you picture the components should align together, it will save you time and headaches later.
 * [Textual-web](https://github.com/Textualize/textual-web) is a promising project, that will allow you to run Textual applications on a browser. It is less mature than Textual but is evolving really fast.
 * Debugging applications in Python can get complicated. Sometimes you may have to [mix different tools](https://github.com/josevnz/DebuggingApplications/blob/main/StracePythonWireshark/README.md) to figure out what is wrong with an application.
 * Textual is used by other projects. One of them that is super easy to use is [Trogon](https://github.com/Textualize/trogon), it will [make your CLI self discoverable](https://github.com/josevnz/CLIWithClickAndTrogon/blob/main/README.md).
-* Finally, [check the projects](https://www.textualize.io/projects/). There are a lot of useful Open Source applications on the portfolio.
+* Finally, [check the external projects](https://www.textualize.io/projects/). There are a lot of useful Open Source applications on the portfolio.
