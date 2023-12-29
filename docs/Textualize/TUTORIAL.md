@@ -609,7 +609,7 @@ Another advantage of running your application in developer mode is that if you c
 
 What if you want to write [unit tests](https://docs.python.org/3/library/unittest.html) for your brand new Textual application?
 
-*TODO*
+The documentation [shows there are several ways](https://textual.textualize.io/guide/testing/) to test our application.
 
 ## Packaging a Textual application
 
@@ -674,9 +674,10 @@ dependencies = {file = ["requirements.txt"]}
 ## What is next
 
 * You should definitely take a look at the [official tutorial](https://textual.textualize.io/tutorial/). Lots of examples and pointers to the reference [API](https://textual.textualize.io/api/).
-* Textual can use widgets from the project that started all, [Rich](https://github.com/Textualize/rich). I think some, if not any of these components will get merged into Textual at some point. Textual framework is more capable for complex applications using a high level API, but Rich has lots of nice features.
-* You can also make your own widgets. Also while designing the TUI, grab a piece of paper and draw how you picture the components should align together, it will save you time and headaches later.
-* [Textual-web](https://github.com/Textualize/textual-web) is a promising project, that will allow you to run Textual applications on a browser. It is less mature than Textual but is evolving really fast.
+* Textual can use _widgets_ from the project that started all, [Rich](https://github.com/Textualize/rich). I think some, if not any of these components will get merged into Textual at some point. Textual framework is more capable for complex applications using a high level API, but Rich has lots of nice features.
+* You can also make your own widgets. Also while designing the TUI, [grab a piece of paper and draw how you picture the components](https://textual.textualize.io/how-to/design-a-layout/) should align together, it will save you time and headaches later.
 * Debugging applications in Python can get complicated. Sometimes you may have to [mix different tools](https://github.com/josevnz/DebuggingApplications/blob/main/StracePythonWireshark/README.md) to figure out what is wrong with an application.
-* Textual is used by other projects. One of them that is super easy to use is [Trogon](https://github.com/Textualize/trogon), it will [make your CLI self discoverable](https://github.com/josevnz/CLIWithClickAndTrogon/blob/main/README.md).
+* _Asyncio_ is a complex topic, you should [read the developer documentation](https://docs.python.org/3/library/asyncio-dev.html) to see what are your alternatives.
+* _Textual_ is used by other projects. One of them that is super easy to use is [Trogon](https://github.com/Textualize/trogon), it will [make your CLI self discoverable](https://github.com/josevnz/CLIWithClickAndTrogon/blob/main/README.md).
+* [Textual-web](https://github.com/Textualize/textual-web) is a promising project, that will allow you to run Textual applications on a browser. It is less mature than Textual but is evolving really fast.
 * Finally, [check the external projects](https://www.textualize.io/projects/). There are a lot of useful Open Source applications on the portfolio.
