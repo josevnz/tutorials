@@ -11,6 +11,17 @@ So what is Textual?
 
 In this quick introduction, I will show you 2 examples of what you can do with Textual and where you can go after that
 
+## What do you need to follow this tutorial
+
+You will need the following:
+
+1) Basic programing experience, preferable in Python.
+2) Understanding basic OO concepts like classes, inheritance
+3) A machine with Linux and Python 3.9+ installed
+4) A good editor (Vim, PyCharm are good choices)
+
+I tried to keep the code simple, so you can follow it. Also, I strongly recommend you download the code or at least install the programs as explained next.
+
 ## Installation
 
 First create a virtual environment
@@ -40,12 +51,216 @@ pip install --upgrade KodegeekTextualize
 
 ![Log scroller, select commands to run](output_of_multiple_well_known_unix_commands_2023-12-28T19_13_32_605621.svg)
 
+The log scroller is a simple application that executes a list of UNIX commands that are on the PATH and capture the output as they finish.
+
+So let's see some code:
+
+```python
+import shutil
+from textual import on
+from textual.app import ComposeResult, App
+from textual.widgets import Footer, Header, Button, SelectionList
+from textual.widgets.selection_list import Selection
+from textual.screen import ModalScreen
+# Operating system commands are hardcoded
+OS_COMMANDS = {
+    "LSHW": ["lshw", "-json", "-sanitize", "-notime", "-quiet"],
+    "LSCPU": ["lscpu", "--all", "--extended", "--json"],
+    "LSMEM": ["lsmem", "--json", "--all", "--output-all"],
+    "NUMASTAT": ["numastat", "-z"]
+}
+
+class LogScreen(ModalScreen):
+    # ... Code of the full separate screen omitted, will be explained next
+    def __init__(self, name = None, ident = None, classes = None, selections = None):
+        super().__init__(name, ident, classes)
+        pass
+
+class OsApp(App):
+    BINDINGS = [
+        ("q", "quit_app", "Quit"),
+    ]
+    CSS_PATH = "os_app.tcss"
+    ENABLE_COMMAND_PALETTE = False  # Do not need the command palette
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -> ComposeResult:
+        # Create a list of commands, valid commands are assumed to be on the PATH variable.
+        selections = [Selection(name.title(), ' '.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
+        yield Header(show_clock=False)
+        sel_list = SelectionList(*selections, id='cmds')
+        sel_list.tooltip = "Select one more more command to execute"
+        yield sel_list
+        yield Button(f"Execute {len(selections)} commands", id="exec", variant="primary")
+        yield Footer()
+
+    @on(SelectionList.SelectedChanged)
+    def on_selection(self, event: SelectionList.SelectedChanged) -> None:
+        button = self.query_one("#exec", Button)
+        selections = len(event.selection_list.selected)
+        if selections:
+            button.disabled = False
+        else:
+            button.disabled = True
+        button.label = f"Execute {selections} commands"
+
+    @on(Button.Pressed)
+    def on_button_click(self):
+        selection_list = self.query_one('#cmds', SelectionList)
+        selections = selection_list.selected
+        log_screen = LogScreen(selections=selections)
+        self.push_screen(log_screen)
+
+def main():
+    app = OsApp()
+    app.title = f"Output of multiple well known UNIX commands".title()
+    app.sub_title = f"{len(OS_COMMANDS)} commands available"
+    app.run()
+
+if __name__ == "__main__":
+    main()
+```
+
+Let's quickly dissect the code of the application:
+1) An application extends the class `App`. It has several methods but the most important are `compose` and `mount`
+2) In `compose`, you yield back Widgets, and they get added in the same order to the main screen. Each [Widget](https://textual.textualize.io/widget_gallery/) has options to customize their appearance.
+3) You can define single letter [bindings](https://textual.textualize.io/api/binding/), in this case the letter 'q' allows you to exit the application (see the function `action_quit_app` and the `BINDINGS` list)
+4) We display the list of commands to run on a `SelectionList` widget. You can then tell your application to capture what was selected by using the annotation `@on(SelectionList.SelectedChanged)` and the method `on_selection`.
+5) It is important to react to the lack of selected elements, we disable or enable the 'exec' button depending on how many commands were selected to run.
+6) A similar listener (` @on(Button.Pressed)`) is used to execute the commands. We do that by pushing our selection to a [new screen](https://textual.textualize.io/guide/screens/) that handles the execution and collection of results.
+
+Did you notice the `CSS_PATH = "os_app.tcss"` variable? Textual allows you to control the appearance (colors, position, size) of individual or classes of widgets using CSS:
+
+```css
+Screen {
+        layout: vertical;
+}
+
+Header {
+        dock: top;
+}
+
+Footer {
+        dock: bottom;
+}
+
+SelectionList {
+        padding: 1;
+        border: solid $accent;
+        width: 1fr;
+        height: 80%;
+}
+
+Button {
+        width: 1fr
+}
+```
+
+_This is great_, as you can customize the appearance of your application using a separate [stylesheet](https://textual.textualize.io/guide/styles/).
+
+Let's see next how to display the results on a separate screen.
 
 ### Display results on a separate screen
 
 ![The results of the command, pretty print](output_of_multiple_well_known_unix_commands_2023-12-28T19_13_40_503695.svg)
 
-*TODO*
+The code that handles the output on a separate screen is here:
+
+```python
+import asyncio
+from typing import List
+from textual import on, work
+from textual.reactive import reactive
+from textual.screen import ModalScreen
+from textual.widgets import Button, Label, Log
+from textual.worker import Worker
+from textual.app import ComposeResult
+
+class LogScreen(ModalScreen):
+    count = reactive(0)
+    MAX_LINES = 10_000
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = "log_screen.tcss"
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            selections: List = None
+    ):
+        super().__init__(name, ident, classes)
+        self.selections = selections
+
+    def compose(self) -> ComposeResult:
+        yield Label(f"Running {len(self.selections)} commands")
+        event_log = Log(
+            id='event_log',
+            max_lines=LogScreen.MAX_LINES,
+            highlight=True
+        )
+        event_log.loading = True
+        yield event_log
+        button = Button("Close", id="close", variant="success")
+        button.disabled = True
+        yield button
+
+    async def on_mount(self) -> None:
+        event_log = self.query_one('#event_log', Log)
+        event_log.loading = False
+        event_log.clear()
+        lst = '\n'.join(self.selections)
+        event_log.write(f"Preparing:\n{lst}")
+        event_log.write("\n")
+
+        for command in self.selections:
+            self.count += 1
+            self.run_process(cmd=command)
+
+    def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
+        if self.count == 0:
+            button = self.query_one('#close', Button)
+            button.disabled = False
+        self.log(event)
+
+    @work(exclusive=False)
+    async def run_process(self, cmd: str) -> None:
+        event_log = self.query_one('#event_log', Log)
+        event_log.write_line(f"Running: {cmd}")
+        # Combine STDOUT and STDERR output
+        proc = await asyncio.create_subprocess_shell(
+            cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
+        stdout, _ = await proc.communicate()
+        if proc.returncode != 0:
+            raise ValueError(f"'{cmd}' finished with errors ({proc.returncode})")
+        stdout = stdout.decode(encoding='utf-8', errors='replace')
+        if stdout:
+            event_log.write(f'\nOutput of "{cmd}":\n')
+            event_log.write(stdout)
+        self.count -= 1
+
+    @on(Button.Pressed, "#close")
+    def on_button_pressed(self, _) -> None:
+        self.app.pop_screen()
+```
+
+You will notice the following:
+1) The `LogScreen` class extends `ModalScreen` which handles screens in modal mode.
+2) The screen also has a `compose` method where we add widgets to show the contents of the Unix commands.
+3) We have a new method called `mount`. Once you 'compose' the widgets then you can run code to retrieve data and customize their appearance even further
+4) To run the commands we use asyncio, so we give the TUI main worker thread a chance to update the contents as soon results for each command are known.
+5) On the 'workers' topic, please note the `@work(exclusive=False)` annotation on the `run_process` method used to run the commands and capture the STDOUT + STDERR output. Using [workers](https://textual.textualize.io/guide/workers/) to manage concurrency is not complicated, but they do have a dedicated section on the manual. This extra complexity arises because we are running external commands that may or may not take a long time to complete.
+6) On `run_process` we update the `event_log` by calling write with the contents of the command output.
+7) Finally, the `on_button_pressed` takes us back to the previous screen (pop the screen).
+
+This little app showed you how to write a simple front end to run non-python code, in less than 200 lines of code.
+
+Now let's move with a more complex example that uses new features of textual we haven't explored yet.
 
 ## Second example: A table with race results
 
