@@ -279,15 +279,249 @@ This example shows you how to display race results on a table (Using a DataTable
 
 Let's see the application code then:
 
+```python
+#!/usr/bin/env python
+"""
+Author: Jose Vicente Nunez
+"""
+from functools import partial
+from typing import Any, List
 
+from rich.style import Style
+from textual import on
+from textual.app import ComposeResult, App
+from textual.command import Provider, Hit
+from textual.screen import ModalScreen, Screen
+from textual.widgets import DataTable, Footer, Header, Button, MarkdownViewer
+
+MY_DATA = [
+    ("level", "name", "gender", "country", "age"),
+    ("Green", "Wai", "M", "MYS", 22),
+    ("Red", "Ryoji", "M", "JPN", 30),
+    ("Purple", "Fabio", "M", "ITA", 99),
+    ("Blue", "Manuela", "F", "VEN", 25)
+]
+
+class DetailScreen(ModalScreen):
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = "details_screen.tcss"
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        # Rest of screen code will be show later
+
+class CustomCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+        # Rest of provider code will be show later
+
+class CompetitorsApp(App):
+    BINDINGS = [
+        ("q", "quit_app", "Quit"),
+    ]
+    CSS_PATH = "competitors_app.tcss"
+    # Enable the command palette, to add our custom filter commands
+    ENABLE_COMMAND_PALETTE = True
+    # Add the default commands and the TablePopulateProvider to get a row directly by name
+    COMMANDS = App.COMMANDS | {CustomCommand}
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+
+        table = DataTable(id=f'competitors_table')
+        table.cursor_type = 'row'
+        table.zebra_stripes = True
+        table.loading = True
+        yield table
+        yield Footer()
+
+    def on_mount(self) -> None:
+        table = self.get_widget_by_id(f'competitors_table', expect_type=DataTable)
+        columns = [x.title() for x in MY_DATA[0]]
+        table.add_columns(*columns)
+        table.add_rows(MY_DATA[1:])
+        table.loading = False
+        table.tooltip = "Select a row to get more details"
+
+    @on(DataTable.HeaderSelected)
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        table = event.data_table
+        table.sort(event.column_key)
+
+    @on(DataTable.RowSelected)
+    def on_row_clicked(self, event: DataTable.RowSelected) -> None:
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = DetailScreen(row=row)
+        self.show_detail(runner_detail)
+
+    def show_detail(self, detailScreen: DetailScreen):
+        self.push_screen(detailScreen)
+
+def main():
+    app = CompetitorsApp()
+    app.title = f"Summary".title()
+    app.sub_title = f"{len(MY_DATA)} users"
+    app.run()
+
+if __name__ == "__main__":
+    main()
+```
+
+What is interesting here?:
+1) `compose` adds the [header](https://textual.textualize.io/widgets/header/) where the 'command palette' will live, as well our table ([DataTable](https://textual.textualize.io/widgets/data_table/#guide)). The table gets populated on `mount` method.
+2) We have the expected bindings (`BINDINGS`) and external CSS for appearance  (`CSS_PATH`)
+3) By default, if we want to have the [command palette](https://textual.textualize.io/guide/command_palette/) we do nothing, but it is explicitly enabled here (`ENABLE_COMMAND_PALETTE = True`)
+4) Our application has a custom search on the table contents, when the user types a name possible match is shown and the user clicks it then detail for that racer is displayed. This requires telling the application that we have a custom provider (`COMMANDS = App.COMMANDS | {CustomCommand}`), which is the class `CustomCommand(Provider)`
+5) If the user clicks a table header, the contents are sorted by that header. This is done using `on_header_clicked` which is annotated with `@on(DataTable.HeaderSelected)`
+6) Similarly, when a row is selected, the method `on_row_clicked` is called thanks to the annotation `@on(DataTable.RowSelected)`. The method receives the selected row that is then used to push a new screen with details (`class DetailScreen(ModalScreen)`)
+
+Now let's explore in detail how the racer details are shown
 
 ### Using screens to show more complex views
 
 ![Runner details, using a markdown renderer](summary_2023-12-28T19_05_44_404837.svg)
 
+When the user selects a row, the method `on_row_clicked` gets called. It receives a event of type `DataTable.RowSelected`. From there we construct an instance of `class DetailScreen(ModalScreen)` with the contents of the selected row:
+
+```python
+from typing import Any, List
+from textual import on
+from textual.app import ComposeResult
+from textual.screen import ModalScreen
+from textual.widgets import Button, MarkdownViewer
+
+MY_DATA = [
+    ("level", "name", "gender", "country", "age"),
+    ("Green", "Wai", "M", "MYS", 22),
+    ("Red", "Ryoji", "M", "JPN", 30),
+    ("Purple", "Fabio", "M", "ITA", 99),
+    ("Blue", "Manuela", "F", "VEN", 25)
+]
+
+class DetailScreen(ModalScreen):
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = "details_screen.tcss"
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        self.row: List[Any] = row
+
+    def compose(self) -> ComposeResult:
+        self.log.info(f"Details: {self.row}")
+        columns = MY_DATA[0]
+        row_markdown = "\n"
+        for i in range(0, len(columns)):
+            row_markdown += f"* **{columns[i].title()}:** {self.row[i]}\n"
+        yield MarkdownViewer(f"""## User details:
+        {row_markdown}
+        """)
+        button = Button("Close", variant="primary", id="close")
+        button.tooltip = "Go back to main screen"
+        yield button
+
+    @on(Button.Pressed, "#close")
+    def on_button_pressed(self, _) -> None:
+        self.app.pop_screen()
+```
+
+The responsibility of this class is very simple:
+1) Method `compose` takes the row and displays the content using a [widget that knows how to render Markdown](https://textual.textualize.io/widget_gallery/#markdownviewer). Pretty neat as it creates a table of contents for us.
+2) The method `on_button_pressed` pops back the original screen once the user clicks the 'close'  (Annotation `@on(Button.Pressed, "#close")` takes care of receiving pressed events)
+
+Then the last bit of the puzzle which requires more explanation, the multipurpose search bar (known as command palette).
+
 ### You can search too, using the command palette
 
 ![](summary_2023-12-28T19_05_55_822030.svg)
+
+The [command palette](https://textual.textualize.io/guide/command_palette/) is enabled by default on every Textual application that uses a header. The fun part is that you can add your own commands in addition to the default commands, on class `CompetitorsApp`:
+
+`COMMANDS = App.COMMANDS | {CustomCommand}`
+
+And then the class that does all the heavy lifting, `CustomCommand(Provider)`:
+
+```python
+from functools import partial
+from typing import Any, List
+from rich.style import Style
+from textual.command import Provider, Hit
+from textual.screen import ModalScreen, Screen
+from textual.widgets import DataTable
+from textual.app import App
+
+class CustomCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+
+    async def startup(self) -> None:
+        my_app = self.app
+        my_app.log.info(f"Loaded provider: CustomCommand")
+        self.table = my_app.query(DataTable).first()
+
+    async def search(self, query: str) -> Hit:
+        matcher = self.matcher(query)
+
+        my_app = self.screen.app
+        assert isinstance(my_app, CompetitorsApp)
+
+        my_app.log.info(f"Got query: {query}")
+        for row_key in self.table.rows:
+            row = self.table.get_row(row_key)
+            my_app.log.info(f"Searching {row}")
+            searchable = row[1]
+            score = matcher.match(searchable)
+            if score > 0:
+                runner_detail = DetailScreen(row=row)
+                yield Hit(
+                    score,
+                    matcher.highlight(f"{searchable}"),
+                    partial(my_app.show_detail, runner_detail),
+                    help=f"Show details about {searchable}"
+                )
+
+class DetailScreen(ModalScreen):
+     def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        # Code of this class explained on the previous section
+
+class CompetitorsApp(App):
+    # Add the default commands and the TablePopulateProvider to get a row directly by name
+    COMMANDS = App.COMMANDS | {CustomCommand}
+    # Most of the code shown before, only displaying relevant code
+    def show_detail(self, detailScreen: DetailScreen):
+        self.push_screen(detailScreen)
+```
+
+1) Any class extending `Provider` only needs to implement the method `search`. In our case we do implement `start` to get a reference to our application table (and its contents). Start gets called only once in the lifetime of the instantiated class.
+2) `search` is the most interesting method, it returns zero or more `Hit` objets that tell the command palette if the search query was successful or not.
+
+*TODO*
 
 ## Troubleshooting a Textual application
 

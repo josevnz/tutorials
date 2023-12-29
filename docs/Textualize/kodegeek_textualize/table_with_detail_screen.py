@@ -60,13 +60,9 @@ class CustomCommand(Provider):
         self.table = None
 
     async def startup(self) -> None:
-        my_app = self.screen.app
+        my_app = self.app
         my_app.log.info(f"Loaded provider: CustomCommand")
-        self.table = None
-        for widget in my_app.query('DataTable').results(DataTable):
-            self.table: DataTable = widget
-            my_app.log.info(f"Got competitors table: {self.table}")
-            break
+        self.table = my_app.query(DataTable).first()
 
     async def search(self, query: str) -> Hit:
         matcher = self.matcher(query)
