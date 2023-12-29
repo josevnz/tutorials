@@ -752,7 +752,8 @@ where = ["."]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-empirestaterunup = ["*.txt", "*.tcss", "*.csv"]
+kodegeek_textualize = ["*.txt", "*.tcss", "*.csv"]
+img = ["*.svg"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
