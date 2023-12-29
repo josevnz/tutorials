@@ -649,6 +649,7 @@ import unittest
 from textual.widgets import DataTable, MarkdownViewer
 from kodegeek_textualize.table_with_detail_screen import CompetitorsApp
 
+
 class TableWithDetailTestCase(unittest.IsolatedAsyncioTestCase):
     async def test_app(self):
         app = CompetitorsApp()
@@ -670,14 +671,15 @@ class TableWithDetailTestCase(unittest.IsolatedAsyncioTestCase):
             Test the table
             """
             table = app.screen.query(DataTable).first()
-            row = 2
-            self.assertTrue(table.is_valid_row_index(row))
-            table.move_cursor(row=row)
             coordinate = table.cursor_coordinate
             self.assertTrue(table.is_valid_coordinate(coordinate))
-            await pilot.click(DataTable, offset=coordinate)
+            await pilot.press("enter")
+            await pilot.pause()
+            markdown_viewer = app.screen.query(MarkdownViewer).first()
+            self.assertTrue(markdown_viewer)
             # Quit the app by pressing q
             await pilot.press("q")
+
 
 if __name__ == '__main__':
     unittest.main()
