@@ -15,7 +15,7 @@ pip install --editable .
 
 Code may work with Python 3.8, but I used Python 3.10 while writing the code.
 
-## [Table with detail screen](kodegeek_textualize/table_with_detail_screen.py)
+## Table with detail screen
 
 Shows a table, with sortable columns. When you click in a row, you get more details.
 
@@ -34,7 +34,7 @@ Then from another terminal:
 textual run --dev --command kodegeek_textualize/table_with_detail_screen.py
 ```
 
-## [Log details from an external Linux command](kodegeek_textualize/log_scroller.py)
+## Log details from an external Linux command
 
 This example runs an external command and uses async and workers to display
 the output on near realtime back to the GUI
