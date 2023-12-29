@@ -49,7 +49,7 @@ pip install --upgrade KodegeekTextualize
 
 ## Our first application: A log scroller
 
-![Log scroller, select commands to run](output_of_multiple_well_known_unix_commands_2023-12-28T19_13_32_605621.svg)
+![Log scroller, select commands to run](img/output_of_multiple_well_known_unix_commands_2023-12-28T19_13_32_605621.svg)
 
 The log scroller is a simple application that executes a list of UNIX commands that are on the PATH and capture the output as they finish.
 
@@ -168,7 +168,7 @@ Let's see next how to display the results on a separate screen.
 
 ### Display results on a separate screen
 
-![The results of the command, pretty print](output_of_multiple_well_known_unix_commands_2023-12-28T19_13_40_503695.svg)
+![The results of the command, pretty print](img/output_of_multiple_well_known_unix_commands_2023-12-28T19_13_40_503695.svg)
 
 The code that handles the output on a separate screen is here:
 
@@ -269,7 +269,7 @@ Now let's move with a more complex example that uses new features of textual we 
 
 ## Second example: A table with race results
 
-![Racing summary table](summary_2023-12-28T19_05_20_213933.svg)
+![Racing summary table](img/summary_2023-12-28T19_05_20_213933.svg)
 
 This example shows you how to display race results on a table (Using a DataTable widget). The application allows you to:
 
@@ -390,7 +390,7 @@ Now let's explore in detail how the racer details are shown
 
 ### Using screens to show more complex views
 
-![Runner details, using a markdown renderer](summary_2023-12-28T19_05_44_404837.svg)
+![Runner details, using a markdown renderer](img/summary_2023-12-28T19_05_44_404837.svg)
 
 When the user selects a row, the method `on_row_clicked` gets called. It receives instead event of type `DataTable.RowSelected`. From there we construct an instance of `class DetailScreen(ModalScreen)` with the contents of the selected row:
 
@@ -449,7 +449,7 @@ Then the last bit of the puzzle which requires more explanation, the multipurpos
 
 ### You can search too, using the command palette
 
-![](summary_2023-12-28T19_05_55_822030.svg)
+![](img/summary_2023-12-28T19_05_55_822030.svg)
 
 The [command palette](https://textual.textualize.io/guide/command_palette/) is enabled by default on every Textual application that uses a header. The fun part is that you can add your own commands in addition to the default commands, on class `CompetitorsApp`:
 
