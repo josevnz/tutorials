@@ -518,10 +518,15 @@ class CompetitorsApp(App):
         self.push_screen(detailScreen)
 ```
 
-1) Any class extending `Provider` only needs to implement the method `search`. In our case we do implement `start` to get a reference to our application table (and its contents). Start gets called only once in the lifetime of the instantiated class.
-2) `search` is the most interesting method, it returns zero or more `Hit` objets that tell the command palette if the search query was successful or not.
+1) Any class extending `Provider` only needs to implement the method `search`. In our case we do override also the method `start` to get a reference to our application table (and its contents), using the `App.query(DataTable).first()`. Start gets called only once in the lifetime of the instantiated class.
+2) Inside method `search` we use the `Provider.matcher` to do a fuzzy search on the second column (`name`) of each table row comparing with the query (which is the term passed by the user on the TUI). The `matcher.match(searchable)` returns an integer score, where greater than zero indicates a match. 
+3) Inside `search` if the score is greater than zero then return a `Hit` objet that tell the command palette if the search query was successful or not.
+4) Each Hit has the following information: score (used for sorting matches on the palette command), a highlighted search term, a reference to a callable (that's it in our case a function that will push our table row to a new screen)
+5) All the methods of the Provider class are `async`. This allows to free the main worker thread and only return once the response is ready to be used (no frozen UI).
 
-*TODO*
+With all that information we can display now the racer details.
+
+While the framework is simple enough to follow there is also a lot of complexity on the messages passed back and forth the components. Luckily for us Textual as a nice debugging framework that will help us to understand what is going on behind scenes.
 
 ## Troubleshooting a Textual application
 
