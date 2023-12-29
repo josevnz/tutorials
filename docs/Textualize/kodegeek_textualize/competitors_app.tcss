@@ -1,0 +1,19 @@
+Screen {
+        layout: vertical;
+}
+
+Header {
+        height: 3;
+        dock: top;
+}
+
+Footer {
+        height: 1;
+        dock: bottom;
+}
+
+DataTable {
+        width: 100%;
+        height: 100%;
+        border: solid green;
+}

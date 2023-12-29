@@ -1,16 +1,16 @@
 [build-system]
 requires = [
     "setuptools >= 67.8.0",
-    "wheel",
-    "build",
-    "twine",
-    "textual-dev"
+    "wheel>=0.42.0",
+    "build>=1.0.3",
+    "twine>=4.0.2",
+    "textual-dev>=1.2.1"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "KodegeekTextualize"
-version = "0.0.2"
+version = "0.0.4"
 authors = [
     {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
 ]
@@ -39,7 +39,8 @@ where = ["."]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-empirestaterunup = ["*.txt", "*.tcss", "*.csv"]
+kodegeek_textualize = ["*.txt", "*.tcss", "*.csv"]
+img = ["*.svg"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
