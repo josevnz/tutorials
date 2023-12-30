@@ -2,7 +2,7 @@
 
 [![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
 
-![empire_state_runup.png](empire_state_runup.png)
+![empire_state_runup.png](images/empire_state_runup.png)
 
 > The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
@@ -699,7 +699,7 @@ esru_browser
 
 The application shows all the race details for every Runner, on a table that allows sorting by column.
 
-![](esru_browser.png)
+![](images/esru_browser.png)
 
 
 ### Summary reports
@@ -720,7 +720,7 @@ Some interesting facts about the race:
 * Majority of the people finished the race between 20 and 30 minutes.
 * Youngest runner was 11 years old, oldest 78
 
-![](esru_numbers.svg)
+![](images/esru_numbers.svg)
 
 
 ### Finding outliers
@@ -731,11 +731,11 @@ This application uses the _Z-score_ to find the outliers for several metrics for
 esru_outlier
 ```
 
-![](esru_outlier-1.svg)
+![](images/esru_outlier-1.svg)
 
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
-![](esru_outlier-2.svg)
+![](images/esru_outlier-2.svg)
 
 Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
 
@@ -801,25 +801,25 @@ Each method basically ingest a Panda Dataframe to produce the desired plot.
 
 The program can generate two flavors for the same data, one is a Box diagram:
 
-![Age plot](age_plot.png)
+![Age plot](images/age_plot.png)
 
 And the second is a regular histogram:
 
-![Age histogram](age_histogram.png)
+![Age histogram](images/age_histogram.png)
 
 You can see from both graphics that the group age with most participants is the 40-45 year old bracket, and the outliers
 are on the 10-20 and 70-80 year old groups.
 
 #### Participants per country plot
 
-![](participants_per_country.png)
+![](images/participants_per_country.png)
 
 No surprises here, the overwhelming majority of racers come from the United States, followed by Mexico. Interestingly 
 the winner of the 2013 race is from Malaysia, with only 2 runners participating. 
 
 #### Gender distribution
 
-![](gender_distribution.png)
+![](images/gender_distribution.png)
 
 Majority of the runners identified themselves as Males, followed by Female.
 

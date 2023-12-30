@@ -16,7 +16,7 @@ authors = [
 ]
 description = "Collection of scripts to analyze the results of the 2023 Empire State Run Up race"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["running", "race"]
 classifiers = [
     "Environment :: Console",
@@ -24,15 +24,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Intended Audience :: End Users/Desktop",
     "Topic :: Utilities"
-]
-dependencies = [
-    "pandas==2.1.1",
-    "textual==0.41.0",
-    "rich==13.6.0",
-    "numpy==1.26.0",
-    "matplotlib==3.8.0",
-    "selenium==4.15.2",
-    'importlib-metadata; python_version>"3.11"',
 ]
 
 [project.scripts]
@@ -53,3 +44,7 @@ exclude = ["test*"]
 
 [tool.setuptools.package-data]
 empirestaterunup = ["*.txt", "*.tcss", "*.csv"]
+images = ["*.png", "*.svg"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}

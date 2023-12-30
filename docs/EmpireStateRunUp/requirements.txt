@@ -1,0 +1,6 @@
+pandas==2.1.1
+textual==0.41.0
+rich==13.6.0
+numpy==1.26.0
+matplotlib==3.8.0
+selenium==4.15.2
