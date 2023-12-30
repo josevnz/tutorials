@@ -90,7 +90,7 @@ class RaceFields(Enum):
     url = "url"
 
 
-FIELD_NAMES = [x.value for x in RaceFields]
+FIELD_NAMES = [x.value for x in RaceFields if x != RaceFields.url]
 
 
 def get_wave_from_bib(bib: int) -> Waves:
@@ -376,8 +376,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.division_position.value] = df[RaceFields.division_position.value].astype(int)
     median_div_pos = df[RaceFields.twenty_floor_division_position.value].median()
     df[RaceFields.twenty_floor_division_position.value].fillna(median_div_pos, inplace=True)
-    df[RaceFields.twenty_floor_division_position.value] = df[RaceFields.twenty_floor_division_position.value].astype(
-        int)
+    df[RaceFields.twenty_floor_division_position.value] = df[RaceFields.twenty_floor_division_position.value].astype(int)
     median_div_pos = df[RaceFields.sixty_five_floor_division_position.value].median()
     df[RaceFields.sixty_five_floor_division_position.value].fillna(median_div_pos, inplace=True)
     df[RaceFields.sixty_five_floor_division_position.value] = df[
@@ -386,6 +385,10 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     # Normalize BIB and make it the index
     df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
     df.set_index(RaceFields.bib.value, inplace=True)
+
+    # URL was useful during scrapping, not needed for analysis
+    df.drop([RaceFields.url.value], axis=1, inplace=True)
+
     return df
 
 
