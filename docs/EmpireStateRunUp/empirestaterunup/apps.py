@@ -149,7 +149,8 @@ class RunnerDetailScreen(ModalScreen):
             self.country_df = country_df
 
     def compose(self) -> ComposeResult:
-        bibs = [self.row[0]]
+        bib_idx = FIELD_NAMES_AND_POS[RaceFields.BIB]
+        bibs = [self.row[bib_idx]]
         columns, details = df_to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
@@ -344,15 +345,16 @@ class BrowserAppCommand(Provider):
             row = self.table.get_row(row_key)
             for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION]:
                 idx = FIELD_NAMES_AND_POS[name]
-                searchable = row[idx]
+                searchable = str(row[idx])
                 score = matcher.match(searchable)
                 if score > 0:
-                    runner_detail = RunnerDetailScreen(df=df)
+                    details = f"{searchable} - {name.value}"
+                    runner_detail = RunnerDetailScreen(df=df, row=row)
                     yield Hit(
                         score,
                         matcher.highlight(f"{searchable}"),
                         partial(browser_app.push_screen, runner_detail),
-                        help=f"Show details about {searchable}"
+                        help=f"{details}"
                     )
 
 
