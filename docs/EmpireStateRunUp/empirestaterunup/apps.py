@@ -158,7 +158,6 @@ class RunnerDetailScreen(ModalScreen):
             position_markdown[legend] = ''
             split_markdown[legend] = ''
         for i in range(0, len(columns)):
-            # TODO FIx IndexError when is called from esru_browser app
             column = columns[i]
             detail = details[0][i]
             if re.search('pace|time', column):

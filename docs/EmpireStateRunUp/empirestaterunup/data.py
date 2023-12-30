@@ -329,7 +329,14 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df = pandas.read_csv(
         def_file
     )
-    for field in [RaceFields.pace.value, RaceFields.time.value]:
+    for field in [
+        RaceFields.pace.value,
+        RaceFields.time.value,
+        RaceFields.twenty_floor_pace.value,
+        RaceFields.twenty_floor_time.value,
+        RaceFields.sixty_five_floor_pace.value,
+        RaceFields.sixty_five_floor_time.value
+    ]:
         try:
             df[field] = pandas.to_timedelta(df[field])
         except ValueError as ve:
@@ -348,7 +355,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.state.value].fillna('', inplace=True)
     df[RaceFields.city.value].fillna('', inplace=True)
 
-    # Normalize position, 3 levels
+    # Normalize overall position, 3 levels
     median_pos = df[RaceFields.overall_position.value].median()
     df[RaceFields.overall_position.value].fillna(median_pos, inplace=True)
     df[RaceFields.overall_position.value] = df[RaceFields.overall_position.value].astype(int)
@@ -382,6 +389,12 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.sixty_five_floor_division_position.value].fillna(median_div_pos, inplace=True)
     df[RaceFields.sixty_five_floor_division_position.value] = df[
         RaceFields.sixty_five_floor_division_position.value].astype(int)
+
+    # Normalize 65th floor pace and time
+    sixty_five_floor_pace_median = df[RaceFields.sixty_five_floor_pace.value].median()
+    sixty_five_floor_time_median = df[RaceFields.sixty_five_floor_time.value].median()
+    df[RaceFields.sixty_five_floor_pace.value].fillna(sixty_five_floor_pace_median, inplace=True)
+    df[RaceFields.sixty_five_floor_time.value].fillna(sixty_five_floor_time_median, inplace=True)
 
     # Normalize BIB and make it the index
     df[RaceFields.bib.value] = df[RaceFields.bib.value].astype(int)
