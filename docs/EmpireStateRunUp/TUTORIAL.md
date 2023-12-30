@@ -449,12 +449,9 @@ A Unit test on this context is a class that extends 'unittest.TestCase'. Each me
 
 ```python
 import unittest
-
 from pandas import DataFrame
-
 from empirestaterunup.analyze import get_country_counts
 from empirestaterunup.data import load_data
-
 
 class AnalyzeTestCase(unittest.TestCase):
     df: DataFrame
@@ -477,9 +474,11 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-So far we got the data, made sure [it meets the expectations](test/test_data.py)and wrote [more test](test/test_analyze.py) on the analytics.
+So far we got the data, made sure [it meets the expectations](test/test_data.py). I wrote [separate tests](test/test_analyze.py) for the analytics code and also for the [scrapper](test/test_scrapper.py).
 
-Now that we have some results we can try to visualize them.
+*TODO: Write test for the UI using Pilot*
+
+It is time now to visualize those results, will show you next a few techniques to do just that.
 
 ## Visualizing the results
 
@@ -488,12 +487,11 @@ This framework is very complete and allows you to build text applications that a
 
 They are also easy to write, so before we go deeper into the resulting applications let's make a pause to learn about Textual.
 
-### A crash course of Textual
-
+### Text User Interfaces (TUI) with Textual
 The Textual project has a really nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
 
-But let's see how this applies to our problem. For example, I wanted to display the race details of all the 374 runners on a
-scrollable table. I ended writing the following class:
+For example, I wanted to display the race details of all the 374 runners on a
+scrollable table, ended writing the following class:
 
 *TODO: Update code for enums*
 
