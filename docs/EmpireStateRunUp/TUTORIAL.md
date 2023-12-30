@@ -24,7 +24,7 @@ God news: I wasn't totally unprepared. But I had to adjust my training routine t
 
 Long story/ short story, the day of the race came and here are some tough's about how it went:
 
-* I didn't die. Seriously. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
+* I didn't die. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
 * You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
 * Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. 
@@ -61,7 +61,7 @@ Or if you just want to run the code while reading this tutorial (using my latest
 ```shell
 python -m ~/virtualenv/EmpireStateRunUp
 . ~/virtualenv/EmpireStateRunUp/bin/activate 
-pip install EmpireStateRunUp
+pip install --upgrade EmpireStateRunUp
 ```
 
 We can now move to the next stage, getting the data.
@@ -166,13 +166,15 @@ Data cannot be used as-is, needs cleaning up and that is the next step on this a
 [Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
-Luckily for me the dataset is very small (374+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
+Luckily for me the dataset is very small (375+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
 
 I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
 
 The [data_normalizer.raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]](empirestaterunup/runners.py) method does the heavy work of fixing the data for inconsistencies before saving into a CSV format.
 
 As I mention before, there are no hard rules here as cleanup has a high correlation with the data set. For example, to figure out to which wave each runner was assigned I had to make some assumptions based on what I saw the day of the race:
+
+*TODO: Update code for enums*
 
 ```python
 import datetime
@@ -256,6 +258,8 @@ Now with the data ready we can proceed to ask some questions about the race.
 
 ## Analyzing the data
 
+*TODO: Explain better*
+
 Once the data is clean (or as clean as we can), it is time to move into running some numbers.
 
 So before throwing a single line of code, I took a piece of paper and asked myself a few questions:
@@ -279,32 +283,33 @@ In the end, this is how my [DataFrame](https://pandas.pydata.org/pandas-docs/sta
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ python3
 Python 3.11.6 (main, Oct  3 2023, 00:00:00) [GCC 12.3.1 20230508 (Red Hat 12.3.1-1)] on linux
 Type "help", "copyright", "credits" or "license" for more information.
->>> from empirestaterunup.data import load_data
 ```
 
 And the resulting **DataFrame** instance:
 
 ```shell
-from empirestaterunup.data import load_data
-load_data('empirestaterunup/results-first-level-2023.csv')
-           level                 name gender           state country  ...            pace            time               city  age     finishtimestamp
-bib                                                                   ...                                                                            
-19   Full Course        Wai Ching Soh      M                     MYS  ... 0 days 00:53:00 0 days 00:10:36       Kuala lumpur   29 2023-09-04 20:10:36
-22   Full Course       Ryoji Watanabe      M     Tôkyô / 東京都     JPN  ... 0 days 00:54:20 0 days 00:10:52              Tokyo   40 2023-09-04 20:10:52
-16   Full Course           Fabio Ruga      M                     ITA  ... 0 days 00:56:10 0 days 00:11:14           San siro   42 2023-09-04 20:11:14
-11   Full Course       Emanuele Manzi      M                     ITA  ... 0 days 00:57:20 0 days 00:11:28             Cremia   45 2023-09-04 20:11:28
-249  Full Course             Alex Cyr      M         Ontario     CAN  ... 0 days 00:59:20 0 days 00:11:52            Toronto   28 2023-09-04 20:11:52
-..           ...                  ...    ...             ...     ...  ...             ...             ...                ...  ...                 ...
-555  Full Course     Caroline Edwards      F  Leicestershire     GBR  ... 0 days 04:36:25 0 days 00:55:17  Ashby de la zouch   47 2023-09-04 20:55:17
-557  Full Course        Sarah Preston      F      Derbyshire     GBR  ... 0 days 04:36:50 0 days 00:55:22        Swadlincote   34 2023-09-04 20:55:22
-544  Full Course  Christopher Winkler      M              Ny     USA  ... 0 days 05:00:50 0 days 01:00:10         Massapequa   40 2023-09-04 21:00:10
-545  Full Course          Jay Winkler      U              Ny     USA  ... 0 days 05:26:35 0 days 01:05:19         Massapequa   33 2023-09-04 21:05:19
-646  Full Course           Dana Zajko      F              Va     USA  ... 0 days 05:34:00 0 days 01:06:48         Alexandria   38 2023-09-04 21:06:48
+>>> from empirestaterunup.data import load_data
+>>> load_data('empirestaterunup/results-full-level-2023.csv')
+                    name  overall position            time gender  gender position  age  ...  65th floor division position 65th floor pace 65th floor time       wave        level     finishtimestamp
+bib                                                                                      ...                                                                                                          
+19         Wai Ching Soh                 1 0 days 00:10:36      M                1   29  ...                             1 0 days 00:54:03 0 days 00:07:34  ELITE MEN  Full Course 2023-09-04 20:10:36
+22        Ryoji Watanabe                 2 0 days 00:10:52      M                2   40  ...                             1 0 days 00:54:31 0 days 00:07:38  ELITE MEN  Full Course 2023-09-04 20:10:52
+16            Fabio Ruga                 3 0 days 00:11:14      M                3   42  ...                             2 0 days 00:57:09 0 days 00:08:00  ELITE MEN  Full Course 2023-09-04 20:11:14
+11        Emanuele Manzi                 4 0 days 00:11:28      M                4   45  ...                             3 0 days 00:59:17 0 days 00:08:18  ELITE MEN  Full Course 2023-09-04 20:11:28
+249             Alex Cyr                 5 0 days 00:11:52      M                5   28  ...                             2 0 days 01:01:19 0 days 00:08:35   SPONSORS  Full Course 2023-09-04 20:11:52
+..                   ...               ...             ...    ...              ...  ...  ...                           ...             ...             ...        ...          ...                 ...
+555     Caroline Edwards               372 0 days 00:55:17      F              143   47  ...                            39 0 days 04:57:23 0 days 00:41:38  GENERAL 2  Full Course 2023-09-04 20:55:17
+557        Sarah Preston               373 0 days 00:55:22      F              144   34  ...                            41 0 days 04:58:20 0 days 00:41:46  GENERAL 2  Full Course 2023-09-04 20:55:22
+544  Christopher Winkler               374 0 days 01:00:10      M              228   40  ...                            18 0 days 01:49:53 0 days 00:15:23  GENERAL 2  Full Course 2023-09-04 21:00:10
+545          Jay Winkler               375 0 days 01:05:19      U               93   33  ...                            18 0 days 05:28:56 0 days 00:46:03  GENERAL 2  Full Course 2023-09-04 21:05:19
+646           Dana Zajko               376 0 days 01:06:48      F              145   38  ...                            42 0 days 05:15:14 0 days 00:44:08  GENERAL 3  Full Course 2023-09-04 21:06:48
 
-[374 rows x 14 columns]
+[375 rows x 24 columns]
 ```
 
 I made the bib an index as it is unique, and it has no special value for aggregation functions, The code below shows a custom function I wrote to load the CSV file into a DataFrame, with some manipulations:
+
+*TODO: Update code for enums*
 
 ```python
 # Not importing some definitions here, you can check the data.py file to see the real code
@@ -489,6 +494,8 @@ The Textual project has a really nice tutorial that [you can read](https://textu
 
 But let's see how this applies to our problem. For example, I wanted to display the race details of all the 374 runners on a
 scrollable table. I ended writing the following class:
+
+*TODO: Update code for enums*
 
 ```python
 from textual.app import ComposeResult, App, CSSPathType
@@ -697,6 +704,7 @@ The application shows all the race details for every Runner, on a table that all
 
 ![](images/esru_browser.png)
 
+*TODO: Add image for command palette*
 
 ### Summary reports
 
@@ -822,6 +830,8 @@ the winner of the 2013 race is from Malaysia, with only 2 runners participating.
 Majority of the runners identified themselves as Males, followed by Female.
 
 ## What is next?
+
+*TODO: Talk more about the race, tools used*
 
 There is plenty more to learn about the tools you just saw on this tutorial:
 
