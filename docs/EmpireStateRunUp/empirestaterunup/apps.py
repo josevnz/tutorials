@@ -365,7 +365,6 @@ class BrowserApp(App):
         yield Footer()
 
     def on_mount(self) -> None:
-        # TODO Reorder columns
         table = self.get_widget_by_id(f'runners', expect_type=DataTable)
         table.zebra_stripes = True
         table.cursor_type = 'row'

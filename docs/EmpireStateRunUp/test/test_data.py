@@ -76,8 +76,9 @@ class DataTestCase(unittest.TestCase):
         country_data = load_country_details()
         self.assertIsNotNone(country_data)
         header, rows = df_to_list_of_tuples(run_data)
+        country_idx = header.index(RaceFields.country.value)
         for row in rows:
-            country_code = row[5]
+            country_code = row[country_idx]
             country_df = lookup_country_by_code(
                 df=country_data,
                 three_letter_code=country_code

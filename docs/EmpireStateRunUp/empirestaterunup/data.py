@@ -62,21 +62,20 @@ class Level(Enum):
     dnf = "DNF"
 
 
+# Fields are sorted by interest
 class RaceFields(Enum):
-    level = "level"
-    name = "name"
-    gender = "gender"
     bib = "bib"
-    state = "state"
-    country = "country"
-    wave = "wave"
+    name = "name"
     overall_position = "overall position"
-    gender_position = "gender position"
-    division_position = "division position"
-    pace = "pace"
     time = "time"
-    city = "city"
+    gender = "gender"
+    gender_position = "gender position"
     age = "age"
+    division_position = "division position"
+    country = "country"
+    state = "state"
+    city = "city"
+    pace = "pace"
     twenty_floor_position = "20th floor position"
     twenty_floor_gender_position = "20th floor gender position"
     twenty_floor_division_position = "20th floor division position"
@@ -87,6 +86,8 @@ class RaceFields(Enum):
     sixty_five_floor_division_position = "65th floor division position"
     sixty_five_floor_pace = '65th floor pace'
     sixty_five_floor_time = '65th floor time'
+    wave = "wave"
+    level = "level"
     url = "url"
 
 
@@ -176,7 +177,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
 def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
     Read the whole RAW file, product of a manual copy and paste, return a clean version.
-    You should use the raw_csv_read() method on the file produced by the scrapper.
+    Deprecation warning: You should use the raw_csv_read() method on the file produced by the scrapper.
     Each record looks like this (copy and paste from the website):
 
     NAME
