@@ -158,6 +158,7 @@ class RunnerDetailScreen(ModalScreen):
             position_markdown[legend] = ''
             split_markdown[legend] = ''
         for i in range(0, len(columns)):
+            # TODO FIx IndexError when is called from esru_browser app
             column = columns[i]
             detail = details[0][i]
             if re.search('pace|time', column):
@@ -364,6 +365,8 @@ class BrowserApp(App):
         yield Footer()
 
     def on_mount(self) -> None:
+        # TODO Drop Link to externals website
+        # TODO Reorder columns
         table = self.get_widget_by_id(f'runners', expect_type=DataTable)
         table.zebra_stripes = True
         table.cursor_type = 'row'
@@ -379,3 +382,8 @@ class BrowserApp(App):
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
+
+    @on(DataTable.RowSelected)
+    def on_row_clicked(self, event: DataTable.RowSelected) -> None:
+        runner_detail = RunnerDetailScreen(df=self.df, detail=event)
+        self.push_screen(runner_detail)
