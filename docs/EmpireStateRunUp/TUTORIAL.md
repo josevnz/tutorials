@@ -18,7 +18,7 @@ you can see than your chances to get in through the lottery are pretty slim (I r
 
 You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
 
-And then I panicked. Have you ever been at the base of that building and looked up? Some days when is cloudy you cannot even see the top of the building.
+And then I panicked. Have you ever been at the base of the Empire State and looked up? Some days when is cloudy you cannot even see the top of the building.
 
 God news: I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical run.
 
