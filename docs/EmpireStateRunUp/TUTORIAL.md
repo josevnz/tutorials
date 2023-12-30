@@ -149,14 +149,11 @@ The code above is hardly reusable code, but it gets the job done by doing the fo
 To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
 
 ```shell
-(EmpireStateRunUp2) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper ~/temp/raw_data.csv
-2023-11-23 06:18:11,437 Saving results to /home/josevnz/temp/raw_data.csv
-2023-11-23 06:19:05,840 Got 377 racer results
-2023-11-23 06:19:05,840 Processing BIB: 19, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19
-2023-11-23 06:19:15,687 Wrote: name=Wai Ching Soh, position=1
-2023-11-23 06:19:16,583 Processing BIB: 22, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/22
-2023-11-23 06:19:25,735 Wrote: name=Ryoji Watanabe, position=2
-2023-11-23 06:19:26,504 Processing BIB: 16, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/16
+(EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper /home/josevnz/temp/raw_data.csv
+2023-12-30 14:05:00,987 Saving results to /home/josevnz/temp/raw_data.csv
+2023-12-30 14:05:53,091 Got 377 racer results
+2023-12-30 14:05:53,091 Processing BIB: 19, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19
+2023-12-30 14:06:02,207 Wrote: name=Wai Ching Soh, position=1, {'name': 'Wai Ching Soh', 'url': 'https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19', 'overall position': '1', 'gender': 'M', 'age': 29, 'city': 'Kuala Lumpur', 'state': '-', 'country': 'MYS', 'bib': 19, '20th floor position': '1', '20th floor gender position': '1', '20th floor division position': '1', '20th floor pace': '42:30', '20th floor time': '1:42', '65th floor position': '1', '65th floor gender position': '1', '65th floor division position': '1', '65th floor pace': '54:03', '65th floor time': '7:34', 'gender position': '1', 'division position': '1', 'pace': '53:00', 'time': '10:36', 'level': 'Full Course'}
 ...
 ```
 
@@ -183,8 +180,7 @@ from enum import Enum
 from typing import Iterable
 
 """
-Runners started on waves, but for basic analysis we will assume all runners were able to run
-at the same time.
+Runners started at different times, but for basic analysis we will assume all runners were able to run at the same time.
 """
 BASE_RACE_DATETIME = datetime.datetime(
     year=2023,
@@ -253,7 +249,7 @@ I used [enums](https://docs.python.org/3/library/enum.html) to make it more clea
 At the end, I ran the `es_normalizer` script, which takes the raw captured data and writes a CSV file with some important corrections:
 
 ```shell
-es_normalizer --rawfile /home/josevnz/tutorials/docs/EmpireStateRunUp/raw_data.txt /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-first-level-2023.csv
+esru_csv_cleaner --rawfile /home/josevnz/temp/raw_data.csv /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-full-level-2023.csv
 ```
 
 Now with the data ready we can proceed to ask some questions about the race.
@@ -706,7 +702,7 @@ The application shows all the race details for every Runner, on a table that all
 
 This application provides details about the following:
 
-* count, std, mean, min, max 45%, 50% and 75% for age, time, and pace
+* Count, standard deviation, mean, min, max 45%, 50% and 75% for age, time, and pace
 * Group and count distribution for Age,  Wave and Gender
 
 ```shell

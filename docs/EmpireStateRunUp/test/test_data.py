@@ -22,20 +22,20 @@ class DataTestCase(unittest.TestCase):
             self.assertIsNotNone(row)
 
     def test_get_wave_from_bib(self):
-        self.assertEqual(Waves.EliteMen, get_wave_from_bib(1))
-        self.assertEqual(Waves.EliteWomen, get_wave_from_bib(26))
-        self.assertEqual(Waves.Purple, get_wave_from_bib(100))
-        self.assertEqual(Waves.Green, get_wave_from_bib(200))
-        self.assertEqual(Waves.Orange, get_wave_from_bib(300))
-        self.assertEqual(Waves.Grey, get_wave_from_bib(400))
-        self.assertEqual(Waves.Gold, get_wave_from_bib(500))
-        self.assertEqual(Waves.Black, get_wave_from_bib(600))
+        self.assertEqual(Waves.ELITE_MEN, get_wave_from_bib(1))
+        self.assertEqual(Waves.ELITE_WOMEN, get_wave_from_bib(26))
+        self.assertEqual(Waves.PURPLE, get_wave_from_bib(100))
+        self.assertEqual(Waves.GREEN, get_wave_from_bib(200))
+        self.assertEqual(Waves.ORANGE, get_wave_from_bib(300))
+        self.assertEqual(Waves.GREY, get_wave_from_bib(400))
+        self.assertEqual(Waves.GOLD, get_wave_from_bib(500))
+        self.assertEqual(Waves.BLACK, get_wave_from_bib(600))
 
     def test_get_description_for_wave(self):
-        self.assertEqual(Waves.EliteMen.value[0], get_description_for_wave(Waves.EliteMen))
+        self.assertEqual(Waves.ELITE_MEN.value[0], get_description_for_wave(Waves.ELITE_MEN))
 
     def test_get_wave_start_time(self):
-        self.assertEqual(Waves.EliteMen.value[-1], get_wave_start_time(Waves.EliteMen))
+        self.assertEqual(Waves.ELITE_MEN.value[-1], get_wave_start_time(Waves.ELITE_MEN))
 
     def test_to_list_of_tuples(self):
         data = load_data()
@@ -44,7 +44,7 @@ class DataTestCase(unittest.TestCase):
         header, rows = df_to_list_of_tuples(data)
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
-        self.assertEqual(376, len(rows))
+        self.assertEqual(375, len(rows))
 
         header, rows = df_to_list_of_tuples(data, bibs=[537, 19])
         self.assertIsNotNone(header)
@@ -93,21 +93,21 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         df = get_times(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_get_positions(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_positions(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_get_categories(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_categories(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_better_than_median_waves(self):
         run_data = load_data()

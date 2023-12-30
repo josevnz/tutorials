@@ -37,19 +37,19 @@ class Waves(Enum):
     https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-5
     I guessed who went on which category, based on the BIB numbers I saw that day
     """
-    EliteMen = ["Elite Men", [1, 25], BASE_RACE_DATETIME]
-    EliteWomen = ["Elite Women", [26, 49], BASE_RACE_DATETIME + datetime.timedelta(minutes=2)]
-    Purple = ["Specialty", [100, 199], BASE_RACE_DATETIME + datetime.timedelta(minutes=10)]
-    Green = ["Sponsors", [200, 299], BASE_RACE_DATETIME + datetime.timedelta(minutes=20)]
+    ELITE_MEN = ["Elite Men", [1, 25], BASE_RACE_DATETIME]
+    ELITE_WOMEN = ["Elite Women", [26, 49], BASE_RACE_DATETIME + datetime.timedelta(minutes=2)]
+    PURPLE = ["Specialty", [100, 199], BASE_RACE_DATETIME + datetime.timedelta(minutes=10)]
+    GREEN = ["Sponsors", [200, 299], BASE_RACE_DATETIME + datetime.timedelta(minutes=20)]
     """
     The date people applied for the lottery determined the colors?. Let's assume that
     General Lottery Open: 7/17 9AM- 7/28 11:59PM
     General Lottery Draw Date: 8/1
     """
-    Orange = ["Tenants", [300, 399], BASE_RACE_DATETIME + datetime.timedelta(minutes=30)]
-    Grey = ["General 1", [400, 499], BASE_RACE_DATETIME + datetime.timedelta(minutes=40)]
-    Gold = ["General 2", [500, 599], BASE_RACE_DATETIME + datetime.timedelta(minutes=50)]
-    Black = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
+    ORANGE = ["Tenants", [300, 399], BASE_RACE_DATETIME + datetime.timedelta(minutes=30)]
+    GREY = ["General 1", [400, 499], BASE_RACE_DATETIME + datetime.timedelta(minutes=40)]
+    GOLD = ["General 2", [500, 599], BASE_RACE_DATETIME + datetime.timedelta(minutes=50)]
+    BLACK = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
 
 
 """
@@ -58,8 +58,8 @@ Interested only in people who completed the 86 floors. So is either full course 
 
 
 class Level(Enum):
-    full = "Full Course"
-    dnf = "DNF"
+    FULL = "Full Course"
+    DNF = "DNF"
 
 
 # Fields are sorted by interest
@@ -92,6 +92,7 @@ class RaceFields(Enum):
 
 
 FIELD_NAMES = [x.value for x in RaceFields if x != RaceFields.URL]
+FIELD_NAMES_FOR_SCRAPPING = [x.value for x in RaceFields]
 FIELD_NAMES_AND_POS: Dict[RaceFields, int] = {}
 pos = 0
 for field in RaceFields:
@@ -104,7 +105,7 @@ def get_wave_from_bib(bib: int) -> Waves:
         (lower, upper) = wave.value[1]
         if lower <= bib <= upper:
             return wave
-    return Waves.Black
+    return Waves.BLACK
 
 
 def get_description_for_wave(wave: Waves) -> str:
@@ -121,12 +122,12 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
         reader = csv.DictReader(raw_csv_file)
         for row in reader:
             try:
-                for field in FIELD_NAMES:
-                    column_val = row[field].strip()
-                    if field == RaceFields.BIB.value:
+                for csv_field in FIELD_NAMES_FOR_SCRAPPING:
+                    column_val = row[csv_field].strip()
+                    if csv_field == RaceFields.BIB.value:
                         bib = int(column_val)
-                        record[field] = bib
-                    elif field in [
+                        record[csv_field] = bib
+                    elif csv_field in [
                         RaceFields.GENDER_POSITION.value,
                         RaceFields.DIVISION_POSITION.value,
                         RaceFields.OVERALL_POSITION.value,
@@ -139,23 +140,23 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         RaceFields.AGE.value
                     ]:
                         try:
-                            record[field] = int(column_val)
+                            record[csv_field] = int(column_val)
                         except ValueError:
-                            record[field] = math.nan
-                    elif field == RaceFields.WAVE.value:
-                        record[field] = get_wave_from_bib(bib).name.upper()
-                    elif field in [
+                            record[csv_field] = math.nan
+                    elif csv_field == RaceFields.WAVE.value:
+                        record[csv_field] = get_description_for_wave(get_wave_from_bib(bib)).upper()
+                    elif csv_field in [
                         RaceFields.GENDER.value,
                         RaceFields.COUNTRY.value
                     ]:
-                        record[field] = column_val.upper()
-                    elif field in [
+                        record[csv_field] = column_val.upper()
+                    elif csv_field in [
                         RaceFields.CITY.value,
                         RaceFields.STATE.value,
 
                     ]:
-                        record[field] = column_val.capitalize()
-                    elif field in [
+                        record[csv_field] = column_val.capitalize()
+                    elif csv_field in [
                         RaceFields.SIXTY_FIVE_FLOOR_PACE.value,
                         RaceFields.SIXTY_FIVE_FLOOR_TIME.value,
                         RaceFields.TWENTY_FLOOR_PACE.value,
@@ -169,11 +170,11 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                                 parts[idx] = f"0{parts[idx]}"
                         if len(parts) == 2:
                             parts.insert(0, "00")
-                        record[field] = ":".join(parts)
+                        record[csv_field] = ":".join(parts)
                     else:
-                        record[field] = column_val
-                if record[field] in ['-', '--']:
-                    record[field] = ""
+                        record[csv_field] = column_val
+                if record[csv_field] in ['-', '--']:
+                    record[csv_field] = ""
                 yield record
             except IndexError:
                 raise
@@ -232,9 +233,9 @@ def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                         record[RaceFields.BIB.value] = int(matcher.group(3))
                         if record[RaceFields.BIB.value] in DNF_BIB:
                             record[
-                                RaceFields.LEVEL.value] = Level.dnf.value
+                                RaceFields.LEVEL.value] = Level.DNF.value
                         else:
-                            record[RaceFields.LEVEL.value] = Level.full.value
+                            record[RaceFields.LEVEL.value] = Level.FULL.value
                         location = matcher.group(4).split(',')
                         if len(location) == 3:
                             record[RaceFields.CITY.value] = location[0].strip().capitalize()
@@ -252,7 +253,7 @@ def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                             record[RaceFields.CITY.value] = ""
                             record[RaceFields.STATE.value] = ""
                             record[RaceFields.COUNTRY.value] = ""
-                        record[RaceFields.WAVE.value] = get_wave_from_bib(record[RaceFields.BIB.value]).name.upper()
+                        record[RaceFields.WAVE.value] = get_description_for_wave(get_wave_from_bib(record[RaceFields.BIB.value])).upper()
                     else:
                         matcher = info_pattern2.search(line.strip())
                         if matcher:
@@ -320,12 +321,8 @@ COUNTRY_DETAILS = Path(__file__).parent.joinpath("country_codes.csv")
 
 def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     """
-    ```csv
-    level,name,gender,bib,state,country,wave,overall position,gender position,division position,pace,time,city,age
-    Full Course,Wai Ching Soh,M,19,-,MYS,ELITEMEN,1,1,1,53:00,10:36,Kuala lumpur,29
-    ```
     * The code remove by default the DNF runners to avoid distortion on the results.
-    * Replace unknown ages with the median, to make analysis easier and avoid distortions
+    * Replace unknown/ nan values with the median, to make analysis easier and avoid distortions
     """
     if data_file:
         def_file = data_file
@@ -334,7 +331,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df = pandas.read_csv(
         def_file
     )
-    for field in [
+    for time_field in [
         RaceFields.PACE.value,
         RaceFields.TIME.value,
         RaceFields.TWENTY_FLOOR_PACE.value,
@@ -343,9 +340,9 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
         RaceFields.SIXTY_FIVE_FLOOR_TIME.value
     ]:
         try:
-            df[field] = pandas.to_timedelta(df[field])
+            df[time_field] = pandas.to_timedelta(df[time_field])
         except ValueError as ve:
-            raise ValueError(f'{field}=df[field]', ve)
+            raise ValueError(f'{time_field}={df[time_field]}', ve)
     df['finishtimestamp'] = BASE_RACE_DATETIME + df[RaceFields.TIME.value]
     if remove_dnf:
         df.drop(df[df.level == 'DNF'].index, inplace=True)

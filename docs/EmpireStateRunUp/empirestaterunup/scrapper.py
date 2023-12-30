@@ -212,7 +212,7 @@ class RacerDetailsScrapper:
         self.racer[RaceFields.DIVISION_POSITION.value] = ""
         self.racer[RaceFields.PACE.value] = ""
         self.racer[RaceFields.TIME.value] = ""
-        self.racer[RaceFields.LEVEL.value] = Level.dnf.value
+        self.racer[RaceFields.LEVEL.value] = Level.DNF.value
 
         # Find the gender and age, influence parsing strategy
         gender = ""
@@ -220,11 +220,13 @@ class RacerDetailsScrapper:
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[id='ageGender'"):
             value = div.text.strip().split()
             gender = value[0]
-            if (RaceFields.GENDER.value in self.racer and self.racer[RaceFields.GENDER.value] == "" and gender != "") or (RaceFields.GENDER.value not in self.racer):
+            if (RaceFields.GENDER.value in self.racer and self.racer[
+                RaceFields.GENDER.value] == "" and gender != "") or (RaceFields.GENDER.value not in self.racer):
                 self.racer[RaceFields.GENDER.value] = gender
             if len(value) > 1:
                 age = value[1]
-                if (RaceFields.AGE.value in self.racer and self.racer[RaceFields.AGE.value] == "") or (RaceFields.AGE.value not in self.racer and self.racer):
+                if (RaceFields.AGE.value in self.racer and self.racer[RaceFields.AGE.value] == "") or (
+                        RaceFields.AGE.value not in self.racer and self.racer):
                     self.racer[RaceFields.AGE.value] = age
 
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='col-7']"):
@@ -267,7 +269,7 @@ class RacerDetailsScrapper:
                 self.racer[RaceFields.SIXTY_FIVE_FLOOR_PACE.value] = values[-3]
                 self.racer[RaceFields.SIXTY_FIVE_FLOOR_TIME.value] = values[-1]
             elif values[0] == 'Full Course' and values[1] != '--':
-                self.racer[RaceFields.LEVEL.value] = Level.full.value
+                self.racer[RaceFields.LEVEL.value] = Level.FULL.value
                 self.racer[RaceFields.OVERALL_POSITION.value] = values[1]
                 if gender in ['M', 'F']:
                     self.racer[RaceFields.GENDER_POSITION.value] = values[3]
@@ -275,3 +277,4 @@ class RacerDetailsScrapper:
                     self.racer[RaceFields.DIVISION_POSITION.value] = values[5]
                 self.racer[RaceFields.PACE.value] = values[-3]
                 self.racer[RaceFields.TIME.value] = values[-1]
+        # Before finishing, pretty format
