@@ -7,7 +7,8 @@ from pandas import Series
 from empirestaterunup.analyze import better_than_median_waves, find_fastest, FastestFilters
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     df_to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples
+    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples, \
+    FIELD_NAMES_AND_POS
 
 RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
 RAW_CSV_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.csv")
@@ -58,7 +59,7 @@ class DataTestCase(unittest.TestCase):
     def test_series_to_list_of_tuples(self):
         data = load_data()
         self.assertIsNotNone(data)
-        countries: Series = data[RaceFields.country.value]
+        countries: Series = data[RaceFields.COUNTRY.value]
         rows = series_to_list_of_tuples(countries)
         self.assertIsNotNone(rows)
 
@@ -76,7 +77,7 @@ class DataTestCase(unittest.TestCase):
         country_data = load_country_details()
         self.assertIsNotNone(country_data)
         header, rows = df_to_list_of_tuples(run_data)
-        country_idx = header.index(RaceFields.country.value)
+        country_idx = FIELD_NAMES_AND_POS[RaceFields.COUNTRY]
         for row in rows:
             country_code = row[country_idx]
             country_df = lookup_country_by_code(
@@ -129,10 +130,10 @@ class DataTestCase(unittest.TestCase):
         for record in clean_data:
             for field in FIELD_NAMES:
                 self.assertTrue(field in record.keys())
-            if record[RaceFields.name.value] == "Kamila Chomanicova":
-                self.assertEqual(record[RaceFields.age.value], 30)
-                self.assertEqual(record[RaceFields.gender.value], "F")
-                self.assertEqual(record[RaceFields.sixty_five_floor_time.value], "00:10:40")
+            if record[RaceFields.NAME.value] == "Kamila Chomanicova":
+                self.assertEqual(record[RaceFields.AGE.value], 30)
+                self.assertEqual(record[RaceFields.GENDER.value], "F")
+                self.assertEqual(record[RaceFields.SIXTY_FIVE_FLOOR_TIME.value], "00:10:40")
             pprint.pprint(record)
 
     def test_find_fastest(self):

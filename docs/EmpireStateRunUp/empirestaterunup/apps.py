@@ -24,7 +24,8 @@ from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age
     dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves, FastestFilters, \
     find_fastest
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times, \
+    FIELD_NAMES_AND_POS
 
 
 class FiveNumberApp(App):
@@ -224,7 +225,7 @@ class OutlierApp(App):
             table.cursor_type = 'row'
             table.zebra_stripes = True
             table.tooltip = "Get runner details"
-            if column_name == RaceFields.age.value:
+            if column_name == RaceFields.AGE.value:
                 label = Label(f"{column_name} (older) outliers:".title())
             else:
                 label = Label(f"{column_name} (slower) outliers:".title())
@@ -261,7 +262,7 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             ax.boxplot(series)
             ax.set_title("Age details")
@@ -269,7 +270,7 @@ class Plotter:
             ax.set_xlabel('Age')
             ax.grid(True)
         elif gtype == 'hist':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             n, bins, patches = ax.hist(series, density=False, alpha=0.75)
             # Borrowed coloring recipe for histogram from Matplotlib documentation
@@ -285,7 +286,7 @@ class Plotter:
 
     def plot_country(self):
         fastest = find_fastest(self.df, FastestFilters.Country)
-        series = self.df[RaceFields.country.value].value_counts()
+        series = self.df[RaceFields.COUNTRY.value].value_counts()
         series.sort_values(inplace=True)
         fig, ax = plt.subplots(layout='constrained')
         rects = ax.barh(series.keys(), series.values)
@@ -302,7 +303,7 @@ class Plotter:
         ax.set_xlabel('Count per country')
 
     def plot_gender(self):
-        series = self.df[RaceFields.gender.value].value_counts()
+        series = self.df[RaceFields.GENDER.value].value_counts()
         fig, ax = plt.subplots(layout='constrained')
         wedges, texts, auto_texts = ax.pie(
             series.values,
@@ -324,10 +325,42 @@ class Plotter:
                   bbox_to_anchor=(1, 0, 0.5, 1))
 
 
+class BrowserAppCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+
+    async def startup(self) -> None:
+        browser_app = self.app
+        self.table = browser_app.query(DataTable).first()
+
+    async def search(self, query: str) -> Hit:
+        matcher = self.matcher(query)
+        browser_app = self.screen.app
+        assert isinstance(browser_app, BrowserApp)
+        df = browser_app.df
+        for row_key in self.table.rows:
+            row = self.table.get_row(row_key)
+            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION]:
+                idx = FIELD_NAMES_AND_POS[name]
+                searchable = row[idx]
+                score = matcher.match(searchable)
+                if score > 0:
+                    runner_detail = RunnerDetailScreen(df=df)
+                    yield Hit(
+                        score,
+                        matcher.highlight(f"{searchable}"),
+                        partial(browser_app.push_screen, runner_detail),
+                        help=f"Show details about {searchable}"
+                    )
+
+
 class BrowserApp(App):
-    ENABLE_COMMAND_PALETTE = False
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "browser.tcss"
+    ENABLE_COMMAND_PALETTE = True
+    COMMANDS = App.COMMANDS | {BrowserAppCommand}
 
     def __init__(
             self,
@@ -346,18 +379,18 @@ class BrowserApp(App):
             self.df = df
         else:
             self.df = load_data()
-        for three_letter_code in set(self.df[RaceFields.country.value].tolist()):
+        for three_letter_code in set(self.df[RaceFields.COUNTRY.value].tolist()):
             filtered_country = lookup_country_by_code(
                 df=self.country_data,
                 three_letter_code=three_letter_code
             )
             country_name: str = three_letter_code
-            if CountryColumns.name.value in filtered_country.columns:
-                country_name = filtered_country[CountryColumns.name.value].values[0]
-            filtered = self.df[RaceFields.country.value] == three_letter_code
+            if CountryColumns.NAME.value in filtered_country.columns:
+                country_name = filtered_country[CountryColumns.NAME.value].values[0]
+            filtered = self.df[RaceFields.COUNTRY.value] == three_letter_code
             self.df.loc[
                 filtered,
-                [RaceFields.country.value]
+                [RaceFields.COUNTRY.value]
             ] = [country_name.strip().title()]
 
     def action_quit_app(self):
@@ -391,32 +424,3 @@ class BrowserApp(App):
         row = table.get_row(event.row_key)
         runner_detail = RunnerDetailScreen(df=self.df, row=row)
         self.push_screen(runner_detail)
-
-
-class FilterRunnerCommand(Provider):
-
-    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
-        super().__init__(screen, match_style)
-        self.table = None
-
-    async def startup(self) -> None:
-        my_app = self.app
-        self.table = my_app.query(DataTable).first()
-
-    async def search(self, query: str) -> Hit:
-        matcher = self.matcher(query)
-        my_app = self.screen.app
-        assert isinstance(my_app, BrowserApp)
-        df = my_app.df
-        for row_key in self.table.rows:
-            row = self.table.get_row(row_key)
-            searchable = row[1]
-            score = matcher.match(searchable)
-            if score > 0:
-                runner_detail = RunnerDetailScreen(df=df)
-                yield Hit(
-                    score,
-                    matcher.highlight(f"{searchable}"),
-                    partial(my_app.push_screen, runner_detail),
-                    help=f"Show details about {searchable}"
-                )

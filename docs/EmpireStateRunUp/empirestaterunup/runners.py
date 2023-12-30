@@ -185,12 +185,12 @@ def run_scrapper():
             writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for bib in link_scrapper.racers:
-                url = link_scrapper.racers[bib][RaceFields.url.value]
+                url = link_scrapper.racers[bib][RaceFields.URL.value]
                 logging.info(f"Processing BIB: {bib}, will fetch: {url}")
                 with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
                     try:
-                        position = link_scrapper.racers[bib][RaceFields.overall_position.value]
-                        name = link_scrapper.racers[bib][RaceFields.name.value]
+                        position = link_scrapper.racers[bib][RaceFields.OVERALL_POSITION.value]
+                        name = link_scrapper.racers[bib][RaceFields.NAME.value]
                         writer.writerow(rds.racer)
                         logging.info(f"Wrote: name={name}, position={position}, {rds.racer}")
                     except ValueError as ve:

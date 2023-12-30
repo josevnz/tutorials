@@ -754,6 +754,7 @@ from empirestaterunup.data import load_data, RaceFields, beautify_race_times
 from empirestaterunup.analyze import find_fastest, FastestFilters
 import matplotlib.pyplot as plt
 
+
 class Plotter:
 
     def __init__(self, data_file: Path = None):
@@ -761,7 +762,7 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             ax.boxplot(series)
             ax.set_title("Age details")
@@ -769,7 +770,7 @@ class Plotter:
             ax.set_xlabel('Age')
             ax.grid(True)
         elif gtype == 'hist':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             n, bins, patches = ax.hist(series, density=False, facecolor='C0', alpha=0.75)
             ax.set_xlabel('Age [years]')
@@ -779,13 +780,14 @@ class Plotter:
 
     def plot_country(self):
         fastest = find_fastest(self.df, FastestFilters.Country)
-        series = self.df[RaceFields.country.value].value_counts()
+        series = self.df[RaceFields.COUNTRY.value].value_counts()
         series.sort_values(inplace=True)
         fig, ax = plt.subplots(layout='constrained')
         rects = ax.barh(series.keys(), series.values)
         ax.bar_label(
             rects,
-            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for
+             country, country_count in series.items()],
             padding=1,
             color='black'
         )
