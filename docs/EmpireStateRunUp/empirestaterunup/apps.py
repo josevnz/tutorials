@@ -3,17 +3,20 @@ Collection of applications to display race findings
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
 import re
+from functools import partial
 from pathlib import Path
-from typing import Type
+from typing import Type, Any, List
 
 from matplotlib import colors
 from pandas import DataFrame
+from rich.style import Style
 from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
+from textual.command import Provider, Hit
 from textual.containers import Vertical
 from textual.driver import Driver
-from textual.screen import ModalScreen
+from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
 import matplotlib.pyplot as plt
 
@@ -132,12 +135,12 @@ class RunnerDetailScreen(ModalScreen):
             name: str | None = None,
             ident: str | None = None,
             classes: str | None = None,
-            detail: DataTable.RowSelected = None,
+            row: List[Any] | None = None,
             df: DataFrame = None,
             country_df: DataFrame = None
     ):
         super().__init__(name, ident, classes)
-        self.detail = detail
+        self.row = row
         self.df = df
         if not country_df:
             self.country_df = load_country_details()
@@ -145,9 +148,7 @@ class RunnerDetailScreen(ModalScreen):
             self.country_df = country_df
 
     def compose(self) -> ComposeResult:
-        table = self.detail.data_table
-        row = table.get_row(self.detail.row_key)
-        bibs = [row[0]]
+        bibs = [self.row[0]]
         columns, details = df_to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
@@ -247,7 +248,9 @@ class OutlierApp(App):
 
     @on(DataTable.RowSelected)
     def on_row_clicked(self, event: DataTable.RowSelected) -> None:
-        runner_detail = RunnerDetailScreen(df=OutlierApp.DF, detail=event)
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = RunnerDetailScreen(df=OutlierApp.DF, row=row)
         self.push_screen(runner_detail)
 
 
@@ -288,7 +291,8 @@ class Plotter:
         rects = ax.barh(series.keys(), series.values)
         ax.bar_label(
             rects,
-            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for
+             country, country_count in series.items()],
             padding=1,
             color='black'
         )
@@ -312,7 +316,8 @@ class Plotter:
         ax.set_xlabel('Gender distribution')
         # Legend with the fastest runners by gender
         fastest = find_fastest(self.df, FastestFilters.Gender)
-        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in series.keys()]
+        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in
+                          series.keys()]
         ax.legend(wedges, fastest_legend,
                   title="Fastest by gender",
                   loc="center left",
@@ -382,5 +387,36 @@ class BrowserApp(App):
 
     @on(DataTable.RowSelected)
     def on_row_clicked(self, event: DataTable.RowSelected) -> None:
-        runner_detail = RunnerDetailScreen(df=self.df, detail=event)
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = RunnerDetailScreen(df=self.df, row=row)
         self.push_screen(runner_detail)
+
+
+class FilterRunnerCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+
+    async def startup(self) -> None:
+        my_app = self.app
+        self.table = my_app.query(DataTable).first()
+
+    async def search(self, query: str) -> Hit:
+        matcher = self.matcher(query)
+        my_app = self.screen.app
+        assert isinstance(my_app, BrowserApp)
+        df = my_app.df
+        for row_key in self.table.rows:
+            row = self.table.get_row(row_key)
+            searchable = row[1]
+            score = matcher.match(searchable)
+            if score > 0:
+                runner_detail = RunnerDetailScreen(df=df)
+                yield Hit(
+                    score,
+                    matcher.highlight(f"{searchable}"),
+                    partial(my_app.push_screen, runner_detail),
+                    help=f"Show details about {searchable}"
+                )
