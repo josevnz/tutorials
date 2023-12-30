@@ -220,8 +220,7 @@ class RacerDetailsScrapper:
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[id='ageGender'"):
             value = div.text.strip().split()
             gender = value[0]
-            if (RaceFields.GENDER.value in self.racer and self.racer[
-                RaceFields.GENDER.value] == "" and gender != "") or (RaceFields.GENDER.value not in self.racer):
+            if (RaceFields.GENDER.value in self.racer and self.racer[RaceFields.GENDER.value] == "" and gender != "") or (RaceFields.GENDER.value not in self.racer):
                 self.racer[RaceFields.GENDER.value] = gender
             if len(value) > 1:
                 age = value[1]

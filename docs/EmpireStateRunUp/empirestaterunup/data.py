@@ -120,8 +120,10 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     record = {}
     with open(raw_file, 'r') as raw_csv_file:
         reader = csv.DictReader(raw_csv_file)
+        row: Dict[str, Any]
         for row in reader:
             try:
+                csv_field: str
                 for csv_field in FIELD_NAMES_FOR_SCRAPPING:
                     column_val = row[csv_field].strip()
                     if csv_field == RaceFields.BIB.value:
