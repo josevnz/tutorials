@@ -938,9 +938,11 @@ esru_browser
 
 The application shows all the race details for every Runner, on a table that allows sorting by column.
 
-![](images/esru_browser.png)
+![Raw runners data in a table](images/esru_browser.png)
 
-*TODO: Add image for command palette*
+And the command palette, searching for runners by name:
+
+![race_runners_2023-12-31T18_35_53_558956.svg, searching for runners by name](images/race_runners_2023-12-31T18_35_53_558956.svg)
 
 ### Summary reports
 
@@ -960,7 +962,7 @@ Some interesting facts about the race:
 * Majority of the people finished the race between 20 and 30 minutes.
 * Youngest runner was 11 years old, oldest 78
 
-![](images/esru_numbers.svg)
+![Statistics of interest](images/esru_numbers.svg)
 
 
 ### Finding outliers
@@ -971,11 +973,11 @@ This application uses the _Z-score_ to find the outliers for several metrics for
 esru_outlier
 ```
 
-![](images/esru_outlier-1.svg)
+![Table with ourlier details](images/esru_outlier-1.svg)
 
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
-![](images/esru_outlier-2.svg)
+![Outlier racer details](images/esru_outlier-2.svg)
 
 Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
 
@@ -987,7 +989,7 @@ The [esru_plot](empirestaterunup/apps.py) application offers a few plot graphics
 
 The program can generate two flavors for the same data, one is a Box diagram:
 
-![Age plot](images/age_plot.png)
+![Age plot, Pie chart](images/age_plot.png)
 
 And the second is a regular histogram:
 
@@ -998,14 +1000,14 @@ are on the 10-20 and 70-80 year old groups.
 
 #### Participants per country plot
 
-![](images/participants_per_country.png)
+![Histogram](images/participants_per_country.png)
 
 No surprises here, the overwhelming majority of racers come from the United States, followed by Mexico. Interestingly 
 the winner of the 2013 race is from Malaysia, with only 2 runners participating. 
 
 #### Gender distribution
 
-![](images/gender_distribution.png)
+![Gender pie](images/gender_distribution.png)
 
 Majority of the runners identified themselves as Males, followed by Female.
 
