@@ -36,6 +36,7 @@ I tried my best to group them by categories.
 * [Debugging Applications, multiple techniques](DebuggingApplications/README.md)
 * [Extending Ansible With Python](ExtendingAnsibleWithPython/README.md)
 * [Enable Sysadmin Rss Reader, a TUI written with Python and Rich](EnableSysadminRssReader/README.md)
+* [Crash course to Textual](Textualize/TUTORIAL.md)
 * [TUI applications with Click and Trogon](CLIWithClickAndTrogon/README.md)
 * [Empire State 2023 Run UP Textual application tutorial](EmpireStateRunUp/TUTORIAL.md)
 
