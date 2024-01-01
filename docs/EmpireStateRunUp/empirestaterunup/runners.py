@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
 from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields, \
-    raw_csv_read
+    raw_csv_read, FIELD_NAMES_FOR_SCRAPPING
 from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
@@ -182,15 +182,15 @@ def run_scrapper():
         total = len(link_scrapper.racers)
         logging.info(f"Got {total} racer results")
         with open(report_file, 'w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES_FOR_SCRAPPING, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for bib in link_scrapper.racers:
-                url = link_scrapper.racers[bib][RaceFields.url.value]
+                url = link_scrapper.racers[bib][RaceFields.URL.value]
                 logging.info(f"Processing BIB: {bib}, will fetch: {url}")
                 with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
                     try:
-                        position = link_scrapper.racers[bib][RaceFields.overall_position.value]
-                        name = link_scrapper.racers[bib][RaceFields.name.value]
+                        position = link_scrapper.racers[bib][RaceFields.OVERALL_POSITION.value]
+                        name = link_scrapper.racers[bib][RaceFields.NAME.value]
                         writer.writerow(rds.racer)
                         logging.info(f"Wrote: name={name}, position={position}, {rds.racer}")
                     except ValueError as ve:
@@ -219,7 +219,7 @@ def run_csv_cleaner():
     OPTIONS = parser.parse_args()
     try:
         with open(OPTIONS.report_file, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES_FOR_SCRAPPING, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for row in raw_csv_read(OPTIONS.raw_file):
                 try:

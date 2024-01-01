@@ -10,13 +10,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EmpireStateRunUp"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
     {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
 ]
 description = "Collection of scripts to analyze the results of the 2023 Empire State Run Up race"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["running", "race"]
 classifiers = [
     "Environment :: Console",
@@ -25,24 +25,16 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Topic :: Utilities"
 ]
-dependencies = [
-    "pandas==2.1.1",
-    "textual==0.41.0",
-    "rich==13.6.0",
-    "numpy==1.26.0",
-    "matplotlib==3.8.0",
-    "selenium==4.15.2",
-    'importlib-metadata; python_version>"3.11"',
-]
 
 [project.scripts]
-esru_raw_cleanup = "empirestaterunup.runners:run_raw_cleaner"
-esru_csv_cleanup = "empirestaterunup.runners:run_csv_cleaner"
+esru_scrapper = "empirestaterunup.runners:run_scrapper"
+esru_csv_cleaner = "empirestaterunup.runners:run_csv_cleaner"
+esru_raw_cleaner = "empirestaterunup.runners:run_raw_cleaner"
 esru_numbers = "empirestaterunup.runners:run_5_number"
 esru_outlier = "empirestaterunup.runners:run_outlier"
 esru_browser = "empirestaterunup.runners:run_browser"
-simple_plot = "empirestaterunup.runners:simple_plot"
-esru_scrapper = "empirestaterunup.runners:run_scrapper"
+esru_plot = "empirestaterunup.runners:simple_plot"
+
 
 [tool.setuptools]
 include-package-data = true
@@ -53,3 +45,7 @@ exclude = ["test*"]
 
 [tool.setuptools.package-data]
 empirestaterunup = ["*.txt", "*.tcss", "*.csv"]
+images = ["*.png", "*.svg"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}

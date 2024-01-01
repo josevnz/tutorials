@@ -7,7 +7,8 @@ from pandas import Series
 from empirestaterunup.analyze import better_than_median_waves, find_fastest, FastestFilters
 from empirestaterunup.data import load_data, Waves, get_wave_from_bib, get_description_for_wave, get_wave_start_time, \
     df_to_list_of_tuples, load_country_details, lookup_country_by_code, COUNTRY_COLUMNS, get_times, get_positions, \
-    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples
+    get_categories, raw_copy_paste_read, raw_csv_read, RaceFields, FIELD_NAMES, series_to_list_of_tuples, \
+    FIELD_NAMES_AND_POS
 
 RAW_COPY_PASTE_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.txt")
 RAW_CSV_RACE_RESULTS = Path(__file__).parent.joinpath("raw_data.csv")
@@ -21,20 +22,20 @@ class DataTestCase(unittest.TestCase):
             self.assertIsNotNone(row)
 
     def test_get_wave_from_bib(self):
-        self.assertEqual(Waves.EliteMen, get_wave_from_bib(1))
-        self.assertEqual(Waves.EliteWomen, get_wave_from_bib(26))
-        self.assertEqual(Waves.Purple, get_wave_from_bib(100))
-        self.assertEqual(Waves.Green, get_wave_from_bib(200))
-        self.assertEqual(Waves.Orange, get_wave_from_bib(300))
-        self.assertEqual(Waves.Grey, get_wave_from_bib(400))
-        self.assertEqual(Waves.Gold, get_wave_from_bib(500))
-        self.assertEqual(Waves.Black, get_wave_from_bib(600))
+        self.assertEqual(Waves.ELITE_MEN, get_wave_from_bib(1))
+        self.assertEqual(Waves.ELITE_WOMEN, get_wave_from_bib(26))
+        self.assertEqual(Waves.PURPLE, get_wave_from_bib(100))
+        self.assertEqual(Waves.GREEN, get_wave_from_bib(200))
+        self.assertEqual(Waves.ORANGE, get_wave_from_bib(300))
+        self.assertEqual(Waves.GREY, get_wave_from_bib(400))
+        self.assertEqual(Waves.GOLD, get_wave_from_bib(500))
+        self.assertEqual(Waves.BLACK, get_wave_from_bib(600))
 
     def test_get_description_for_wave(self):
-        self.assertEqual(Waves.EliteMen.value[0], get_description_for_wave(Waves.EliteMen))
+        self.assertEqual(Waves.ELITE_MEN.value[0], get_description_for_wave(Waves.ELITE_MEN))
 
     def test_get_wave_start_time(self):
-        self.assertEqual(Waves.EliteMen.value[-1], get_wave_start_time(Waves.EliteMen))
+        self.assertEqual(Waves.ELITE_MEN.value[-1], get_wave_start_time(Waves.ELITE_MEN))
 
     def test_to_list_of_tuples(self):
         data = load_data()
@@ -43,7 +44,7 @@ class DataTestCase(unittest.TestCase):
         header, rows = df_to_list_of_tuples(data)
         self.assertIsNotNone(header)
         self.assertIsNotNone(rows)
-        self.assertEqual(376, len(rows))
+        self.assertEqual(375, len(rows))
 
         header, rows = df_to_list_of_tuples(data, bibs=[537, 19])
         self.assertIsNotNone(header)
@@ -58,7 +59,7 @@ class DataTestCase(unittest.TestCase):
     def test_series_to_list_of_tuples(self):
         data = load_data()
         self.assertIsNotNone(data)
-        countries: Series = data[RaceFields.country.value]
+        countries: Series = data[RaceFields.COUNTRY.value]
         rows = series_to_list_of_tuples(countries)
         self.assertIsNotNone(rows)
 
@@ -76,8 +77,9 @@ class DataTestCase(unittest.TestCase):
         country_data = load_country_details()
         self.assertIsNotNone(country_data)
         header, rows = df_to_list_of_tuples(run_data)
+        country_idx = FIELD_NAMES_AND_POS[RaceFields.COUNTRY]
         for row in rows:
-            country_code = row[5]
+            country_code = row[country_idx]
             country_df = lookup_country_by_code(
                 df=country_data,
                 three_letter_code=country_code
@@ -91,21 +93,21 @@ class DataTestCase(unittest.TestCase):
         self.assertIsNotNone(run_data)
         df = get_times(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_get_positions(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_positions(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_get_categories(self):
         run_data = load_data()
         self.assertIsNotNone(run_data)
         df = get_categories(run_data)
         self.assertIsNotNone(df)
-        self.assertEqual(376, df.shape[0])
+        self.assertEqual(375, df.shape[0])
 
     def test_better_than_median_waves(self):
         run_data = load_data()
@@ -128,10 +130,10 @@ class DataTestCase(unittest.TestCase):
         for record in clean_data:
             for field in FIELD_NAMES:
                 self.assertTrue(field in record.keys())
-            if record[RaceFields.name.value] == "Kamila Chomanicova":
-                self.assertEqual(record[RaceFields.age.value], 30)
-                self.assertEqual(record[RaceFields.gender.value], "F")
-                self.assertEqual(record[RaceFields.sixty_five_floor_time.value], "00:10:40")
+            if record[RaceFields.NAME.value] == "Kamila Chomanicova":
+                self.assertEqual(record[RaceFields.AGE.value], 30)
+                self.assertEqual(record[RaceFields.GENDER.value], "F")
+                self.assertEqual(record[RaceFields.SIXTY_FIVE_FLOOR_TIME.value], "00:10:40")
             pprint.pprint(record)
 
     def test_find_fastest(self):

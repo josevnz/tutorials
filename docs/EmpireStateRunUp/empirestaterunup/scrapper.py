@@ -66,8 +66,8 @@ class RacerLinksScrapper:
                 url = href.strip()
                 bib = int(url.split('/')[-1])
                 self.racers[bib] = {
-                    RaceFields.name.value: name,
-                    RaceFields.url.value: url
+                    RaceFields.NAME.value: name,
+                    RaceFields.URL.value: url
                 }
 
         """
@@ -81,8 +81,8 @@ class RacerLinksScrapper:
         Gender and age may be missing from the racers details ...
         """
         record = {
-            RaceFields.gender.value: "",
-            RaceFields.age.value: ""
+            RaceFields.GENDER.value: "",
+            RaceFields.AGE.value: ""
         }
         count = 0
         for span in self.driver.find_elements(By.TAG_NAME, "span"):
@@ -91,43 +91,43 @@ class RacerLinksScrapper:
                 count += 1
             matcher = re.search('([A-Z])\\s(\\d+)', text)
             if matcher:
-                record[RaceFields.gender.value] = matcher.group(1)
-                record[RaceFields.age.value] = int(matcher.group(2))
+                record[RaceFields.GENDER.value] = matcher.group(1)
+                record[RaceFields.AGE.value] = int(matcher.group(2))
             matcher = re.search('Bib\\s(\\d+)', text)
             if matcher:
-                record[RaceFields.bib.value] = int(matcher.group(1))
-                self.rank_to_bib.append(record[RaceFields.bib.value])
+                record[RaceFields.BIB.value] = int(matcher.group(1))
+                self.rank_to_bib.append(record[RaceFields.BIB.value])
             matcher = re.search(',', text)
             if matcher:
                 tokens = span.text.split(',')
                 if len(tokens) == 3:
-                    record[RaceFields.city.value] = tokens[0]
-                    record[RaceFields.state.value] = tokens[1]
-                    record[RaceFields.country.value] = tokens[2]
+                    record[RaceFields.CITY.value] = tokens[0]
+                    record[RaceFields.STATE.value] = tokens[1]
+                    record[RaceFields.COUNTRY.value] = tokens[2]
                 elif len(tokens) == 2:
-                    record[RaceFields.city.value] = ""
-                    record[RaceFields.state.value] = tokens[0]
-                    record[RaceFields.country.value] = tokens[1]
+                    record[RaceFields.CITY.value] = ""
+                    record[RaceFields.STATE.value] = tokens[0]
+                    record[RaceFields.COUNTRY.value] = tokens[1]
                 else:
-                    record[RaceFields.city.value] = ""
-                    record[RaceFields.state.value] = ""
-                    record[RaceFields.country.value] = tokens[0]
+                    record[RaceFields.CITY.value] = ""
+                    record[RaceFields.STATE.value] = ""
+                    record[RaceFields.COUNTRY.value] = tokens[0]
             # By now all the record parts should be available
-            if RaceFields.country.value in record:
-                bib = record[RaceFields.bib.value]
-                self.racers[bib][RaceFields.overall_position.value] = count
-                if RaceFields.gender.value in record:
-                    self.racers[bib][RaceFields.gender.value] = record[RaceFields.gender.value].strip()
+            if RaceFields.COUNTRY.value in record:
+                bib = record[RaceFields.BIB.value]
+                self.racers[bib][RaceFields.OVERALL_POSITION.value] = count
+                if RaceFields.GENDER.value in record:
+                    self.racers[bib][RaceFields.GENDER.value] = record[RaceFields.GENDER.value].strip()
                 else:
-                    self.racers[bib][RaceFields.gender.value] = ""
-                if RaceFields.age.value in record:
-                    self.racers[bib][RaceFields.age.value] = record[RaceFields.age.value]
+                    self.racers[bib][RaceFields.GENDER.value] = ""
+                if RaceFields.AGE.value in record:
+                    self.racers[bib][RaceFields.AGE.value] = record[RaceFields.AGE.value]
                 else:
-                    self.racers[bib][RaceFields.age.value] = ""
-                self.racers[bib][RaceFields.city.value] = record[RaceFields.city.value].strip()
-                self.racers[bib][RaceFields.state.value] = record[RaceFields.state.value].strip()
-                self.racers[bib][RaceFields.country.value] = record[RaceFields.country.value].strip()
-                self.racers[bib][RaceFields.bib.value] = bib
+                    self.racers[bib][RaceFields.AGE.value] = ""
+                self.racers[bib][RaceFields.CITY.value] = record[RaceFields.CITY.value].strip()
+                self.racers[bib][RaceFields.STATE.value] = record[RaceFields.STATE.value].strip()
+                self.racers[bib][RaceFields.COUNTRY.value] = record[RaceFields.COUNTRY.value].strip()
+                self.racers[bib][RaceFields.BIB.value] = bib
                 record = {}
 
         """
@@ -168,7 +168,7 @@ class RacerDetailsScrapper:
                 https://github.com/mozilla/geckodriver/issues/330
                 """
                 fp.set_preference("devtools.console.stdout.content", "true")
-                options.log.level = "trace"
+                options.log.LEVEL = "trace"
                 service.log_output = subprocess.STDOUT
         options.profile = fp
         self.driver = webdriver.Firefox(
@@ -176,7 +176,7 @@ class RacerDetailsScrapper:
             service=service
         )
         self.load_wait = load_wait
-        self.driver.get(racer[RaceFields.url.value])
+        self.driver.get(racer[RaceFields.URL.value])
         sleep(self.load_wait)
         self.racer = racer
         self.debug_level = debug_level
@@ -197,22 +197,22 @@ class RacerDetailsScrapper:
         Also, some values can be missing if gender or age was not provided.
 
         """
-        self.racer[RaceFields.twenty_floor_position.value] = ""
-        self.racer[RaceFields.twenty_floor_gender_position.value] = ""
-        self.racer[RaceFields.twenty_floor_division_position.value] = ""
-        self.racer[RaceFields.twenty_floor_pace.value] = ""
-        self.racer[RaceFields.twenty_floor_time.value] = ""
-        self.racer[RaceFields.sixty_five_floor_position.value] = ""
-        self.racer[RaceFields.sixty_five_floor_gender_position.value] = ""
-        self.racer[RaceFields.sixty_five_floor_division_position.value] = ""
-        self.racer[RaceFields.sixty_five_floor_pace.value] = ""
-        self.racer[RaceFields.sixty_five_floor_time.value] = ""
-        self.racer[RaceFields.overall_position.value] = ""
-        self.racer[RaceFields.gender_position.value] = ""
-        self.racer[RaceFields.division_position.value] = ""
-        self.racer[RaceFields.pace.value] = ""
-        self.racer[RaceFields.time.value] = ""
-        self.racer[RaceFields.level.value] = Level.dnf.value
+        self.racer[RaceFields.TWENTY_FLOOR_POSITION.value] = ""
+        self.racer[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = ""
+        self.racer[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value] = ""
+        self.racer[RaceFields.TWENTY_FLOOR_PACE.value] = ""
+        self.racer[RaceFields.TWENTY_FLOOR_TIME.value] = ""
+        self.racer[RaceFields.SIXTY_FLOOR_POSITION.value] = ""
+        self.racer[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value] = ""
+        self.racer[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value] = ""
+        self.racer[RaceFields.SIXTY_FIVE_FLOOR_PACE.value] = ""
+        self.racer[RaceFields.SIXTY_FIVE_FLOOR_TIME.value] = ""
+        self.racer[RaceFields.OVERALL_POSITION.value] = ""
+        self.racer[RaceFields.GENDER_POSITION.value] = ""
+        self.racer[RaceFields.DIVISION_POSITION.value] = ""
+        self.racer[RaceFields.PACE.value] = ""
+        self.racer[RaceFields.TIME.value] = ""
+        self.racer[RaceFields.LEVEL.value] = Level.DNF.value
 
         # Find the gender and age, influence parsing strategy
         gender = ""
@@ -220,24 +220,25 @@ class RacerDetailsScrapper:
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[id='ageGender'"):
             value = div.text.strip().split()
             gender = value[0]
-            if (RaceFields.gender.value in self.racer and self.racer[RaceFields.gender.value] == "" and gender != "") or (RaceFields.gender.value not in self.racer):
-                self.racer[RaceFields.gender.value] = gender
+            if (RaceFields.GENDER.value in self.racer and self.racer[RaceFields.GENDER.value] == "" and gender != "") or (RaceFields.GENDER.value not in self.racer):
+                self.racer[RaceFields.GENDER.value] = gender
             if len(value) > 1:
                 age = value[1]
-                if (RaceFields.age.value in self.racer and self.racer[RaceFields.age.value] == "") or (RaceFields.age.value not in self.racer and self.racer):
-                    self.racer[RaceFields.age.value] = age
+                if (RaceFields.AGE.value in self.racer and self.racer[RaceFields.AGE.value] == "") or (
+                        RaceFields.AGE.value not in self.racer and self.racer):
+                    self.racer[RaceFields.AGE.value] = age
 
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='col-7']"):
             value = div.text.strip().split('\n')
             if len(value) == 2:
-                self.racer[RaceFields.time.value] = value[1]
+                self.racer[RaceFields.TIME.value] = value[1]
             if self.debug_level > 0:
                 print(value)
 
         for div in self.driver.find_elements(By.CSS_SELECTOR, "div[class='col-5']"):
             value = div.text.strip().split('\n')
             if len(value) == 2:
-                self.racer[RaceFields.pace.value] = value[1]
+                self.racer[RaceFields.PACE.value] = value[1]
             if self.debug_level > 0:
                 print(value)
 
@@ -251,27 +252,28 @@ class RacerDetailsScrapper:
             """
             values = value.split('\n')
             if values[0] == '20th Floor' and values[1] != '--':
-                self.racer[RaceFields.twenty_floor_position.value] = values[1]
+                self.racer[RaceFields.TWENTY_FLOOR_POSITION.value] = values[1]
                 if gender in ['M', 'F']:
-                    self.racer[RaceFields.twenty_floor_gender_position.value] = values[3]
+                    self.racer[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = values[3]
                 if age != "":
-                    self.racer[RaceFields.twenty_floor_division_position.value] = values[5]
-                self.racer[RaceFields.twenty_floor_pace.value] = values[-3]
-                self.racer[RaceFields.twenty_floor_time.value] = values[-1]
+                    self.racer[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value] = values[5]
+                self.racer[RaceFields.TWENTY_FLOOR_PACE.value] = values[-3]
+                self.racer[RaceFields.TWENTY_FLOOR_TIME.value] = values[-1]
             elif values[0] == '65th Floor' and values[1] != '--':
-                self.racer[RaceFields.sixty_five_floor_position.value] = values[1]
+                self.racer[RaceFields.SIXTY_FLOOR_POSITION.value] = values[1]
                 if gender in ['M', 'F']:
-                    self.racer[RaceFields.sixty_five_floor_gender_position.value] = values[3]
+                    self.racer[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value] = values[3]
                 if age != "":
-                    self.racer[RaceFields.sixty_five_floor_division_position.value] = values[5]
-                self.racer[RaceFields.sixty_five_floor_pace.value] = values[-3]
-                self.racer[RaceFields.sixty_five_floor_time.value] = values[-1]
+                    self.racer[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value] = values[5]
+                self.racer[RaceFields.SIXTY_FIVE_FLOOR_PACE.value] = values[-3]
+                self.racer[RaceFields.SIXTY_FIVE_FLOOR_TIME.value] = values[-1]
             elif values[0] == 'Full Course' and values[1] != '--':
-                self.racer[RaceFields.level.value] = Level.full.value
-                self.racer[RaceFields.overall_position.value] = values[1]
+                self.racer[RaceFields.LEVEL.value] = Level.FULL.value
+                self.racer[RaceFields.OVERALL_POSITION.value] = values[1]
                 if gender in ['M', 'F']:
-                    self.racer[RaceFields.gender_position.value] = values[3]
+                    self.racer[RaceFields.GENDER_POSITION.value] = values[3]
                 if age != "":
-                    self.racer[RaceFields.division_position.value] = values[5]
-                self.racer[RaceFields.pace.value] = values[-3]
-                self.racer[RaceFields.time.value] = values[-1]
+                    self.racer[RaceFields.DIVISION_POSITION.value] = values[5]
+                self.racer[RaceFields.PACE.value] = values[-3]
+                self.racer[RaceFields.TIME.value] = values[-1]
+        # Before finishing, pretty format

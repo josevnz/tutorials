@@ -3,17 +3,20 @@ Collection of applications to display race findings
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
 import re
+from functools import partial
 from pathlib import Path
-from typing import Type
+from typing import Type, Any, List
 
 from matplotlib import colors
 from pandas import DataFrame
+from rich.style import Style
 from rich.text import Text
 from textual import on
 from textual.app import ComposeResult, App, CSSPathType
+from textual.command import Provider, Hit
 from textual.containers import Vertical
 from textual.driver import Driver
-from textual.screen import ModalScreen
+from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Label, Button, MarkdownViewer
 import matplotlib.pyplot as plt
 
@@ -21,7 +24,8 @@ from empirestaterunup.analyze import SUMMARY_METRICS, get_5_number, count_by_age
     dt_to_sorted_dict, get_outliers, age_bins, time_bins, get_country_counts, better_than_median_waves, FastestFilters, \
     find_fastest
 from empirestaterunup.data import load_data, df_to_list_of_tuples, load_country_details, \
-    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times
+    lookup_country_by_code, CountryColumns, RaceFields, series_to_list_of_tuples, beautify_race_times, \
+    FIELD_NAMES_AND_POS
 
 
 class FiveNumberApp(App):
@@ -132,12 +136,12 @@ class RunnerDetailScreen(ModalScreen):
             name: str | None = None,
             ident: str | None = None,
             classes: str | None = None,
-            detail: DataTable.RowSelected = None,
+            row: List[Any] | None = None,
             df: DataFrame = None,
             country_df: DataFrame = None
     ):
         super().__init__(name, ident, classes)
-        self.detail = detail
+        self.row = row
         self.df = df
         if not country_df:
             self.country_df = load_country_details()
@@ -145,9 +149,8 @@ class RunnerDetailScreen(ModalScreen):
             self.country_df = country_df
 
     def compose(self) -> ComposeResult:
-        table = self.detail.data_table
-        row = table.get_row(self.detail.row_key)
-        bibs = [row[0]]
+        bib_idx = FIELD_NAMES_AND_POS[RaceFields.BIB]
+        bibs = [self.row[bib_idx]]
         columns, details = df_to_list_of_tuples(self.df, bibs)
         self.log.info(f"Columns: {columns}")
         self.log.info(f"Details: {details}")
@@ -223,8 +226,12 @@ class OutlierApp(App):
             table.cursor_type = 'row'
             table.zebra_stripes = True
             table.tooltip = "Get runner details"
+            if column_name == RaceFields.AGE.value:
+                label = Label(f"{column_name} (older) outliers:".title())
+            else:
+                label = Label(f"{column_name} (slower) outliers:".title())
             yield Vertical(
-                Label(f"{column_name} outliers:".title()),
+                label,
                 table
             )
         yield Footer()
@@ -243,7 +250,9 @@ class OutlierApp(App):
 
     @on(DataTable.RowSelected)
     def on_row_clicked(self, event: DataTable.RowSelected) -> None:
-        runner_detail = RunnerDetailScreen(df=OutlierApp.DF, detail=event)
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = RunnerDetailScreen(df=OutlierApp.DF, row=row)
         self.push_screen(runner_detail)
 
 
@@ -254,7 +263,7 @@ class Plotter:
 
     def plot_age(self, gtype: str):
         if gtype == 'box':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             ax.boxplot(series)
             ax.set_title("Age details")
@@ -262,7 +271,7 @@ class Plotter:
             ax.set_xlabel('Age')
             ax.grid(True)
         elif gtype == 'hist':
-            series = self.df[RaceFields.age.value]
+            series = self.df[RaceFields.AGE.value]
             fig, ax = plt.subplots(layout='constrained')
             n, bins, patches = ax.hist(series, density=False, alpha=0.75)
             # Borrowed coloring recipe for histogram from Matplotlib documentation
@@ -278,13 +287,14 @@ class Plotter:
 
     def plot_country(self):
         fastest = find_fastest(self.df, FastestFilters.Country)
-        series = self.df[RaceFields.country.value].value_counts()
+        series = self.df[RaceFields.COUNTRY.value].value_counts()
         series.sort_values(inplace=True)
         fig, ax = plt.subplots(layout='constrained')
         rects = ax.barh(series.keys(), series.values)
         ax.bar_label(
             rects,
-            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for country, country_count in series.items()],
+            [f"{country_count} - {fastest[country]['name']}({beautify_race_times(fastest[country]['time'])})" for
+             country, country_count in series.items()],
             padding=1,
             color='black'
         )
@@ -294,7 +304,7 @@ class Plotter:
         ax.set_xlabel('Count per country')
 
     def plot_gender(self):
-        series = self.df[RaceFields.gender.value].value_counts()
+        series = self.df[RaceFields.GENDER.value].value_counts()
         fig, ax = plt.subplots(layout='constrained')
         wedges, texts, auto_texts = ax.pie(
             series.values,
@@ -308,17 +318,51 @@ class Plotter:
         ax.set_xlabel('Gender distribution')
         # Legend with the fastest runners by gender
         fastest = find_fastest(self.df, FastestFilters.Gender)
-        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in series.keys()]
+        fastest_legend = [f"{fastest[gender]['name']} - {beautify_race_times(fastest[gender]['time'])}" for gender in
+                          series.keys()]
         ax.legend(wedges, fastest_legend,
                   title="Fastest by gender",
                   loc="center left",
                   bbox_to_anchor=(1, 0, 0.5, 1))
 
 
+class BrowserAppCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+
+    async def startup(self) -> None:
+        browser_app = self.app
+        self.table = browser_app.query(DataTable).first()
+
+    async def search(self, query: str) -> Hit:
+        matcher = self.matcher(query)
+        browser_app = self.screen.app
+        assert isinstance(browser_app, BrowserApp)
+        df = browser_app.df
+        for row_key in self.table.rows:
+            row = self.table.get_row(row_key)
+            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION]:
+                idx = FIELD_NAMES_AND_POS[name]
+                searchable = str(row[idx])
+                score = matcher.match(searchable)
+                if score > 0:
+                    details = f"{searchable} - {name.value}"
+                    runner_detail = RunnerDetailScreen(df=df, row=row)
+                    yield Hit(
+                        score,
+                        matcher.highlight(f"{searchable}"),
+                        partial(browser_app.push_screen, runner_detail),
+                        help=f"{details}"
+                    )
+
+
 class BrowserApp(App):
-    ENABLE_COMMAND_PALETTE = False
     BINDINGS = [("q", "quit_app", "Quit")]
     CSS_PATH = "browser.tcss"
+    ENABLE_COMMAND_PALETTE = True
+    COMMANDS = App.COMMANDS | {BrowserAppCommand}
 
     def __init__(
             self,
@@ -337,18 +381,18 @@ class BrowserApp(App):
             self.df = df
         else:
             self.df = load_data()
-        for three_letter_code in set(self.df[RaceFields.country.value].tolist()):
+        for three_letter_code in set(self.df[RaceFields.COUNTRY.value].tolist()):
             filtered_country = lookup_country_by_code(
                 df=self.country_data,
                 three_letter_code=three_letter_code
             )
             country_name: str = three_letter_code
-            if CountryColumns.name.value in filtered_country.columns:
-                country_name = filtered_country[CountryColumns.name.value].values[0]
-            filtered = self.df[RaceFields.country.value] == three_letter_code
+            if CountryColumns.NAME.value in filtered_country.columns:
+                country_name = filtered_country[CountryColumns.NAME.value].values[0]
+            filtered = self.df[RaceFields.COUNTRY.value] == three_letter_code
             self.df.loc[
                 filtered,
-                [RaceFields.country.value]
+                [RaceFields.COUNTRY.value]
             ] = [country_name.strip().title()]
 
     def action_quit_app(self):
@@ -375,3 +419,10 @@ class BrowserApp(App):
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
         table.sort(event.column_key)
+
+    @on(DataTable.RowSelected)
+    def on_row_clicked(self, event: DataTable.RowSelected) -> None:
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = RunnerDetailScreen(df=self.df, row=row)
+        self.push_screen(runner_detail)

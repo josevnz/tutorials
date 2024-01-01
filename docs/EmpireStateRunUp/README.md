@@ -2,9 +2,9 @@
 
 [![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
 
-![empire_state_runup.png](empire_state_runup.png)
+![empire_state_runup.png](images/empire_state_runup.png)
 
-![ESRU browser](esru_browser.png)
+![ESRU browser](images/esru_browser.png)
 
 
 
