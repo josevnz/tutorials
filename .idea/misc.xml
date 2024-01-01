@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Black">
-    <option name="pathToExecutable" value="$PROJECT_DIR$/../.local/bin/black" />
-    <option name="sdkUUID" value="7929f142-1b51-4888-add6-4b69df309d99" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (tutorials)" project-jdk-type="Python SDK" />
-</project>
