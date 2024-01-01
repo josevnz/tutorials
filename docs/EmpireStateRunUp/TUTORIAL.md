@@ -959,16 +959,17 @@ class AppTestCase(unittest.IsolatedAsyncioTestCase):
             # Quit the app by pressing q
             await pilot.press("q")
 
-
 if __name__ == '__main__':
     unittest.main()
 ```
 
-This is very invaluable, and something that many times require an external tool set to validate.
+This is invaluable, and something that many times require an external tool set to validate (for example in Java you have the class [Robot](https://docs.oracle.com/javase/8/docs/api/java/awt/Robot.html)).
 
 ## Running the applications
 
 Finally, time to get familiar with the applications.
+
+![Demonstration of the TUI applications](images/EmpireStateRunUp.svg)
 
 ### Browsing through the data
 
@@ -1054,8 +1055,6 @@ the winner of the 2013 race is from Malaysia, with only 2 runners participating.
 Majority of the runners identified themselves as Males, followed by Female.
 
 ## What is next?
-
-*TODO: Talk more about the race, tools used*
 
 There is plenty more to learn about the tools you just saw on this tutorial:
 
