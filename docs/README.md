@@ -4,6 +4,10 @@ Over the years I wrote several tutorials with Open Source code, here is a summar
 
 I tried my best to group them by categories.
 
+## About me
+
+[About me](https://tutorials.kodegeek.com/about)
+
 ## Categories
 
 ### Bash and Linux
