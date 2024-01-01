@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EmpireStateRunUp"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
     {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"},
 ]
@@ -25,7 +25,7 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Topic :: Utilities"
 ]
-
+dynamic = ["dependencies"]
 [project.scripts]
 esru_scrapper = "empirestaterunup.runners:run_scrapper"
 esru_csv_cleaner = "empirestaterunup.runners:run_csv_cleaner"
