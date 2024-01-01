@@ -1056,6 +1056,8 @@ Majority of the runners identified themselves as Males, followed by Female.
 
 ## What is next?
 
+Participating on this race was a great experience, and the best part is that of fueled my curiosity and let me write this code to find  more interesting facts about the race.
+
 There is plenty more to learn about the tools you just saw on this tutorial:
 
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
