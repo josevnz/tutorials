@@ -882,7 +882,7 @@ Then on another terminal you start your application but using the development mo
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ textual run --dev --command esru_browser
 ```
 
-if you check back on your console terminal, you will see any messages you sent with app.log and also the events:
+if you check back on your console terminal, you will see any messages you sent with App.log and also the events:
 
 ```shell
 ─────────────────────────────────────────────────────────────────────────── Client '127.0.0.1' connected ───────────────────────────────────────────────────────────────────────────
@@ -922,7 +922,49 @@ Show() >>> ScrollBarCorner() method=None
 
 #### Using unittest and Pilot
 
-*TODO: Show code here with Pilot*
+The framework has a way to make automated calls to Textual Widgets and wait for events, so you can simulate user interaction with the application to validate it behaves as expected:
+
+```python
+import unittest
+from textual.widgets import DataTable, MarkdownViewer
+from empirestaterunup.apps import BrowserApp
+
+
+class AppTestCase(unittest.IsolatedAsyncioTestCase):
+    async def test_browser_app(self):
+        app = BrowserApp()
+        self.assertIsNotNone(app)
+        async with app.run_test() as pilot:
+
+            """
+            Test the command palette
+            """
+            await pilot.press("ctrl+\\")
+            for char in "jose".split():
+                await pilot.press(char)
+            await pilot.press("enter")
+            # This returns the runner screen, check it has some contents
+            markdown_viewer = app.screen.query(MarkdownViewer).first()
+            self.assertTrue(markdown_viewer.document)
+            await pilot.click("#close")  # Close the new screen, pop the original one
+            # Go back to the main screen, now select a runner but using the table
+            table = app.screen.query(DataTable).first()
+            coordinate = table.cursor_coordinate
+            self.assertTrue(table.is_valid_coordinate(coordinate))
+            await pilot.press("enter")
+            await pilot.pause()
+            markdown_viewer = app.screen.query(MarkdownViewer).first()
+            self.assertTrue(markdown_viewer)
+            # After validating the markdown one more time, close the app
+            # Quit the app by pressing q
+            await pilot.press("q")
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+This is very invaluable, and something that many times require an external tool set to validate.
 
 ## Running the applications
 
