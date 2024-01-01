@@ -31,7 +31,7 @@ There are 4 scripts that you can run:
 * esru_numbers
 * esru_outlier
 * esru_browser
-* simple_plot
+* esru_plot
 
 If you want to learn more about these programs, please grab a cup of coffe and read the [TUTORIAL](TUTORIAL.md)
 
