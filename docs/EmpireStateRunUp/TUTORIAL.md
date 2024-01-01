@@ -969,7 +969,8 @@ This is invaluable, and something that many times require an external tool set t
 
 Finally, time to get familiar with the applications.
 
-![Demonstration of the TUI applications](images/EmpireStateRunUp.svg)
+![Demonstration of the TUI applications](./images/EmpireStateRunUp.svg)
+<img src="./images/EmpireStateRunUp.svg">
 
 ### Browsing through the data
 
