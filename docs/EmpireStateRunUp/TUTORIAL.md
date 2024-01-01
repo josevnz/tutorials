@@ -922,7 +922,7 @@ Show() >>> ScrollBarCorner() method=None
 
 #### Using unittest and Pilot
 
-The framework has a way to make automated calls to Textual Widgets and wait for events, so you can simulate user interaction with the application to validate it behaves as expected:
+The framework has the [Pilot class](https://textual.textualize.io/api/pilot/), that can be used to make automated calls to Textual Widgets and wait for events, so you can simulate user interaction with the application to validate it behaves as expected:
 
 ```python
 import unittest
