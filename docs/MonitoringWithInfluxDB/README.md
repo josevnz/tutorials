@@ -146,7 +146,7 @@ scrape_configs:
           - targets: ['dmaf5.home:9100']
 ```
 
-I strongly recommend you validate your basic syntax using `yamllint /etc/promethus/prometheus.yaml`.
+I strongly recommend you validate your basic syntax using `yamllint /etc/prometheus/prometheus.yaml`.
 
 Once the favourite editor is open (I use vim), you can then define the following systemd unit for it:
 
