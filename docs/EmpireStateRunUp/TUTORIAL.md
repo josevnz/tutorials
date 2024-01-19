@@ -635,7 +635,7 @@ Let's see some code, one of the applications is called 'esru_outlier', TUI code 
 
 OutlierApp (extends App), collects all the basic information on a table for each outlier group and then calls the RunnerDetailScreen to display details about a runner.
 
-![esrm_outlier_first_screen.png](images/esrm_outlier_first_screen.png)
+![Screen shot of the OutlierApp table that shows outliers on the race results](images/esrm_outlier_first_screen.png)
 
 Next is code with explanations
 
@@ -712,7 +712,7 @@ class OutlierApp(App):
 
 The class `RunnerDetailScreen` (extends ModalScreen), handles showing the racer details using formatted Markdown:
 
-![esrm_outlier_runner_detail.png](images/esrm_outlier_runner_detail.png)
+![Screen shot of the OutlierApp runner details that shows outliers on the race results](images/esrm_outlier_runner_detail.png)
 
 And the code with explanations:
 
@@ -833,7 +833,7 @@ But is just information in tabular format? I also wanted to have different graph
 
 I wanted to get some charts, these were made with [matplotlib](https://matplotlib.org/). The code to generate the plots is very straightforward.
 
-![esru_age_box_plot.png](images/esru_age_box_plot.png)
+![Box plot showing age distribution among racers](images/esru_age_box_plot.png)
 
 And the code:
 
@@ -1018,7 +1018,7 @@ Some interesting facts about the race:
 * Majority of the people finished the race between 20 and 30 minutes.
 * Youngest runner was 11 years old, oldest 78
 
-![Statistics of interest](images/esru_numbers.svg)
+![Statistics of interest, like average age, wave they belong, finishing time](images/esru_numbers.svg)
 
 
 ### Finding outliers
@@ -1029,11 +1029,11 @@ This application uses the _Z-score_ to find the outliers for several metrics for
 esru_outlier
 ```
 
-![Table with ourlier details](images/esru_outlier-1.svg)
+![Table with ourliers details](images/esru_outlier-1.svg)
 
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
-![Outlier racer details](images/esru_outlier-2.svg)
+![Outlier racer details, including BIB](images/esru_outlier-2.svg)
 
 Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
 
