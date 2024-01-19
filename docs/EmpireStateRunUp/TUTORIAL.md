@@ -1,47 +1,62 @@
 # Empire State Building Run-Up (2023 edition)
 
-[![Downloads](https://static.pepy.tech/badge/EmpireStateRunUp)](https://pepy.tech/project/EmpireStateRunUp)
-
 ![empire_state_runup.png](images/empire_state_runup.png)
+
+A [tower running race](https://en.wikipedia.org/wiki/Tower_running) is run on a building and these happen around the world. The one I got a chance to participate was the Empire State Run Up in NYC, 2013 edition:
 
 > The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
 > Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
 
+I got lucky and managed to participate on this race. A few days after finishing the race I realized that I wanted to know more about my performance, and what I could have to done to better.
+
+So naturally I went to the organizer website and started looking at the numbers. And it was slow and tedious, plus brought up more issues:
+
+1) Getting the data for offline analysis is difficult. You can see your own results and others for comparison, but I found than the tools neither offer an option to download the raw data, or they were clumsy to use.
+2) Most tools out there to analyze race results are paid or do not apply to this type of race. Knowing what to expect reduces your anxiety, allows you to train better and keeps your expectations in check
+
+By now you probably guessed than you can solve the data retrieval issues and post-race analysis using low cost Open Source tools. This also allows you to apply different techniques to learn about the race and depending on the quality of the data even make performance predictions.
+
+This is a very personal piece for me, I will share my race results and give you my biased opinion about the race :-D.
+
 ## How I ended running all the way to the top of the Empire State building
 
-Most of us have run a regular race (5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
+Most of us have run a regular race (there are many distances like 5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
 the top on one of the most famous building of the world.
 
-Getting accepted is tough, because unlike a race like the New York Marathon, the building can only accommodate around 500 runners (or should I say _climbers_?). Add to that fact that demand to participate is high, and then
-you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5,000 applicants).
+If you have ever been at the base of the [skyscrapers](https://en.wikipedia.org/wiki/Skyscraper) in New York city and look up you get the idea. Picture yourself running through the stairs, all the way to the top, without stopping.
+
+Getting accepted is tough, because unlike a race like the [New York Marathon](https://en.wikipedia.org/wiki/New_York_City_Marathon), the Empire State building can only accommodate around 500 runners (or should I say _climbers_?). 
+Add to that fact that demand to participate is high, and then you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5,000 applicants).
 
 You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
 
-And then I panicked. Have you ever been at the base of the Empire State and looked up? Some days when is cloudy you cannot even see the top of the building.
+I panicked. Have you ever been at the base of the Empire State and looked up? Some days when is cloudy you cannot even see the top of the building.  I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a tower run.
 
-God news: I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a vertical run.
+The day of the race came and this how it went for me:
 
-Long story/ short story, the day of the race came and here are some tough's about how it went:
-
-* I didn't die. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th.
+* It was tough. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th. You have to zoom in into a "keep going", regardless how tired you feel. And then it is over, just like that.
 * You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
 * Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. 
 * I got passed and I passed a lot of people that forgot the 'pace yourself' rule. If you sprint, you will be toasted before floor 25, for sure.
 
-After the race felt compelled to scrap the data from the website with the race results, wanted to analyze the data to see what other interesting facts where there.
+I had a blast, got a great satisfaction having this race scratched from my bucket list, same way as the [NYC Marathon](https://results.nyrr.org/event/40/finishers#search=Jose%2520Nunez%2520Zuleta).
 
-## What do you need to follow this tutorial
+It was time now to do a post race analysis using several of my favourite Open Source tools, which I'll explain on the next section.
+
+## What do you need to follow this tutorial and what you will learn
 
 Like the race, most of the challenges to write the application were mental. You only need to break the main problem into smaller pieces and then tackle each one at the time:
 
 1) Get the data, scraping the website (very few sites allow you to export race results as CSV)
-2) Clean up the data, normalize it
-3) Ask questions. Then translate those questions into code and tests
-4) Present the results. A UI (Text or Graphic) will do wonders.
+2) Clean up the data, normalize it and make it ready for automatic processing
+3) Ask questions. Then translate those questions into code and tests, ideally using statistics to get reliable answers.
+4) Present the results. A UI (Text or Graphic) will do wonders due their low consumption, but charts speak volumes too.
 
 You should have some experience in a programing language, my code is writen in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
+
+In a Nutshell I want to show than it is possible to do all the above with Open Source technologies, and then this knowledge is also re-usable to other projects, not just tower races.
 
 I strongly recommend you [get the source code](https://github.com/josevnz/tutorials/tree/main/docs/EmpireStateRunUp) (It is [Open Source](https://github.com/josevnz/tutorials/tree/main?tab=Apache-2.0-1-ov-file#readme)!). Get your hands dirty, break the scripts, have fun. You will need git to clone the repository:
 
@@ -77,9 +92,9 @@ into a format I could use later for data analysis.
 
 There are very 3 simple rules:
 
-1) Rule #1: **Don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. _Lots of it_.
+1) Rule #1: **Please don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. _Lots of it_.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
-3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control)
+3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control, like poorly done HTML and CSS)
 
 I decided to use [Selenium Web Driver](https://www.selenium.dev/documentation/webdriver/) as it calls a real browser, like [FireFox](https://www.mozilla.org/en-US/firefox/new/), to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
 
@@ -95,7 +110,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-
+# AthLinks are nice enough to post the race results and their interface is very human friendly. Not so machine parsing friendly.
 RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
 LINKS = {}
 
@@ -662,7 +677,7 @@ class OutlierApp(App):
 
     def on_mount(self) -> None:
         """
-        Here we populate each table with data from the DataFrame. Eatch table has outliers of different type,
+        Here we populate each table with data from the DataFrame. Each table has outliers of different type,
         all can be obtained with the `get_outliers` method.
         """
         for column in SUMMARY_METRICS:
@@ -730,7 +745,7 @@ class RunnerDetailScreen(ModalScreen):
 
     def compose(self) -> ComposeResult:
         """
-        In compose we prepare the markdown and we let the MarkdownViewer handle details like 
+        In compose we prepare the markdown, and we let the MarkdownViewer handle details like 
         a nice automatic table of contents.
         Notice that we call `self.log.info('xxx'). We use that for debugging when this application
         is called using 'textual'.
@@ -812,7 +827,7 @@ Button {
 
 As you can see, Textual is a pretty powerful framework that _reminds me a lot of [Java Swing](https://en.wikipedia.org/wiki/Swing_(Java))_, but without the extra complexity.
 
-But is just information in tabular format? I also wanted to have different graph types that could explain behaviour like age cluster, gender distribution. For that I wrote a few classes on the 'apps' module with the help of Mathplotlib:
+But is just information in tabular format? I also wanted to have different graph types that could explain behaviour like age cluster, gender distribution. For that I wrote a few classes on the 'apps' module with the help of Matplotlib:
 
 ### Plots with Matplotlib
 
@@ -1062,6 +1077,8 @@ There is plenty more to learn about the tools you just saw on this tutorial:
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
 * [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
 * Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of races. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?.
+* Sadly I'm not in a position to offer you any training advice. Every person is different. I do recommend you check with your doctor before you participate on a race like this (make sure the plumbing is good as they say), and get some professional advice from a running coach.
+* But most important of all, believe you can do this (the race and writing some tools to process the race data) and have fun while doing it. This is a pre-requisite for any project.
 
 
 
