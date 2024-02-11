@@ -54,7 +54,7 @@ Like the race, most of the challenges to write the application were mental. You 
 3) Ask questions. Then translate those questions into code and tests, ideally using statistics to get reliable answers.
 4) Present the results. A UI (Text or Graphic) will do wonders due their low consumption, but charts speak volumes too.
 
-You should have some experience in a programing language, my code is writen in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
+You should have some experience in a programing language, my code is written in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
 
 In a Nutshell I want to show than it is possible to do all the above with Open Source technologies, and then this knowledge is also re-usable to other projects, not just tower races.
 
@@ -1029,7 +1029,7 @@ This application uses the _Z-score_ to find the outliers for several metrics for
 esru_outlier
 ```
 
-![Table with ourliers details](images/esru_outlier-1.svg)
+![Table with outliers details](images/esru_outlier-1.svg)
 
 Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
 
@@ -1075,7 +1075,7 @@ There is plenty more to learn about the tools you just saw on this tutorial:
 
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
-* [Selenium Webdriver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
+* [Selenium Web driver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
 * Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of races. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?.
 * Sadly I'm not in a position to offer you any training advice. Every person is different. I do recommend you check with your doctor before you participate on a race like this (make sure the plumbing is good as they say), and get some professional advice from a running coach.
 * But most important of all, believe you can do this (the race and writing some tools to process the race data) and have fun while doing it. This is a pre-requisite for any project.
