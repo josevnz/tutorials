@@ -122,6 +122,12 @@ class FiveNumberApp(App):
             country_counts_table.add_column(column, key=column)
         country_counts_table.add_rows(rows)
 
+        self.notify(
+            message=f"All metrics were calculated for {FiveNumberApp.DF.shape[0]} runners.",
+            title="Race statistics status",
+            severity="information"
+        )
+
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
@@ -222,6 +228,7 @@ class OutlierApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
+
         yield Header(show_clock=True)
         for column_name in SUMMARY_METRICS:
             table = DataTable(id=f'{column_name}_outlier')
@@ -244,6 +251,12 @@ class OutlierApp(App):
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
             table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
+
+        self.notify(
+            message=f"All metrics were calculated for {OutlierApp.DF.shape[0]} runners.",
+            title="Outliers statistics status",
+            severity="information"
+        )
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
