@@ -260,7 +260,8 @@ class OutlierApp(App):
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
-            table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
+            outliers = [get_outliers(df=OutlierApp.DF, column=column).to_dict().items()]
+            table.add_rows(*outliers)
 
         self.notify(
             message=f"All metrics were calculated for {OutlierApp.DF.shape[0]} runners.",
