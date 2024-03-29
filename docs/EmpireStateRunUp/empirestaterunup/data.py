@@ -374,6 +374,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     median_gender_pos = df[RaceFields.GENDER_POSITION.value].median()
     df[RaceFields.GENDER_POSITION.value] = df[RaceFields.GENDER_POSITION.value].fillna(median_gender_pos)
     df[RaceFields.GENDER_POSITION.value] = df[RaceFields.GENDER_POSITION.value].astype(int)
+
     median_gender_pos = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].median()
     df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].fillna(median_gender_pos)
     df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].astype(int)
