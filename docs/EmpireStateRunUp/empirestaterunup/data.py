@@ -351,54 +351,55 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
 
     # Normalize Age
     median_age = df[RaceFields.AGE.value].median()
-    df[RaceFields.AGE.value].fillna(median_age, inplace=True)
+    df[RaceFields.AGE.value] = df[RaceFields.AGE.value].fillna(median_age)
     df[RaceFields.AGE.value] = df[RaceFields.AGE.value].astype(int)
 
     # Normalize state and city
     df.replace({RaceFields.STATE.value: {'-': ''}}, inplace=True)
-    df[RaceFields.STATE.value].fillna('', inplace=True)
-    df[RaceFields.CITY.value].fillna('', inplace=True)
+    df[RaceFields.STATE.value] = df[RaceFields.STATE.value].fillna('')
+    df[RaceFields.CITY.value] = df[RaceFields.CITY.value].fillna('')
 
     # Normalize overall position, 3 levels
     median_pos = df[RaceFields.OVERALL_POSITION.value].median()
-    df[RaceFields.OVERALL_POSITION.value].fillna(median_pos, inplace=True)
+    df[RaceFields.OVERALL_POSITION.value] = df[RaceFields.OVERALL_POSITION.value].fillna(median_pos)
     df[RaceFields.OVERALL_POSITION.value] = df[RaceFields.OVERALL_POSITION.value].astype(int)
     median_pos = df[RaceFields.TWENTY_FLOOR_POSITION.value].median()
-    df[RaceFields.TWENTY_FLOOR_POSITION.value].fillna(median_pos, inplace=True)
+    df[RaceFields.TWENTY_FLOOR_POSITION.value] = df[RaceFields.TWENTY_FLOOR_POSITION.value].fillna(median_pos)
     df[RaceFields.TWENTY_FLOOR_POSITION.value] = df[RaceFields.TWENTY_FLOOR_POSITION.value].astype(int)
     median_pos = df[RaceFields.SIXTY_FLOOR_POSITION.value].median()
-    df[RaceFields.SIXTY_FLOOR_POSITION.value].fillna(median_pos, inplace=True)
+    df[RaceFields.SIXTY_FLOOR_POSITION.value] = df[RaceFields.SIXTY_FLOOR_POSITION.value].fillna(median_pos)
     df[RaceFields.SIXTY_FLOOR_POSITION.value] = df[RaceFields.SIXTY_FLOOR_POSITION.value].astype(int)
 
     # Normalize gender position, 3 levels
     median_gender_pos = df[RaceFields.GENDER_POSITION.value].median()
-    df[RaceFields.GENDER_POSITION.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.GENDER_POSITION.value] = df[RaceFields.GENDER_POSITION.value].fillna(median_gender_pos)
     df[RaceFields.GENDER_POSITION.value] = df[RaceFields.GENDER_POSITION.value].astype(int)
+
     median_gender_pos = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].median()
-    df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].fillna(median_gender_pos)
     df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value] = df[RaceFields.TWENTY_FLOOR_GENDER_POSITION.value].astype(int)
     median_gender_pos = df[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value].median()
-    df[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value].fillna(median_gender_pos, inplace=True)
+    df[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value] = df[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value].fillna(median_gender_pos)
     df[RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value] = df[
         RaceFields.SIXTY_FIVE_FLOOR_GENDER_POSITION.value].astype(int)
 
     # Normalize age/ division position, 3 levels
     median_div_pos = df[RaceFields.DIVISION_POSITION.value].median()
-    df[RaceFields.DIVISION_POSITION.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.DIVISION_POSITION.value] = df[RaceFields.DIVISION_POSITION.value].fillna(median_div_pos)
     df[RaceFields.DIVISION_POSITION.value] = df[RaceFields.DIVISION_POSITION.value].astype(int)
     median_div_pos = df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value].median()
-    df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value] = df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value].fillna(median_div_pos)
     df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value] = df[RaceFields.TWENTY_FLOOR_DIVISION_POSITION.value].astype(int)
     median_div_pos = df[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value].median()
-    df[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value].fillna(median_div_pos, inplace=True)
+    df[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value] = df[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value].fillna(median_div_pos)
     df[RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value] = df[
         RaceFields.SIXTY_FIVE_FLOOR_DIVISION_POSITION.value].astype(int)
 
     # Normalize 65th floor pace and time
     sixty_five_floor_pace_median = df[RaceFields.SIXTY_FIVE_FLOOR_PACE.value].median()
     sixty_five_floor_time_median = df[RaceFields.SIXTY_FIVE_FLOOR_TIME.value].median()
-    df[RaceFields.SIXTY_FIVE_FLOOR_PACE.value].fillna(sixty_five_floor_pace_median, inplace=True)
-    df[RaceFields.SIXTY_FIVE_FLOOR_TIME.value].fillna(sixty_five_floor_time_median, inplace=True)
+    df[RaceFields.SIXTY_FIVE_FLOOR_PACE.value] = df[RaceFields.SIXTY_FIVE_FLOOR_PACE.value].fillna(sixty_five_floor_pace_median)
+    df[RaceFields.SIXTY_FIVE_FLOOR_TIME.value] = df[RaceFields.SIXTY_FIVE_FLOOR_TIME.value].fillna(sixty_five_floor_time_median)
 
     # Normalize BIB and make it the index
     df[RaceFields.BIB.value] = df[RaceFields.BIB.value].astype(int)

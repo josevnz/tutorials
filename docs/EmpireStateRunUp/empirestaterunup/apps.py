@@ -3,12 +3,13 @@ Collection of applications to display race findings
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
 import re
+from enum import Enum
 from functools import partial
 from pathlib import Path
 from typing import Type, Any, List
 
 from matplotlib import colors
-from pandas import DataFrame
+from pandas import DataFrame, Timedelta
 from rich.style import Style
 from rich.text import Text
 from textual import on
@@ -33,16 +34,17 @@ class FiveNumberApp(App):
     BINDINGS = [("q", "quit_app", "Quit")]
     FIVE_NUMBER_FIELDS = ('count', 'mean', 'std', 'min', 'max', '25%', '50%', '75%')
     CSS_PATH = "five_numbers.tcss"
-    NUMBERS_TABLES = [
-        'Summary',
-        'Count By Age',
-        'Wave Bucket',
-        'Gender Bucket',
-        'Age Bucket',
-        'Time Bucket',
-        'Country Counts',
-        'Better than average Wave Counts'
-    ]
+
+    class NumbersTables(Enum):
+        Summary = 'Summary'
+        CountByAge = 'Count By Age'
+        WaveBucket = 'Wave Bucket'
+        GenderBucket = 'Gender Bucket'
+        AgeBucket = 'Age Bucket'
+        TimeBucket = 'Time Bucket'
+        CountryCounts = 'Country Counts'
+        BetterThanAverage = 'Better than average Wave Counts'
+
     ENABLE_COMMAND_PALETTE = False
 
     def action_quit_app(self):
@@ -50,75 +52,91 @@ class FiveNumberApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        for table_id in FiveNumberApp.NUMBERS_TABLES:
-            table = DataTable(id=table_id)
+        for table_id in FiveNumberApp.NumbersTables:
+            table = DataTable(id=table_id.name)
             table.cursor_type = 'row'
             table.zebra_stripes = True
             yield Vertical(
-                Label(table_id),
+                Label(str(table_id.value)),
                 table
             )
         yield Footer()
 
     def on_mount(self) -> None:
 
-        wave_table = self.get_widget_by_id('Better than average Wave Counts', expect_type=DataTable)
+        wave_table = self.get_widget_by_id(id=self.NumbersTables.BetterThanAverage.name, expect_type=DataTable)
         median_run_time, wave_series = better_than_median_waves(FiveNumberApp.DF)
-        wave_table.tooltip = f"Median running time: {median_run_time}"
+        median_run_time_in_minutes = f"{median_run_time.total_seconds()/60.0:.2f} minutes"
         rows = series_to_list_of_tuples(wave_series)
         for column in ['Wave', 'Count']:
             wave_table.add_column(column, key=column)
         wave_table.add_rows(rows)
+        wave_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        summary_table = self.get_widget_by_id('Summary', expect_type=DataTable)
+        summary_table = self.get_widget_by_id(id=self.NumbersTables.Summary.name, expect_type=DataTable)
         columns = [x.title() for x in FiveNumberApp.FIVE_NUMBER_FIELDS]
         columns.insert(0, 'Summary')
         summary_table.add_columns(*columns)
         for metric in SUMMARY_METRICS:
             ndf = get_5_number(criteria=metric, data=FiveNumberApp.DF)
-            row = [ndf[field] for field in FiveNumberApp.FIVE_NUMBER_FIELDS]
-            row[0] = int(row[0])
-            row.insert(0, metric.title())
-            summary_table.add_row(*row)
+            rows = [ndf[field] for field in FiveNumberApp.FIVE_NUMBER_FIELDS]
+            rows.insert(0, metric.title())
+            rows[1] = int(rows[1])
+            for idx in range(2, len(rows)):  # Pretty print running times
+                if isinstance(rows[idx], Timedelta):
+                    rows[idx] = f"{rows[idx].total_seconds() / 60.0:.2f}"
+            summary_table.add_row(*rows)
+        summary_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        age_table = self.get_widget_by_id('Count By Age', expect_type=DataTable)
+        age_table = self.get_widget_by_id(id=self.NumbersTables.CountByAge.name, expect_type=DataTable)
         adf, age_header = count_by_age(FiveNumberApp.DF)
         for column in age_header:
             age_table.add_column(column, key=column)
         age_table.add_rows(dt_to_sorted_dict(adf).items())
+        age_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        gender_table = self.get_widget_by_id('Gender Bucket', expect_type=DataTable)
+        gender_table = self.get_widget_by_id(id=self.NumbersTables.GenderBucket.name, expect_type=DataTable)
         gdf, gender_header = count_by_gender(FiveNumberApp.DF)
         for column in gender_header:
             gender_table.add_column(column, key=column)
         gender_table.add_rows(dt_to_sorted_dict(gdf).items())
+        gender_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        wave_table = self.get_widget_by_id('Wave Bucket', expect_type=DataTable)
+        wave_table = self.get_widget_by_id(id=self.NumbersTables.WaveBucket.name, expect_type=DataTable)
         wdf, wave_header = count_by_wave(FiveNumberApp.DF)
         for column in wave_header:
             wave_table.add_column(column, key=column)
         wave_table.add_rows(dt_to_sorted_dict(wdf).items())
+        wave_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        age_bucket_table = self.get_widget_by_id('Age Bucket', expect_type=DataTable)
+        age_bucket_table = self.get_widget_by_id(id=self.NumbersTables.AgeBucket.name, expect_type=DataTable)
         age_categories, age_cols_head = age_bins(FiveNumberApp.DF)
         for column in age_cols_head:
             age_bucket_table.add_column(column, key=column)
         age_bucket_table.add_rows(dt_to_sorted_dict(age_categories.value_counts()).items())
-        age_bucket_table.tooltip = f"Median running time: {median_run_time}"
+        age_bucket_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        time_bucket_table = self.get_widget_by_id('Time Bucket', expect_type=DataTable)
+        time_bucket_table = self.get_widget_by_id(id=self.NumbersTables.TimeBucket.name, expect_type=DataTable)
         time_categories, time_cols_head = time_bins(FiveNumberApp.DF)
         for column in time_cols_head:
             time_bucket_table.add_column(column, key=column)
-        time_bucket_table.add_rows(dt_to_sorted_dict(time_categories.value_counts()).items())
-        time_bucket_table.tooltip = f"Median running time: {median_run_time}"
+        times = dt_to_sorted_dict(time_categories.value_counts()).items()
+        time_bucket_table.add_rows(times)
+        time_bucket_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
 
-        country_counts_table = self.get_widget_by_id('Country Counts', expect_type=DataTable)
+        country_counts_table = self.get_widget_by_id(id=self.NumbersTables.CountryCounts.name, expect_type=DataTable)
         countries_counts, min_country_filter, max_country_filter = get_country_counts(FiveNumberApp.DF)
         rows = series_to_list_of_tuples(countries_counts)
         for column in ['Country', 'Count']:
             country_counts_table.add_column(column, key=column)
         country_counts_table.add_rows(rows)
+        country_counts_table.tooltip = f"Median running time: {median_run_time_in_minutes}"
+
+        self.notify(
+            message=f"All metrics were calculated for {FiveNumberApp.DF.shape[0]} runners.",
+            title="Race statistics status",
+            severity="information"
+        )
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
@@ -220,6 +238,7 @@ class OutlierApp(App):
         self.exit(0)
 
     def compose(self) -> ComposeResult:
+
         yield Header(show_clock=True)
         for column_name in SUMMARY_METRICS:
             table = DataTable(id=f'{column_name}_outlier')
@@ -227,9 +246,9 @@ class OutlierApp(App):
             table.zebra_stripes = True
             table.tooltip = "Get runner details"
             if column_name == RaceFields.AGE.value:
-                label = Label(f"{column_name} (older) outliers:".title())
+                label = Label(f"{column_name} (older) outliers (Minutes):".title())
             else:
-                label = Label(f"{column_name} (slower) outliers:".title())
+                label = Label(f"{column_name} (slower) outliers (Minutes):".title())
             yield Vertical(
                 label,
                 table
@@ -241,7 +260,21 @@ class OutlierApp(App):
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
-            table.add_rows(*[get_outliers(df=OutlierApp.DF, column=column).to_dict().items()])
+            outliers = get_outliers(df=OutlierApp.DF, column=column)
+            if column == RaceFields.AGE.value:
+                transformed_outliers = outliers.to_dict().items()
+            else:
+                transformed_outliers = []
+                for bib, timedelta in outliers.items():
+                    # print(f"{column} {bib}: {timedelta.total_seconds()/60.0}")
+                    transformed_outliers.append((bib, f"{timedelta.total_seconds()/60.0:.2f}"))
+            table.add_rows(transformed_outliers)
+
+        self.notify(
+            message=f"All metrics were calculated for {OutlierApp.DF.shape[0]} runners.",
+            title="Outliers statistics status",
+            severity="information"
+        )
 
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
@@ -343,17 +376,21 @@ class BrowserAppCommand(Provider):
         df = browser_app.df
         for row_key in self.table.rows:
             row = self.table.get_row(row_key)
-            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION]:
+            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION, RaceFields.COUNTRY]:
                 idx = FIELD_NAMES_AND_POS[name]
+                name_idx = FIELD_NAMES_AND_POS[RaceFields.NAME]
                 searchable = str(row[idx])
                 score = matcher.match(searchable)
                 if score > 0:
-                    details = f"{searchable} - {name.value}"
+                    if name == RaceFields.NAME:
+                        details = f"{searchable} - {name.value}"
+                    else:
+                        details = f"{searchable} - {name.value} ({row[name_idx]})"
                     runner_detail = RunnerDetailScreen(df=df, row=row)
                     yield Hit(
-                        score,
-                        matcher.highlight(f"{searchable}"),
-                        partial(browser_app.push_screen, runner_detail),
+                        score=score,
+                        match_display=matcher.highlight(f"{searchable}"),
+                        command=partial(browser_app.push_screen, runner_detail),
                         help=f"{details}"
                     )
 
@@ -414,6 +451,12 @@ class BrowserApp(App):
             label = Text(str(number), style="#B0FC38 italic")
             table.add_row(*row, label=label)
         table.sort('overall position')
+
+        self.notify(
+            message=f"Loaded all data for {self.df.shape[0]} runners.",
+            title="Race Runners",
+            severity="information"
+        )
 
     @on(DataTable.HeaderSelected, '#runners')
     def on_header_clicked(self, event: DataTable.HeaderSelected):
