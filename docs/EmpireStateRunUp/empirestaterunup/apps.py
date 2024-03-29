@@ -358,17 +358,21 @@ class BrowserAppCommand(Provider):
         df = browser_app.df
         for row_key in self.table.rows:
             row = self.table.get_row(row_key)
-            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION]:
+            for name in [RaceFields.BIB, RaceFields.NAME, RaceFields.OVERALL_POSITION, RaceFields.COUNTRY]:
                 idx = FIELD_NAMES_AND_POS[name]
+                name_idx = FIELD_NAMES_AND_POS[RaceFields.NAME]
                 searchable = str(row[idx])
                 score = matcher.match(searchable)
                 if score > 0:
-                    details = f"{searchable} - {name.value}"
+                    if name == RaceFields.NAME:
+                        details = f"{searchable} - {name.value}"
+                    else:
+                        details = f"{searchable} - {name.value} ({row[name_idx]})"
                     runner_detail = RunnerDetailScreen(df=df, row=row)
                     yield Hit(
-                        score,
-                        matcher.highlight(f"{searchable}"),
-                        partial(browser_app.push_screen, runner_detail),
+                        score=score,
+                        match_display=matcher.highlight(f"{searchable}"),
+                        command=partial(browser_app.push_screen, runner_detail),
                         help=f"{details}"
                     )
 
