@@ -8,7 +8,7 @@ from typing import Union, Tuple, Dict, Any
 
 import numpy as np
 import pandas
-from pandas import DataFrame, Categorical, Series
+from pandas import DataFrame, Categorical, Series, Timedelta
 from datetime import timedelta
 
 from empirestaterunup.data import RaceFields
@@ -92,7 +92,7 @@ def get_country_counts(df: DataFrame, min_participants: int = 5, max_participant
     return countries_counts, min_country_filter, max_country_filter
 
 
-def better_than_median_waves(df: DataFrame) -> Tuple[float, Series]:
+def better_than_median_waves(df: DataFrame) -> Tuple[Timedelta, Series]:
     """
     Get runners whose race time is better than the median
     :param df Dataframe to analyze
