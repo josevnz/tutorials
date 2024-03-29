@@ -4,7 +4,7 @@ from pandas import DataFrame
 
 from empirestaterunup.analyze import get_5_number, SUMMARY_METRICS, count_by_age, count_by_gender, count_by_wave, \
     dt_to_sorted_dict, get_zscore, get_outliers, age_bins, time_bins, get_country_counts
-from empirestaterunup.data import load_data
+from empirestaterunup.data import load_data, RaceFields
 
 
 class AnalyzeTestCase(unittest.TestCase):
@@ -46,7 +46,10 @@ class AnalyzeTestCase(unittest.TestCase):
             outliers = get_outliers(df=AnalyzeTestCase.df, column=column, std_threshold=3)
             self.assertIsNotNone(outliers)
             self.assertLess(0, outliers.shape[0])
-            print(outliers)
+            # print(f"Column {column.title()}:\n{outliers}")
+            if column != RaceFields.AGE.value:
+                for bib, timedelta in outliers.items():
+                    print(f"{column} {bib}: {timedelta.total_seconds()/60.0}")
 
     def test_age_bins(self):
         cat, _ = age_bins(df=AnalyzeTestCase.df)

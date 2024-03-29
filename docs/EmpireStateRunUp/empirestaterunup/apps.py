@@ -246,9 +246,9 @@ class OutlierApp(App):
             table.zebra_stripes = True
             table.tooltip = "Get runner details"
             if column_name == RaceFields.AGE.value:
-                label = Label(f"{column_name} (older) outliers:".title())
+                label = Label(f"{column_name} (older) outliers (Minutes):".title())
             else:
-                label = Label(f"{column_name} (slower) outliers:".title())
+                label = Label(f"{column_name} (slower) outliers (Minutes):".title())
             yield Vertical(
                 label,
                 table
@@ -260,8 +260,15 @@ class OutlierApp(App):
             table = self.get_widget_by_id(f'{column}_outlier', expect_type=DataTable)
             columns = [x.title() for x in ['bib', column]]
             table.add_columns(*columns)
-            outliers = [get_outliers(df=OutlierApp.DF, column=column).to_dict().items()]
-            table.add_rows(*outliers)
+            outliers = get_outliers(df=OutlierApp.DF, column=column)
+            if column == RaceFields.AGE.value:
+                transformed_outliers = outliers.to_dict().items()
+            else:
+                transformed_outliers = []
+                for bib, timedelta in outliers.items():
+                    # print(f"{column} {bib}: {timedelta.total_seconds()/60.0}")
+                    transformed_outliers.append((bib, f"{timedelta.total_seconds()/60.0:.2f}"))
+            table.add_rows(transformed_outliers)
 
         self.notify(
             message=f"All metrics were calculated for {OutlierApp.DF.shape[0]} runners.",

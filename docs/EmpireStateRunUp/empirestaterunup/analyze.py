@@ -47,7 +47,7 @@ def get_zscore(df: DataFrame, column: str):
     return filtered.sub(filtered.mean()).div(filtered.std(ddof=0))
 
 
-def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> DataFrame:
+def get_outliers(df: DataFrame, column: str, std_threshold: int = 3) -> Series:
     """
     Use the z-score, anything further away than 3 standard deviations is considered an outlier.
     """
