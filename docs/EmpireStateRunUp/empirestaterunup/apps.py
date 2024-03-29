@@ -430,6 +430,12 @@ class BrowserApp(App):
             table.add_row(*row, label=label)
         table.sort('overall position')
 
+        self.notify(
+            message=f"Loaded all data for {self.df.shape[0]} runners.",
+            title="Race Runners",
+            severity="information"
+        )
+
     @on(DataTable.HeaderSelected, '#runners')
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         table = event.data_table
