@@ -2,63 +2,63 @@
 
 ![empire_state_runup.png](images/empire_state_runup.png)
 
-A [tower running race](https://en.wikipedia.org/wiki/Tower_running) is run on a building and these happen around the world. The one I got a chance to participate was the Empire State Run Up in NYC, 2013 edition:
+A [tower running race](https://en.wikipedia.org/wiki/Tower_running) is run on a building and these happen around the world. The one I got a chance to participate in was the Empire State Run Up in NYC, 2013 edition:
 
 > The Empire State Building Run-Up (ESBRU)—the world’s first and most famous tower race—challenges runners from near and far to race up its famed 86 flights—1,576 stairs. 
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
 > Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
 
-I got lucky and managed to participate on this race. A few days after finishing the race I realized that I wanted to know more about my performance, and what I could have to done to better.
+I got lucky and managed to participate in this race. A few days after finishing the race I realized that I wanted to know more about my performance, and what I could have done to better.
 
 So naturally I went to the organizer website and started looking at the numbers. And it was slow and tedious, plus brought up more issues:
 
-1) Getting the data for offline analysis is difficult. You can see your own results and others for comparison, but I found than the tools neither offer an option to download the raw data, or they were clumsy to use.
-2) Most tools out there to analyze race results are paid or do not apply to this type of race. Knowing what to expect reduces your anxiety, allows you to train better and keeps your expectations in check
+1) Getting the data for offline analysis is difficult. You can see your results and others for comparison, but I found that the tools neither offer an option to download the raw data, nor they were clumsy to use.
+2) Most tools out there to analyze race results are paid or do not apply to this type of race. Knowing what to expect reduces your anxiety, allows you to train better, and keeps your expectations in check
 
-By now you probably guessed than you can solve the data retrieval issues and post-race analysis using low cost Open Source tools. This also allows you to apply different techniques to learn about the race and depending on the quality of the data even make performance predictions.
+By now you probably guessed that you can solve the data retrieval issues and post-race analysis using low-cost Open Source tools. This also allows you to apply different techniques to learn about the race and depending on the quality of the data even make performance predictions.
 
-This is a very personal piece for me, I will share my race results and give you my biased opinion about the race :-D.
+This is a very personal piece for me, I will share my race results and give you my biased opinion about the race:-D.
 
-## How I ended running all the way to the top of the Empire State building
+## How I ended up running to the top of the Empire State Building
 
-Most of us have run a regular race (there are many distances like 5K, 10K, Half Marathon, Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
-the top on one of the most famous building of the world.
+Most of us have run a regular race (there are many distances like 5K, 10K, Half Marathon, and Full Marathon) but there is no comparison on how you will perform while running the stairs all the way to 
+the top of one of the most famous buildings in the world.
 
-If you have ever been at the base of the [skyscrapers](https://en.wikipedia.org/wiki/Skyscraper) in New York city and look up you get the idea. Picture yourself running through the stairs, all the way to the top, without stopping.
+If you have ever been at the base of the [skyscrapers](https://en.wikipedia.org/wiki/Skyscraper) in New York City and look up you get the idea. Picture yourself running through the stairs, all the way to the top, without stopping.
 
-Getting accepted is tough, because unlike a race like the [New York Marathon](https://en.wikipedia.org/wiki/New_York_City_Marathon), the Empire State building can only accommodate around 500 runners (or should I say _climbers_?). 
-Add to that fact that demand to participate is high, and then you can see than your chances to get in through the lottery are pretty slim (I read somewhere than lottery positions is only 50 for more than 5,000 applicants).
+Getting accepted is tough, because unlike a race like the [New York Marathon](https://en.wikipedia.org/wiki/New_York_City_Marathon), the Empire State Building can only accommodate around 500 runners (or should I say _climbers_?). 
+Add to that fact that the demand to participate is high, and then you can see that your chances to get in through the lottery are pretty slim (I read somewhere that lottery positions are only 50 for more than 5,000 applicants).
 
 You can imagine my surprise when I got an email saying that I was selected to participate after trying for 4 years in a row.
 
-I panicked. Have you ever been at the base of the Empire State and looked up? Some days when is cloudy you cannot even see the top of the building.  I wasn't totally unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a tower run.
+I panicked. Have you ever been at the base of the Empire State and looked up? Some days when is cloudy you cannot even see the top of the building.  I wasn't unprepared. But I had to adjust my training routine to be ready for this challenge with a small window of two months, and no experience about doing a tower run.
 
-The day of the race came and this how it went for me:
+The day of the race came and this is how it went for me:
 
-* It was tough. I knew I had to pace myself, otherwise the race would have ended for me on floor 20th as opposed on floor 86th. You have to zoom in into a "keep going", regardless how tired you feel. And then it is over, just like that.
-* You don't sprint, you climb 2 steps at the time at steady pace, and you use the handrails to take off weight from your legs.
+* It was tough. I knew I had to pace myself, otherwise, the race would have ended for me on floor 20th as opposed to floor 86th. You have to zoom in into a "keep going", regardless of how tired you feel. And then it is over, just like that.
+* You don't sprint, you climb 2 steps at a time at a steady pace, and you use the handrails to take off weight from your legs.
 * No need to carb load or hydrate too much. If you do well, you will be done under around 30 minutes.
 * Nobody is pushing anyone. At least for non-elite racers like me, I was alone for most of the race. 
-* I got passed and I passed a lot of people that forgot the 'pace yourself' rule. If you sprint, you will be toasted before floor 25, for sure.
+* I got passed and I passed a lot of people who forgot the 'pace yourself' rule. If you sprint, you will be toasted before floor 25, for sure.
 
-I had a blast, got a great satisfaction having this race scratched from my bucket list, same way as the [NYC Marathon](https://results.nyrr.org/event/40/finishers#search=Jose%2520Nunez%2520Zuleta).
+I had a blast and got great satisfaction from having this race scratched from my bucket list, the same way as the [NYC Marathon](https://results.nyrr.org/event/40/finishers#search=Jose%2520Nunez%2520Zuleta).
 
-It was time now to do a post race analysis using several of my favourite Open Source tools, which I'll explain on the next section.
+It was time now to do a post-race analysis using several of my favorite Open Source tools, which I'll explain in the next section.
 
 ## What do you need to follow this tutorial and what you will learn
 
-Like the race, most of the challenges to write the application were mental. You only need to break the main problem into smaller pieces and then tackle each one at the time:
+Like the race, most of the challenges to writing the application were mental. You only need to break the main problem into smaller pieces and then tackle each one at a time:
 
 1) Get the data, scraping the website (very few sites allow you to export race results as CSV)
-2) Clean up the data, normalize it and make it ready for automatic processing
+2) Clean up the data, normalize it, and make it ready for automatic processing
 3) Ask questions. Then translate those questions into code and tests, ideally using statistics to get reliable answers.
-4) Present the results. A UI (Text or Graphic) will do wonders due their low consumption, but charts speak volumes too.
+4) Present the results. A UI (Text or Graphic) will do wonders due to their low consumption, but charts speak volumes too.
 
-You should have some experience in a programing language, my code is written in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
+You should have some experience in a programming language, my code is written in [Python](https://www.python.org/) (you will need version 3.8+) and runs on Linux (I used [Fedora 37 distribution](https://fedoraproject.org/)).
 
-In a Nutshell I want to show than it is possible to do all the above with Open Source technologies, and then this knowledge is also re-usable to other projects, not just tower races.
+In a Nutshell, I want to show that it is possible to do all the above with Open Source technologies, and then this knowledge is also reusable for other projects, not just tower races.
 
-I strongly recommend you [get the source code](https://github.com/josevnz/tutorials/tree/main/docs/EmpireStateRunUp) (It is [Open Source](https://github.com/josevnz/tutorials/tree/main?tab=Apache-2.0-1-ov-file#readme)!). Get your hands dirty, break the scripts, have fun. You will need git to clone the repository:
+I strongly recommend you [get the source code](https://github.com/josevnz/tutorials/tree/main/docs/EmpireStateRunUp) (It is [Open Source](https://github.com/josevnz/tutorials/tree/main?tab=Apache-2.0-1-ov-file#readme)!). Get your hands dirty, break the scripts, and have fun. You will need git to clone the repository:
 
 ````shell
 git clone https://github.com/josevnz/tutorials.git
@@ -81,24 +81,26 @@ pip install --upgrade EmpireStateRunUp
 
 We can now move to the next stage, getting the data.
 
-## Getting the data using web scrapping
+## Getting the data using web scraping
 
 The race results site doesn't have an export feature and I never heard back from their support team to see if there was an alternate way to get the race data, so the only alternative left was to do some web scrapping.
 
 The website is pretty basic and only allows scrolling through each record, so I decided to do web scrapping to get the results
 into a format I could use later for data analysis.
 
-### The rules of web scrapping
+### The rules of web scraping
 
 There are very 3 simple rules:
 
-1) Rule #1: **Please don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time an effort. _Lots of it_.
+1) Rule #1: **Please don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time and effort. _Lots of it_.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
 3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control, like poorly done HTML and CSS)
 
-I decided to use [Selenium Web Driver](https://www.selenium.dev/documentation/webdriver/) as it calls a real browser, like [FireFox](https://www.mozilla.org/en-US/firefox/new/), to navigate the website. Selenium allows to automate browser actions while you get the same rendered HTML you see when you navigate the site.
+I decided to use [Selenium Web Driver](https://www.selenium.dev/documentation/webdriver/) as it calls a real browser, like [Firefox](https://www.mozilla.org/en-US/firefox/new/), to navigate the website. Selenium allows you to automate browser actions while you get the same rendered HTML you see when you navigate the site.
 
-Selenium _is a complex tool_ and will require you to spend some time experimenting with what works and what not. Below is a simple script that can get all the runners names and race detail links in one run:
+Selenium _is a complex tool_ and will require you to spend some time experimenting with what works and what does not. Below is a simple script that can get all the 
+
+runner's names and race detail links in one run:
 
 ```python
 import re
@@ -110,7 +112,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-# AthLinks are nice enough to post the race results and their interface is very human friendly. Not so machine parsing friendly.
+# AthLinks are nice enough to post the race results and their interface is very human-friendly. Not so machine parsing friendly.
 RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
 LINKS = {}
 
@@ -154,11 +156,11 @@ print_links(driver, 8)
 print(len(LINKS))
 ```
 
-The code above is hardly reusable code, but it gets the job done by doing the following:
+The code above is hardly reusable, but it gets the job done by doing the following:
 
 1) Gets the main webpage with the `driver.get(...)` method, 
-2) Then get the `<a href` tags, sleeps a little to get a chance to render the HTML, 
-3) Then finds and clicks the `>` (next page) button.
+2) Then get the `<a href` tags, sleep a little to get a chance to render the HTML, 
+3) Then find and click the `>` (next page) button.
 4) Do this steps for a total of 8 times, as this is how many pages of results are available (each page has 50 runners)
 
 To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
@@ -172,18 +174,18 @@ To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py)
 ...
 ```
 
-It does just minimal manipulation on the data from the web page, the purpose of this code is just to get the data as quickly as possible before the formatting changes
+It does just minimal manipulation of the data from the web page, the purpose of this code is just to get the data as quickly as possible before the formatting changes
 
-Data cannot be used yet as-is, needs cleaning up and that is the next step on this article.
+Data cannot be used yet as-is, needs cleaning up and that is the next step in this article.
 
 ## Cleaning up the data
 
 [Getting the data](test/raw_data.txt) is just the first battle of many more to come. [You will notice inconsistencies on the data](https://en.wikibooks.org/wiki/Statistics/Data_Analysis/Data_Cleaning), missing values and in order
 to make your numeric results good, you need to make assumptions.
 
-Luckily for me the dataset is very small (375+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
+Luckily for me, the dataset is very small (375+ records, one for each runner) so I was able to come up with a few rules to tidy up the [data file](empirestaterunup/results-first-level-2023.csv) I was going to use during my analysis.
 
-I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well other details, for a nicer presentation.
+I also supplemented my data with another data set that has the countries [3-digit codes](empirestaterunup/country_codes.csv) as well as other details, for a nicer presentation.
 
 The [data_normalizer.raw_read(raw_file: Path) -> Iterable[Dict[str, Any]]](empirestaterunup/runners.py) method does the heavy work of fixing the data for inconsistencies before saving into a CSV format.
 
@@ -197,7 +199,7 @@ from enum import Enum
 from typing import Dict
 
 """
-Runners started on waves, but for basic analysis we will assume all runners were able to run
+Runners started on waves, but for basic analysis, we will assume all runners were able to run
 at the same time.
 """
 BASE_RACE_DATETIME = datetime.datetime(
@@ -217,14 +219,14 @@ class Waves(Enum):
     There are some holes, so either some runners did not show up or there was spare capacity.
     https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-4
     https://runsignup.com/Race/EmpireStateBuildingRunUp/Page-5
-    I guessed who went on which category, based on the BIB numbers I saw that day
+    I guessed who went into which category, based on the BIB numbers I saw that day
     """
     ELITE_MEN = ["Elite Men", [1, 25], BASE_RACE_DATETIME]
     ELITE_WOMEN = ["Elite Women", [26, 49], BASE_RACE_DATETIME + datetime.timedelta(minutes=2)]
     PURPLE = ["Specialty", [100, 199], BASE_RACE_DATETIME + datetime.timedelta(minutes=10)]
     GREEN = ["Sponsors", [200, 299], BASE_RACE_DATETIME + datetime.timedelta(minutes=20)]
     """
-    The date people applied for the lottery determined the colors?. Let's assume that
+    The date people applied for the lottery determined the colors. Let's assume that
     General Lottery Open: 7/17 9AM- 7/28 11:59PM
     General Lottery Draw Date: 8/1
     """
@@ -234,7 +236,7 @@ class Waves(Enum):
     BLACK = ["General 3", [600, 699], BASE_RACE_DATETIME + datetime.timedelta(minutes=60)]
 
 """
-Interested only in people who completed the 86 floors. So is either full course or dnf
+Interested only in people who completed the 86 floors. So is it either a full course or dnf
 """
 class Level(Enum):
     FULL = "Full Course"
@@ -287,14 +289,14 @@ def get_description_for_wave(wave: Waves) -> str:
     return wave.value[0]
 ```
 
-I used [enums](https://docs.python.org/3/library/enum.html) to make it more clear on what type of data I was working on, specially for the name of the fields. Consistency is key.
+I used [enums](https://docs.python.org/3/library/enum.html) to make it clear what type of data I was working on, especially for the names of the fields. Consistency is key.
 
 As for cleaning the data, well there were some obvious fixes I had to apply like:
 1) Format of the times like pace, race time, etc. so it could be parsed later
 2) Capitalize some values to make them easier to read
 3) Early string to integer conversion for values like age, position, etc. If that fails assign 'not a number'
 
-By all means we are not done massaging the data. A simple function takes care of this stage inside the [data](empirestaterunup/data.py) module:
+By all means, we are not done massaging the data. A simple function takes care of this stage inside the [data](empirestaterunup/data.py) module:
 
 ```python
 # Omitted imports and Enum declarations as they were shown early on. 
@@ -345,7 +347,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
                 raise
 ```
 
-The `esru_csv_cleaner` script is the sum on the first stage cleanup effort, which takes the raw captured data and writes a CSV file with some important corrections:
+The `esru_csv_cleaner` script is the sum of the first stage cleanup effort, which takes the raw captured data and writes a CSV file with some important corrections:
 
 ```shell
 esru_csv_cleaner --rawfile /home/josevnz/temp/raw_data.csv /home/josevnz/tutorials/docs/EmpireStateRunUp/empirestaterunup/results-full-level-2023.csv
@@ -357,14 +359,14 @@ Now with the data ready we can proceed to load the data and ask some questions a
 
 Once the data is clean (or as clean as we can), it is time to move into running some numbers. Before writing more code, I took a piece of paper and asked myself a few questions about the race:
 
-* There are any interesting buckets/ clusters for age, race time, wave, country participation? 
+* There are any interesting buckets/ clusters for age, race time, wave, and country participation? 
 * A histogram for Age and Country would be nice to see
 * Describe the data! (median, percentiles, etc.)
 * Find outliers. [There is a way to apply Z-scores](https://www.investopedia.com/terms/z/zscore.asp) here?
 
 I decided to use [Python Pandas](https://pandas.pydata.org/) for this task. This Open Source framework has an arsenal of tools to manipulate the data and to calculate statistics. It also has good tools to perform additional cleanup if needed.
 
-So _how Pandas work_?
+So _how do Pandas work_?
 
 #### Crash course on Pandas
 
@@ -375,7 +377,7 @@ I strongly recommend that you take the [10 minutes to pandas](https://pandas.pyd
 # Check the source code for 'data.py' for more details
 def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     """
-    * The code remove by default the DNF runners to avoid distortion on the results.
+    * The code removes by default the DNF runners to avoid distortion on the results.
     * Replace unknown/ nan values with the median, to make analysis easier and avoid distortions
     """
     if data_file:
@@ -499,9 +501,9 @@ bib                                                                             
 [375 rows x 24 columns]
 ```
 
-Once data was loaded, I was able to start asking questions. For example, to detect the outliers I used a [Z-score](https://en.wikipedia.org/wiki/Standard_score).
+Once the data was loaded, I was able to start asking questions. For example, to detect the outliers I used a [Z-score](https://en.wikipedia.org/wiki/Standard_score).
 
-All the analysis logic [was kept together on a single module called 'analyze'](empirestaterunup/analyze.py), separate from presentation, data loading or reports, in order to promote reuse.
+All the analysis logic [was kept together on a single module called 'analyze'](empirestaterunup/analyze.py), separate from presentation, data loading, or reports, to promote reuse.
 
 ```python
 from pandas import DataFrame
@@ -570,25 +572,25 @@ max                0 days 05:34:00
 Name: pace, dtype: object
 ```
 
-Making sure data web scrapping, data loading, analytics works well is a must. Testing is part integral of writing code, I kept adding more of it and went back to write unit tests.
+Making sure data web scrapping, data loading, and analytics work well is a must. Testing is part integral of writing code, so I kept adding more of it and went back to writing unit tests.
 
-Let's check how to test our code (feel free to skip next section if you are familiar with unit testing)
+Let's check how to test our code (feel free to skip the next section if you are familiar with unit testing)
 
-### Testing, testing and after that ... testing
+### Testing, testing, and after that ... testing
 
-I assume you are familiar writing small, self-contained pieces of code to test your code. These are called unit tests.
+I assume you are familiar with writing small, self-contained pieces of code to test your code. These are called unit tests.
 
 > The unittest unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests from the reporting framework.
 
 I tried to have a simple [unit test](https://docs.python.org/3/library/unittest.html) for every method I wrote on the code. This saved me lots of headaches down the road, 
-as I refactored code I found better ways to get the same results, producing correct numbers.
+as I refactored the code I found better ways to get the same results, producing correct numbers.
 
-A Unit test on this context is a class that extends 'unittest.TestCase'. Each method that starts with 'test_' is a test that must pass several assertions.
+A Unit test in this context is a class that extends 'unittest.TestCase'. Each method that starts with 'test_' is a test that must pass several assertions.
 
 For example, to make sure the analytics work as expected I wrote a test module called '[test_analyze](test/test_analyze.py)':
 
 ```python
-# Not all test cases shown, please check the full code of 'test/test_analyze.py'
+# Not all test cases are shown, please check the full code of 'test/test_analyze.py'
 import unittest
 from pandas import DataFrame
 from empirestaterunup.analyze import get_country_counts
@@ -615,23 +617,23 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-So far we got the data, made sure [it meets the expectations](test/test_data.py). I wrote [separate tests](test/test_analyze.py) for the analytics code and also for the [scrapper](test/test_scrapper.py).
+So far we got the data, and made sure [it meets the expectations](test/test_data.py). I wrote [separate tests](test/test_analyze.py) for the analytics code and also for the [scrapper](test/test_scrapper.py).
 
-Testing the user interface requires a different approach, it needs to simulate clicks, wait for screen changes. Sometimes failure are easy to spot (like crashes), but sometimes issues are much more subtle (did we got the right data displayed).
+Testing the user interface requires a different approach, it needs to simulate clicks and wait for screen changes. Sometimes failures are easy to spot (like crashes), but sometimes issues are much more subtle (did we get the right data displayed).
 
 Will revisit this particular testing modality after we introduce first how to visualize the results. 
 
 ## Visualizing the results
 
-I wanted to use the terminal as much as possible to visualize my findings, to keep requirements to the minimum. I decided to use the [Textual](https://textual.textualize.io/) framework to accomplish that.
+I wanted to use the terminal as much as possible to visualize my findings, and to keep requirements to the minimum. I decided to use the [Textual](https://textual.textualize.io/) framework to accomplish that.
 This framework is very complete and allows you to build text applications that are responsive and beautiful to look at.
 
-They are also easy to write, so before we go deeper into the resulting applications let's make a pause to learn about Textual.
+They are also easy to write, so before we go deeper into the resulting applications let's pause to learn about Textual.
 
 ### Text User Interfaces (TUI) with Textual
-The [Textual project](https://textual.textualize.io/) has a really nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
+The [Textual project](https://textual.textualize.io/) has a nice tutorial that [you can read](https://textual.textualize.io/tutorial/) to get up to speed.
 
-Let's see some code, one of the applications is called 'esru_outlier', TUI code lives  on the [apps](empirestaterunup/apps.py) module that shows several tables together with the outliers we found before, using the z-score.
+Let's see some code, one of the applications is called 'esru_outlier', TUI code lives on the [apps](empirestaterunup/apps.py) module that shows several tables together with the outliers we found before, using the z-score.
 
 OutlierApp (extends App), collects all the basic information on a table for each outlier group and then calls the RunnerDetailScreen to display details about a runner.
 
@@ -640,7 +642,7 @@ OutlierApp (extends App), collects all the basic information on a table for each
 Next is code with explanations
 
 ```python
-# Only code of the application shown here
+# Only the code of the application shown here
 # This application shows 3 tables: SUMMARY_METRICS = (RaceFields.AGE.value, RaceFields.TIME.value, RaceFields.PACE.value)
 # Every application in Textual extends the App class
 class OutlierApp(App):
@@ -655,9 +657,9 @@ class OutlierApp(App):
     def compose(self) -> ComposeResult:
         """
         Here we 'Yield' Widgets/ components that will be rendered in order on the TUI
-        How the components get their layout on the screen? They use a cascade style sheet (CSS): outliers.tcss and
+        How do the components get their layout on the screen? They use a cascade style sheet (CSS): outliers.tcss and
         some explicit layout containers like the class `Vertical` that can contain other Widgets
-        Here we have a header, tables and a footer 
+        Here we have a header, tables, and a footer 
         """
         yield Header(show_clock=True)
         for column_name in SUMMARY_METRICS:
@@ -677,7 +679,7 @@ class OutlierApp(App):
 
     def on_mount(self) -> None:
         """
-        Here we populate each table with data from the DataFrame. Each table has outliers of different type,
+        Here we populate each table with data from the DataFrame. Each table has outliers of different types,
         all can be obtained with the `get_outliers` method.
         """
         for column in SUMMARY_METRICS:
@@ -691,7 +693,7 @@ class OutlierApp(App):
         """
         When the user selects a column header it generates a 'HeaderSelected' event.
         The annotation on this method tells Textual that will handle this event here
-        We can extract the table, the selected column and then sort the table contents.
+        We can extract the table, the selected column, and then sort the table contents.
         """
         table = event.data_table
         table.sort(event.column_key)
@@ -699,10 +701,10 @@ class OutlierApp(App):
     @on(DataTable.RowSelected)
     def on_row_clicked(self, event: DataTable.RowSelected) -> None:
         """
-        Similarly, when the user selects on a row it generates a RowSelected method
-        What we do on the 'on_row_clicked' method is to capture the event, get the row contents and construct
+        Similarly, when the user selects a row it generates a RowSelected method
+        What we do on the 'on_row_clicked' method is to capture the event, get the row contents, and construct
         a new modal screen (RunnerDetailScreen) which we push on top of the regular screen.
-        There we show the runner details in a different way. 
+        There we show the runner details differently. 
         """
         table = event.data_table
         row = table.get_row(event.row_key)
@@ -717,7 +719,7 @@ The class `RunnerDetailScreen` (extends ModalScreen), handles showing the racer 
 And the code with explanations:
 
 ```python
-# Omitted imports and helper methods, only showing TUI related code. See the 'apps.py' file for full code
+# Omitted imports and helper methods, only showing TUI-related code. See the 'apps.py' file for full code
 class RunnerDetailScreen(ModalScreen):
     ENABLE_COMMAND_PALETTE = False  # Disable the search bar, it is active by default and is not needed here
     CSS_PATH = "runner_details.tcss"  # Handle the styles using an external CSS
@@ -813,9 +815,9 @@ class RunnerDetailScreen(ModalScreen):
         self.app.pop_screen()
 ```
 
-This class is reusable, there are other classes (like `BrowserApp`) part of this tutorial that also sends data when a user clicks on a table row, and those details get displayed using this modal screen.
+This class is reusable, there are other classes (like `BrowserApp`) part of this tutorial that also send data when a user clicks on a table row, and those details get displayed using this modal screen.
 
-What about the CSS? It looks a lot like the web applications [CSS](https://en.wikipedia.org/wiki/CSS) (not exactly the same). For example the [](empirestaterunup/runner_details.tcss):
+What about the CSS? It looks a lot like the web applications [CSS](https://en.wikipedia.org/wiki/CSS) (not the same). For example the [](empirestaterunup/runner_details.tcss):
 
 ```text
 Button {
@@ -827,7 +829,7 @@ Button {
 
 As you can see, Textual is a pretty powerful framework that _reminds me a lot of [Java Swing](https://en.wikipedia.org/wiki/Swing_(Java))_, but without the extra complexity.
 
-But is just information in tabular format? I also wanted to have different graph types that could explain behaviour like age cluster, gender distribution. For that I wrote a few classes on the 'apps' module with the help of Matplotlib:
+But is it just information in tabular format? I also wanted to have different graph types that could explain behavior like age cluster and gender distribution. For that, I wrote a few classes on the 'apps' module with the help of Matplotlib:
 
 ### Plots with Matplotlib
 
@@ -843,7 +845,7 @@ And the code:
 class Plotter:
     def plot_gender(self):
         """
-        In this method, we get our dataframe filtering by gender and getting counts
+        In this method, we get our data frame filtering by gender and get counts
         Then we create a pie plot
         """
         series = self.df[RaceFields.GENDER.value].value_counts()
@@ -873,7 +875,7 @@ Now let's go back to testing TUI
 
 ### Testing the user interfaces
 
-When I started working on this small project I knew than there was going to be a lot of testing. What I wasn't sure was how I would be able to test the TUI.
+When I started working on this small project I knew that there was going to be a lot of testing. What I wasn't sure was how I would be able to test the TUI.
 
 I figured at least two ways with Textual:
 
@@ -891,7 +893,7 @@ On one terminal you start the console:
 ▌Press Ctrl+C to quit.
 ```
 
-Then on another terminal you start your application but using the development mode:
+Then on another terminal, you start your application but using the development mode:
 
 ```shell
 (EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ textual run --dev --command esru_browser
@@ -978,7 +980,7 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-This is invaluable, and something that many times require an external tool set to validate (for example in Java you have the class [Robot](https://docs.oracle.com/javase/8/docs/api/java/awt/Robot.html)).
+This is invaluable, and something that many times requires an external toolset to validate (for example in Java you have the class [Robot](https://docs.oracle.com/javase/8/docs/api/java/awt/Robot.html)).
 
 ## Running the applications
 
@@ -1004,8 +1006,8 @@ And the command palette, searching for runners by name:
 
 This application provides details about the following:
 
-* Count, standard deviation, mean, min, max 45%, 50% and 75% for age, time, and pace
-* Group and count distribution for Age,  Wave and Gender
+* Count, standard deviation, mean, min, max 45%, 50%, and 75% for age, time, and pace
+* Group and count distribution for Age,  Wave, and Gender
 
 ```shell
 esru_numbers
@@ -1014,9 +1016,9 @@ esru_numbers
 Some interesting facts about the race:
 
 * Average age is 41 years old and 40 years old is the largest age group
-* Majority number of people belonged to the 'BLACK WAVE'
-* Majority of the people finished the race between 20 and 30 minutes.
-* Youngest runner was 11 years old, oldest 78
+* The majority number of people belonged to the 'BLACK WAVE'
+* The majority of the people finished the race between 20 and 30 minutes.
+* The youngest runner was 11 years old, oldest was 78
 
 ![Statistics of interest, like average age, wave they belong, finishing time](images/esru_numbers.svg)
 
@@ -1031,11 +1033,11 @@ esru_outlier
 
 ![Table with outliers details](images/esru_outlier-1.svg)
 
-Because this results drill down to the BIB number, you can click on a row and get more details of a runner:
+Because these results drill down to the BIB number, you can click on a row and get more details about a runner:
 
 ![Outlier racer details, including BIB](images/esru_outlier-2.svg)
 
-Textual as excellent support for rendering Markdown, programing languages. Take a look on the code to see yourself.
+Textual as excellent support for rendering Markdown, programming languages. Take a look at the code to see yourself.
 
 ### A few plot graphics for you
 
@@ -1047,12 +1049,12 @@ The program can generate two flavors for the same data, one is a Box diagram:
 
 ![Age plot, Pie chart](images/age_plot.png)
 
-And the second is a regular histogram:
+The second is a regular histogram:
 
 ![Age histogram](images/age_histogram.png)
 
-You can see from both graphics that the group age with most participants is the 40-45 year old bracket, and the outliers
-are on the 10-20 and 70-80 year old groups.
+You can see from both graphics that the group age with the most participants is the 40-45-year-old bracket and the outliers
+are in the 10-20 and 70-80 year old groups.
 
 #### Participants per country plot
 
@@ -1065,21 +1067,18 @@ the winner of the 2013 race is from Malaysia, with only 2 runners participating.
 
 ![Gender pie](images/gender_distribution.png)
 
-Majority of the runners identified themselves as Males, followed by Female.
+The majority of the runners identified themselves as Males, followed by Females.
 
 ## What is next?
 
-Participating on this race was a great experience, and the best part is that of fueled my curiosity and let me write this code to find  more interesting facts about the race.
+Participating in this race was a great experience, and the best part was that of fueled my curiosity and let me write this code to find more interesting facts about the race.
 
-There is plenty more to learn about the tools you just saw on this tutorial:
+There is plenty more to learn about the tools you just saw in this tutorial:
 
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
-* [Selenium Web driver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but automated testing of web applications. It doesn't get better than having your browser to perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
-* Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of races. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?.
-* Sadly I'm not in a position to offer you any training advice. Every person is different. I do recommend you check with your doctor before you participate on a race like this (make sure the plumbing is good as they say), and get some professional advice from a running coach.
+* [Selenium Web driver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but for automated testing of web applications. It doesn't get better than having your browser perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
+* Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of race. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?
+* Sadly I'm not in a position to offer you any training advice. Every person is different. I do recommend you check with your doctor before you participate in a race like this (make sure the plumbing is good as they say), and get some professional advice from a running coach.
 * But most important of all, believe you can do this (the race and writing some tools to process the race data) and have fun while doing it. This is a pre-requisite for any project.
-
-
-
 
