@@ -1,4 +1,4 @@
-# Empire State Building Run-Up (2023 edition)
+# Data Analysis with Python – How I Analyzed My Empire State Building Run-Up Performance
 
 ![empire_state_runup.png](images/empire_state_runup.png)
 
