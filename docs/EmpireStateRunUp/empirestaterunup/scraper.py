@@ -16,7 +16,7 @@ from empirestaterunup.data import RaceFields, Level
 EMPIRE_STATE_2013_RACE_RESULTS = "https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Results"
 
 
-class RacerLinksScrapper:
+class RacerLinksScraper:
 
     def __init__(self, headless: bool = True, load_wait: int = 5, debug: bool = False):
         self.rank_to_bib: list[int] = []
@@ -154,7 +154,7 @@ class RacerLinksScrapper:
         return button
 
 
-class RacerDetailsScrapper:
+class RacerDetailsScraper:
 
     def __init__(self, racer: Dict[str, Any], headless: bool = True, load_wait: int = 5, debug_level: int = 0):
         options = Options()

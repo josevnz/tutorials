@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 I wrote this script to normalize the data results from the 'Empire State Building Run-Up', October 4, 2023.
-The race results website doesn't offer an export option and quite honestly writing a web scrapper seemed to be overkill.
+The race results website doesn't offer an export option and quite honestly writing a web scraper seemed to be overkill.
 So just coping and pasting the 8 pages of results took less time, the data normalizer is quite simple and was used
 to generate a nicer CSV file.
 
@@ -16,8 +16,8 @@ from matplotlib import pyplot as plt
 
 from empirestaterunup.apps import FiveNumberApp, OutlierApp, Plotter, BrowserApp
 from empirestaterunup.data import raw_copy_paste_read, FIELD_NAMES, load_data, load_country_details, RaceFields, \
-    raw_csv_read, FIELD_NAMES_FOR_SCRAPPING
-from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
+    raw_csv_read, FIELD_NAMES_FOR_SCRAPING
+from empirestaterunup.scraper import RacerLinksScraper, RacerDetailsScraper
 
 logging.basicConfig(format='%(asctime)s %(message)s', encoding='utf-8', level=logging.INFO)
 
@@ -167,30 +167,30 @@ def run_browser():
     app.run()
 
 
-def run_scrapper():
-    parser = ArgumentParser(description="Website scrapper for race results")
+def run_scraper():
+    parser = ArgumentParser(description="Website scraper for race results")
     parser.add_argument(
         "report_file",
         action="store",
         type=Path,
-        help="Location of the final scrapping results"
+        help="Location of the final SCRAPING results"
     )
     options = parser.parse_args()
     report_file = Path(options.report_file)
     logging.info("Saving results to %s", report_file)
-    with RacerLinksScrapper(headless=True, debug=False) as link_scrapper:
-        total = len(link_scrapper.racers)
+    with RacerLinksScraper(headless=True, debug=False) as link_scraper:
+        total = len(link_scraper.racers)
         logging.info(f"Got {total} racer results")
         with open(report_file, 'w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES_FOR_SCRAPPING, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(csv_file, fieldnames=FIELD_NAMES_FOR_SCRAPING, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
-            for bib in link_scrapper.racers:
-                url = link_scrapper.racers[bib][RaceFields.URL.value]
+            for bib in link_scraper.racers:
+                url = link_scraper.racers[bib][RaceFields.URL.value]
                 logging.info(f"Processing BIB: {bib}, will fetch: {url}")
-                with RacerDetailsScrapper(racer=link_scrapper.racers[bib], debug_level=0) as rds:
+                with RacerDetailsScraper(racer=link_scraper.racers[bib], debug_level=0) as rds:
                     try:
-                        position = link_scrapper.racers[bib][RaceFields.OVERALL_POSITION.value]
-                        name = link_scrapper.racers[bib][RaceFields.NAME.value]
+                        position = link_scraper.racers[bib][RaceFields.OVERALL_POSITION.value]
+                        name = link_scraper.racers[bib][RaceFields.NAME.value]
                         writer.writerow(rds.racer)
                         logging.info(f"Wrote: name={name}, position={position}, {rds.racer}")
                     except ValueError as ve:
@@ -219,7 +219,7 @@ def run_csv_cleaner():
     OPTIONS = parser.parse_args()
     try:
         with open(OPTIONS.report_file, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES_FOR_SCRAPPING, quoting=csv.QUOTE_NONNUMERIC)
+            writer = csv.DictWriter(csvfile, fieldnames=FIELD_NAMES_FOR_SCRAPING, quoting=csv.QUOTE_NONNUMERIC)
             writer.writeheader()
             for row in raw_csv_read(OPTIONS.raw_file):
                 try:

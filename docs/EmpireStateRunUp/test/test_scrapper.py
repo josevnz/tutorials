@@ -3,15 +3,15 @@ import pprint
 import unittest
 
 from empirestaterunup.data import RaceFields
-from empirestaterunup.scrapper import RacerLinksScrapper, RacerDetailsScrapper
+from empirestaterunup.scraper import RacerLinksScraper, RacerDetailsScraper
 
 logger = logging.getLogger('selenium')
 logger.setLevel(logging.DEBUG)
 
 
-class RacerLinksScrapperTestCase(unittest.TestCase):
-    def test_link_scrapper(self):
-        with RacerLinksScrapper(headless=True, debug=False) as esc:
+class RacerLinksScraperTestCase(unittest.TestCase):
+    def test_link_scraper(self):
+        with RacerLinksScraper(headless=True, debug=False) as esc:
             self.assertIsNotNone(esc)
             self.assertEqual(377, len(esc.racers))
             self.assertEqual(377, len(esc.rank_to_bib))
@@ -38,7 +38,7 @@ class RacerLinksScrapperTestCase(unittest.TestCase):
         for racer in racer_details:
             name = racer[RaceFields.NAME.value]
             print(f"name={name}, url={racer[RaceFields.URL.value]}")
-            with RacerDetailsScrapper(
+            with RacerDetailsScraper(
                 racer=racer,
                 debug_level=0,
             ) as rds:

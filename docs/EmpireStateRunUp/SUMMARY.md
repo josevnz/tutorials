@@ -8,7 +8,7 @@ A less-known fact is that you can run through the stars to the observatory on th
 > While visitors can reach the building’s Observatory via elevator in under one minute, the fastest runners have covered the 86 floors by foot in about 10 minutes. 
 > Leaders in the sport of professional tower-running converge at the Empire State Building in what some consider the ultimate test of endurance.
 
-Racing to get to the top of a building is also known as [a tower running race](https://en.wikipedia.org/wiki/Tower_running) and it happens around the world.
+Racing to get to the top of a building is also known as [a tower running race,](https://en.wikipedia.org/wiki/Tower_running) and it happens around the world.
 
 As one of the things that fuel your imagination, I always wondered how well I would fare running a race on the Empire State. I started my research around 4 years ago and found out about a lottery and also running through a charity. In the end, I tried the lottery, getting rejected over and over.
 
@@ -25,13 +25,13 @@ One problem was not solved and it was the lack of a nice tool to analyze the rac
 That's where Open Source comes into play. I'm a DevOps and I love to automate things, so my plan to solve this issue was like this:
 
 1. Wait until the race results get published (better, survive the race on the first place)
-2. Web-scrape the website and retrieve the data, with minimal processing to speed up the data capture. Write some unit tests but don't expect the code to be very re-usable (web scrapping will force you to make some decisions to stick the parsing depending on how the raw data looks like)
+2. Web-scrape the website and retrieve the data, with minimal processing to speed up the data capture. Write some unit tests but don't expect the code to be very re-usable (web scraping will force you to make some decisions to stick the parsing depending on how the raw data looks like)
 3. Clean up and normalize the data, so it can be analyzed. Write a unit test for each step. Rinse and repeat
 4. Write a nice user interface to show the results. In my case, I wanted to avoid the burden of writing a web application, and a TUI (Text User Interface) seemed a logical choice.
 5. Have some fun with charts! Who doesn't like those? Make sure they are easy to generate, KISS principle
 6. Share the code! What if others want to suggest features, and even submit a patch? The code gets a life of its own.
 
-I decided to run my stack on Linux (I used Fedora) and the programming language of choice was Python (was more concerned with writing quality code fast than having fast running code). Python was also an easy choice given the number of mature libraries you can use to solve this problem, from web scrapping to doing data science on the parsed data.
+I decided to run my stack on Linux (I used Fedora) and the programming language of choice was Python (was more concerned with writing quality code fast than having fast running code). Python was also an easy choice given the number of mature libraries you can use to solve this problem, from web scraping to doing data science on the parsed data.
 
 ## Necessity is the mother of invention
 
@@ -42,7 +42,7 @@ This is very true. I was looking first for some software to take the data from t
 
 And every decent website these days forces clients to render the contents in JavaScript. Just try deactivating Javascript and go to one of your favorite websites and you will find out very quickly how fun they are (hint: they're not).
 
-So my best next choice was to manage my web browser (I use Firefox) programmatically, going through every link on the race results website, and saving the contents of the rendered table; [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/) with a Python extention made it very easy for me and after a few tries I [produced simple code](https://github.com/josevnz/tutorials/blob/main/docs/EmpireStateRunUp/empirestaterunup/scrapper.py) that got all the data for this race.
+So my best next choice was to manage my web browser (I use Firefox) programmatically, going through every link on the race results website, and saving the contents of the rendered table; [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/) with a Python extention made it very easy for me and after a few tries I [produced simple code](https://github.com/josevnz/tutorials/blob/main/docs/EmpireStateRunUp/empirestaterunup/scraper.py) that got all the data for this race.
 
 Why all the data? I wanted to know more about other racers (like country of origin, age, etc.), and now with a local copy in a friendly format I could try to answer my questions
 

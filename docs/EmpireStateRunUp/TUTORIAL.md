@@ -83,16 +83,16 @@ We can now move to the next stage, getting the data.
 
 ## Getting the data using web scraping
 
-The race results site doesn't have an export feature and I never heard back from their support team to see if there was an alternate way to get the race data, so the only alternative left was to do some web scrapping.
+The race results site doesn't have an export feature and I never heard back from their support team to see if there was an alternate way to get the race data, so the only alternative left was to do some web scraping.
 
-The website is pretty basic and only allows scrolling through each record, so I decided to do web scrapping to get the results
+The website is pretty basic and only allows scrolling through each record, so I decided to do web scraping to get the results
 into a format I could use later for data analysis.
 
 ### The rules of web scraping
 
 There are very 3 simple rules:
 
-1) Rule #1: **Please don't do it**. Data flow changes, your scrapper will break the minute you are done getting the data. It will require time and effort. _Lots of it_.
+1) Rule #1: **Please don't do it**. Data flow changes, your scraper will break the minute you are done getting the data. It will require time and effort. _Lots of it_.
 2) Rule #2: **Read rule number 1**. If you cannot get the data in another format then go to rule #3
 3) Rule #3: __Choose a good framework to automate what you can__ and prepare to do heavy data cleanup (also known as give me patience for the stuff I cannot control, like poorly done HTML and CSS)
 
@@ -163,10 +163,10 @@ The code above is hardly reusable, but it gets the job done by doing the followi
 3) Then find and click the `>` (next page) button.
 4) Do this steps for a total of 8 times, as this is how many pages of results are available (each page has 50 runners)
 
-To get the full race results I wrote [scrapper.py](empirestaterunup/scrapper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
+To get the full race results I wrote [scraper.py](empirestaterunup/scraper.py) code, the code deals with navigating multiple pages and extracting the data. Demonstration below:
 
 ```shell
-(EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scrapper /home/josevnz/temp/raw_data.csv
+(EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ esru_scraper /home/josevnz/temp/raw_data.csv
 2023-12-30 14:05:00,987 Saving results to /home/josevnz/temp/raw_data.csv
 2023-12-30 14:05:53,091 Got 377 racer results
 2023-12-30 14:05:53,091 Processing BIB: 19, will fetch: https://www.athlinks.com/event/382111/results/Event/1062909/Course/2407855/Bib/19
@@ -271,7 +271,7 @@ class RaceFields(Enum):
     URL = "url"
 
 FIELD_NAMES = [x.value for x in RaceFields if x != RaceFields.URL]
-FIELD_NAMES_FOR_SCRAPPING = [x.value for x in RaceFields]
+FIELD_NAMES_FOR_scraping = [x.value for x in RaceFields]
 FIELD_NAMES_AND_POS: Dict[RaceFields, int] = {}
 pos = 0
 for field in RaceFields:
@@ -309,7 +309,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
         for row in reader:
             try:
                 csv_field: str
-                for csv_field in FIELD_NAMES_FOR_SCRAPPING:
+                for csv_field in FIELD_NAMES_FOR_scraping:
                     column_val = row[csv_field].strip()
                     if csv_field == RaceFields.BIB.value:
                         bib = int(column_val)
@@ -458,7 +458,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.BIB.value] = df[RaceFields.BIB.value].astype(int)
     df.set_index(RaceFields.BIB.value, inplace=True)
 
-    # URL was useful during scrapping, not needed for analysis
+    # URL was useful during scraping, not needed for analysis
     df.drop([RaceFields.URL.value], axis=1, inplace=True)
 
     return df
@@ -572,7 +572,7 @@ max                0 days 05:34:00
 Name: pace, dtype: object
 ```
 
-Making sure data web scrapping, data loading, and analytics work well is a must. Testing is part integral of writing code, so I kept adding more of it and went back to writing unit tests.
+Making sure data web scraping, data loading, and analytics work well is a must. Testing is part integral of writing code, so I kept adding more of it and went back to writing unit tests.
 
 Let's check how to test our code (feel free to skip the next section if you are familiar with unit testing)
 
@@ -617,7 +617,7 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-So far we got the data, and made sure [it meets the expectations](test/test_data.py). I wrote [separate tests](test/test_analyze.py) for the analytics code and also for the [scrapper](test/test_scrapper.py).
+So far we got the data, and made sure [it meets the expectations](test/test_data.py). I wrote [separate tests](test/test_analyze.py) for the analytics code and also for the [scraper](test/test_scraper.py).
 
 Testing the user interface requires a different approach, it needs to simulate clicks and wait for screen changes. Sometimes failures are easy to spot (like crashes), but sometimes issues are much more subtle (did we get the right data displayed).
 
@@ -1067,7 +1067,7 @@ the winner of the 2013 race is from Malaysia, with only 2 runners participating.
 
 ![Gender pie](images/gender_distribution.png)
 
-The majority of the runners identified themselves as Males, followed by Females.
+The majority of  the runners identified themselves as Males, followed by Females.
 
 ## What is next?
 
@@ -1077,7 +1077,7 @@ There is plenty more to learn about the tools you just saw in this tutorial:
 
 * There are a lot of race public datasets, you can apply what you learned here. Just take a look at [this dataset of the New York City Marathon, period 1970-2018](https://github.com/davidjaimes/nyc-marathon). What [other questions](https://github.com/meiguan/nyc2018marathonfinishers) you can ask about the data?
 * You saw just the tip of what you can do with Textual. I encourage you to explore the [apps.py](empirestaterunup/apps.py) module. Take a look at the [example applications](https://github.com/Textualize/textual/tree/main/examples).
-* [Selenium Web driver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scrapping but for automated testing of web applications. It doesn't get better than having your browser perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
+* [Selenium Web driver](https://www.selenium.dev/documentation/webdriver/) is not a tool for web scraping but for automated testing of web applications. It doesn't get better than having your browser perform automated testing for you. It is a big framework, so be prepared to spend time reading and running your tests. I strongly suggest you look [at the examples](https://github.com/SeleniumHQ/seleniumhq.github.io/tree/trunk/examples/python).
 * Apply for the [Empire Estate Run Up](https://www.esbnyc.com/empire-state-building-run) lottery or run through a charity, if you like this kind of race. Who said [King Kong](https://en.wikipedia.org/wiki/King_Kong) is the only one who could make it to the top?
 * Sadly I'm not in a position to offer you any training advice. Every person is different. I do recommend you check with your doctor before you participate in a race like this (make sure the plumbing is good as they say), and get some professional advice from a running coach.
 * But most important of all, believe you can do this (the race and writing some tools to process the race data) and have fun while doing it. This is a pre-requisite for any project.

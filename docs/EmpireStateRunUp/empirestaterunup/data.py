@@ -1,5 +1,5 @@
 """
-Data loading logic, after web scrapping process is completed.
+Data loading logic, after web scraping process is completed.
 author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
 """
 import csv
@@ -92,7 +92,7 @@ class RaceFields(Enum):
 
 
 FIELD_NAMES = [x.value for x in RaceFields if x != RaceFields.URL]
-FIELD_NAMES_FOR_SCRAPPING = [x.value for x in RaceFields]
+FIELD_NAMES_FOR_SCRAPING = [x.value for x in RaceFields]
 FIELD_NAMES_AND_POS: Dict[RaceFields, int] = {}
 pos = 0
 for field in RaceFields:
@@ -124,7 +124,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
         for row in reader:
             try:
                 csv_field: str
-                for csv_field in FIELD_NAMES_FOR_SCRAPPING:
+                for csv_field in FIELD_NAMES_FOR_SCRAPING:
                     column_val = row[csv_field].strip()
                     if csv_field == RaceFields.BIB.value:
                         bib = int(column_val)
@@ -185,7 +185,7 @@ def raw_csv_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
 def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     """
     Read the whole RAW file, product of a manual copy and paste, return a clean version.
-    Deprecation warning: You should use the raw_csv_read() method on the file produced by the scrapper.
+    Deprecation warning: You should use the raw_csv_read() method on the file produced by the scraper.
     Each record looks like this (copy and paste from the website):
 
     NAME
@@ -207,7 +207,7 @@ def raw_copy_paste_read(raw_file: Path) -> Iterable[Dict[str, Any]]:
     MIN/MI
     10:36
     ```
-    :param raw_file: Yes, copied and pasted all the 8 pages when started the project, before writing a scrapper :D
+    :param raw_file: Yes, copied and pasted all the 8 pages when started the project, before writing a scraper :D
     :return:
     """
     with open(raw_file, 'r') as file_data:
@@ -405,7 +405,7 @@ def load_data(data_file: Path = None, remove_dnf: bool = True) -> DataFrame:
     df[RaceFields.BIB.value] = df[RaceFields.BIB.value].astype(int)
     df.set_index(RaceFields.BIB.value, inplace=True)
 
-    # URL was useful during scrapping, not needed for analysis
+    # URL was useful during scraping, not needed for analysis
     df.drop([RaceFields.URL.value], axis=1, inplace=True)
 
     return df
