@@ -370,7 +370,7 @@ So _how do Pandas work_?
 
 #### Crash course on Pandas
 
-I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. For my DataFrame, I made the BIB an index as it is unique, and it has no special value for aggregation functions but id unique. It is important to say that also at this stage I needed to normalize the data, which I'll explain shortly:
+I strongly recommend that you take the [10 minutes to pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html) if you are not familiar with Pandas. For my DataFrame, I made the BIB an index as it is unique, and it has no special value for aggregation functions but the 'id' attribute is unique. It is important to say that also at this stage I needed to normalize the data, which I'll explain shortly:
 
 ```python
 # Omitted imports and Enum declarations as they were shown early on. 
