@@ -410,14 +410,17 @@ class BrowserApp(App):
             df: DataFrame = None
     ):
         super().__init__(driver_class, css_path, watch_css)
+
         if not country_data:
             self.country_data = load_country_details()
         else:
             self.country_data = country_data
-        if df:
-            self.df = df
-        else:
+
+        if df is None or df.empty:
             self.df = load_data()
+        else:
+            self.df = df
+
         for three_letter_code in set(self.df[RaceFields.COUNTRY.value].tolist()):
             filtered_country = lookup_country_by_code(
                 df=self.country_data,

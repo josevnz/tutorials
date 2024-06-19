@@ -1,7 +1,8 @@
-pandas==2.2.1
+pandas==2.2.2
 textual-dev==1.5.1
-textual==0.54.0
+textual==0.70.0
+textual-serve==1.0.1
 rich==13.7.1
-numpy==1.26.0
+numpy==1.26.4
 matplotlib==3.8.3
 selenium==4.15.2

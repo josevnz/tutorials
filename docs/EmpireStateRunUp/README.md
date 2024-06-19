@@ -98,3 +98,32 @@ Make sure you check the [tutorial](TUTORIAL.md). It explains how this project go
 
 If there is enough interest I may spin this off a separate project. Also, if you see a bug please open an Issue and I will work on a fix.
 
+## Running in server mode
+
+The applications now support running in web server mode. To enable:
+
+```shell
+(EmpireStateRunUp) [josevnz@dmaf5 EmpireStateRunUp]$ esru_server --help
+usage: esru_server [-h] --application {esru_numbers,esru_outlier,esru_browser} [--port PORT] [--debug] [results ...]
+
+Browse user results
+
+positional arguments:
+  results               Race results.
+
+options:
+  -h, --help            show this help message and exit
+  --application {esru_numbers,esru_outlier,esru_browser}
+                        Applications that can run in server mode: ['esru_numbers', 'esru_outlier', 'esru_browser']
+  --port PORT           Default port (8000)
+  --debug               Enable debug mode
+
+```
+
+```shell
+esru_server --application esru_numbers
+
+# Or if you have an external results file:
+
+sru_server --application esru_browser empirestaterunup/results-full-level-2023.csv
+```
