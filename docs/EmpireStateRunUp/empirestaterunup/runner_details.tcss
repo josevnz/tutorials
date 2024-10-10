@@ -1,7 +1,0 @@
-
-
-Button {
-    dock: bottom;
-    width: 100%;
-    height: auto;
-}
