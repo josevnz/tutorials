@@ -4,6 +4,7 @@ Note to self: Run every time a new tutorial on an external repository is added :
 DOC
 declare -a submodules
 submodules=(
+"EmpireStateBuildingRunUp"
 "home_nmap"
 "kismet_home"
 "BashError"

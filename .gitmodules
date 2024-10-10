@@ -79,3 +79,6 @@
 [submodule "docs/GlancesAndInfluxDB"]
 	path = docs/GlancesAndInfluxDB
 	url = https://github.com/josevnz/GlancesAndInfluxDB.git
+[submodule "docs/EmpireStateBuildingRunUp"]
+	path = docs/EmpireStateBuildingRunUp
+	url = https://github.com/josevnz/EmpireStateBuildingRunUp
