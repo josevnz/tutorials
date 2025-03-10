@@ -84,3 +84,11 @@ which ansible-playbook
 ~/.local/bin/ansible-playbook
 ```
 
+If you installed several python tools like this, you can upgrade them all in one shot:
+
+```shell
+uv tool upgrade --all
+```
+
+## Learning more
+* The official [uv](https://docs.astral.sh/uv/) documentation is very complete and you will most likely spend your time going back and forth reading it.
