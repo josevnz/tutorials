@@ -21,7 +21,7 @@ TODO
 
 ## Using UV to run everyday tools like Ansible, Glances, Flake8, Autopep8
 
-One of the best things about uv is that you can dowload and install tools on your account with less typing.
+One of the best things about uv is that you can download and install tools on your account with less typing.
 
 One of my favorite tools, glances, can be installed with pip on the user account:
 
@@ -30,7 +30,7 @@ pip install --user glances
 glances
 ```
 
-But that will polute my python installation with glances dependencies. So the best next thing is to isolate it on a virtual environment:
+But that will pollute my python installation with glances dependencies. So the best next thing is to isolate it on a virtual environment:
 
 ```shell
 python -m venv ~/venv/glances
@@ -39,13 +39,13 @@ pip install glances
 glances
 ```
 
-You can see now where this is going. Instead I could do the following with uv:
+You can see now where this is going. Instead, I could do the following with uv:
 
 ```shell
 uv tool run glances
 ```
 
-OK, a single line, This creates an temporary environment which is discarded once we're done with the tool.
+OK, a single line, This creates a temporary environment which is discarded once we're done with the tool.
 
 Let me show you the equivalent command, it is called `uvx`:
 
@@ -53,7 +53,7 @@ Let me show you the equivalent command, it is called `uvx`:
 uvx --from glances glances
 ```
 
-If the command and the distribution matches then we can skip explicitely where it comes '--from':
+If the command and the distribution matches then we can skip explicitly where it comes '--from':
 
 ```shell
 uvx glances
@@ -65,20 +65,125 @@ Less typing, uv created a virtual environment for me and downloaded glaces there
 uvx --from glances --python 3.12 glances
 ```
 
-If you call this command again, uvx will re-use the virtual environment it created.
+If you call this command again, uvx will re-use the virtual environment it created, using the Python interpreter of your choice.
+
+### It is a good idea to install custom Python interpreters?
+
+Letting developers and DevOps [install custom Python interpreters](https://docs.astral.sh/uv/concepts/python-versions/#installing-a-python-version) can be a time saver, specially if you can contain your installation using a virtual environment.
+
+Say than you are ready to use Python:
+
+```shell
+[josevnz@dmaf5 ~]$ which uv
+~/.local/bin/uv
+Installed Python 3.13.1 in 3.21s
+ + cpython-3.13.1-linux-x86_64-gnu
+```
+
+So where it was installed? Let search for it and run it:
+```shell
+# Is not the system python3
+[josevnz@dmaf5 ~]$ which python3
+/usr/bin/python3
+# And is not in the default PATH
+[josevnz@dmaf5 ~]$ which python3.13
+/usr/bin/which: no python3.13 in (/home/josevnz/.cargo/bin:/home/josevnz/.local/bin:/home/josevnz/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/home/josevnz/.local/share/JetBrains/Toolbox/scripts)
+# Let's find it (Pun intended)
+[josevnz@dmaf5 ~]$ find ~/.local -name python3.13
+/home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
+/home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/include/python3.13
+/home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/python3.13
+# Let's run it
+[josevnz@dmaf5 ~]$ /home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
+Python 3.13.1 (main, Jan 14 2025, 22:47:38) [Clang 19.1.6 ] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+```
+
+Interesting. Now say that I want to install autopep8 using this Python3.13
+```shell
+[josevnz@dmaf5 ~]$ uv tool install autopep8 --python 3.13.1
+Resolved 2 packages in 158ms
+Prepared 2 packages in 72ms
+Installed 2 packages in 8ms
+ + autopep8==2.3.2
+ + pycodestyle==2.12.1
+Installed 1 executable: autopep8
+```
+
+Did the new autopep8 re-used the Python3.13 we installed before? 
+
+```shell
+[josevnz@dmaf5 ~]$ which autopep8
+~/.local/bin/autopep8
+[josevnz@dmaf5 ~]$ head -n 1 ~/.local/bin/autopep8
+#!/home/josevnz/.local/share/uv/tools/autopep8/bin/python
+[josevnz@dmaf5 ~]$ ls -l /home/josevnz/.local/share/uv/tools/autopep8/bin/python
+lrwxrwxrwx. 1 josevnz josevnz 83 Mar 22 16:50 /home/josevnz/.local/share/uv/tools/autopep8/bin/python -> /home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
+```
+
+Very good, we are not wasting space with duplicate python interpreter installations. 
+
+But what if we want to re-use the existing system python3? If we force the installation, we will have a duplicate?
+
+my system has Python 3.11, let's force the autopep8 and see what happens:
+
+```shell
+josevnz@dmaf5 ~]$ uv tool install autopep8 --force --python 3.11 
+Resolved 2 packages in 3ms
+Uninstalled 1 package in 1ms
+Installed 1 package in 3ms
+ ~ autopep8==2.3.2
+Installed 1 executable: autopep8
+[josevnz@dmaf5 ~]$ which autopep8
+~/.local/bin/autopep8
+[josevnz@dmaf5 ~]$ head -n 1 ~/.local/bin/autopep8
+#!/home/josevnz/.local/share/uv/tools/autopep8/bin/python3
+[josevnz@dmaf5 ~]$ ls -l /home/josevnz/.local/share/uv/tools/autopep8/bin/python3
+lrwxrwxrwx. 1 josevnz josevnz 6 Mar 22 16:56 /home/josevnz/.local/share/uv/tools/autopep8/bin/python3 -> python
+[josevnz@dmaf5 ~]$ ls -l /home/josevnz/.local/share/uv/tools/autopep8/bin/python
+lrwxrwxrwx. 1 josevnz josevnz 19 Mar 22 16:56 /home/josevnz/.local/share/uv/tools/autopep8/bin/python -> /usr/bin/python3.11
+```
+
+It is smart enough to use the system Python.
+
+Say that you want to make this Python3 version the default for your user? There is a way to do that using the experimental flag `--preview` and `--default` (makes it python3):
+
+```shell
+[josevnz@dmaf5 ~]$ uv python install 3.13 --default --preview
+Installed Python 3.13.1 in 23ms
+ + cpython-3.13.1-linux-x86_64-gnu (python, python3, python3.13)
+# Which one is now python3
+[josevnz@dmaf5 ~]$ which python3
+~/.local/bin/python3
+# Is python3.13 our default python3?
+[josevnz@dmaf5 ~]$ which python3.13
+~/.local/bin/python3.13
+```
+
+What if you have company policies that discourages downloading a Python runtime, or you want to enforce a more strict control?
+
+If you create a `$XDG_CONFIG_DIRS/uv/uv.toml` or `~/.config/uv/uv.toml` file, you can put the following setting there:
+
+```toml
+# ~/.config/uv/uv.toml
+
+```
+
+Fedora managers had an interesting conversation about [how manage this policy](https://src.fedoraproject.org/rpms/uv/pull-request/18), worth reading.
 
 #### But this still is a lot of typing
 
-Nothing like ye old Bourne Shell (or favorite shell) cannot fiX.  Put this on your ~/.profile or [environment initialization configuration file](https://fedoramagazine.org/customizing-bash/):
+Nothing like ye old Bourne Shell (or favorite shell) cannot fix.  Put this on your ~/.profile or [environment initialization configuration file](https://fedoramagazine.org/customizing-bash/):
 
-```
+```shell
 #  Use a function instead of an alias (deprecated but still supported)
 function glances
    uvx --from glances --python 3.12 glances $*
 }
 ```
 
-There is a better way to install tools in our environment, once we are sure we want to keep them around.
+There is a better way to install tools in our environment, once we are sure we want to keep  a tool around.
 
 ### If your tool is useful, consider installing it instead of using a transient installation.
 
@@ -94,20 +199,27 @@ Installed 10 packages in 724ms
 ...
 ```
 
-Then we can call it without using uv nor uvx as long as you put ~/.local/bin in your PATH environment variable:
+Then we can call it without using uv nor uvx as long as you put ~/.local/bin in your PATH environment variable. You can confirm if that is the case by calling which:
 
 ```shell
 which ansible-playbook
 ~/.local/bin/ansible-playbook
 ```
 
-If you installed several python tools like this, you can upgrade them all in one shot as well:
+Another advantage of using 'tools install' is that if they are big (like Ansible), or you have a slow network connection, you only install once and next time you call it, is there. 
+
+Last time, if you installed several python tools like this, you can upgrade them all in one shot as well with the `--upgrade` flag:
 
 ```shell
-uv tool upgrade --all
+[josevnz@dmaf5 ~]$ uv tool upgrade --all
+Updated glances v4.3.0.8 -> v4.3.1
+ - glances==4.3.0.8
+ + glances==4.3.1
+Installed 1 executable: glances
+
 ```
 
-Pretty convenient.
+Pretty convenient!
 
 ## Learning more
 
