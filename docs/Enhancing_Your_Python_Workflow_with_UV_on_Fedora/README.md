@@ -163,14 +163,17 @@ Installed Python 3.13.1 in 23ms
 
 What if you have company policies that discourages downloading a Python runtime, or you want to enforce a more strict control?
 
-If you create a `$XDG_CONFIG_DIRS/uv/uv.toml` or `~/.config/uv/uv.toml` file, you can put the following setting there:
+If you create a `$XDG_CONFIG_DIRS/uv/uv.toml` or `~/.config/uv/uv.toml` file, you can put the following [settings](https://docs.astral.sh/uv/reference/settings/) there:
 
 ```toml
-# ~/.config/uv/uv.toml
-
+# ~/.config/uv/uv.toml or /etc/uv/uv.toml
+# https://docs.astral.sh/uv/reference/settings/#python-preference: only-managed, *managed*, system, only-system
+python-preference = "only-system"
+# https://docs.astral.sh/uv/reference/settings/#python-downloads: *automatic*, manual or never
+python-downloads = "manual"
 ```
 
-Fedora managers had an interesting conversation about [how manage this policy](https://src.fedoraproject.org/rpms/uv/pull-request/18), worth reading.
+Fedora managers had an interesting conversation about [how manage this policy](https://src.fedoraproject.org/rpms/uv/pull-request/18), worth reading. Or you can go and check the [used system uv.toml](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.toml) file yourself.
 
 #### But this still is a lot of typing
 
@@ -227,4 +230,5 @@ We cover a lot but there is still lots more to learn. As everything, you will ne
 
 Below is a list of links I found useful and may also help you:
 
-* The official [uv](https://docs.astral.sh/uv/) documentation is very complete and you will most likely spend your time going back and forth reading it.
+* The official [uv](https://docs.astral.sh/uv/) documentation is very complete, and you will most likely spend your time going back and forth reading it.
+* Users of older Fedora distributions may take a look at the [UV Source RPM](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.spec). Lots of good stuff, including Bash auto-completion for UV.
