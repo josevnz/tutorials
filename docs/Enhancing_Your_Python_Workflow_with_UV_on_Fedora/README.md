@@ -14,9 +14,60 @@ What about an RPM? [Fedora lists](https://src.fedoraproject.org/rpms/uv) several
 sudo dnf install uv
 ```
 
-Or you can package your own
+Or get yourself an RPM using the statically compiled binaries from Astral and a little help from Podman and [fpm](https://www.freecodecamp.org/news/getting-started-with-fpm/):
 
-TODO
+```shell
+josevnz@dmaf5 docs]$ podman run --mount type=bind,src=$HOME/tmp,target=/mnt/result --rm --privileged --interactive --tty fedora:37 bash
+[root@a9e9dc561788 /]# gem install --user-install fpm
+...
+[root@a9e9dc561788 /]# curl --location --fail --remote-name https://github.com/astral-sh/uv/releases/download/0.6.9/uv-x86_64-unknown-linux-gnu.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 15.8M  100 15.8M    0     0  8871k      0  0:00:01  0:00:01 --:--:-- 11.1M
+[root@a9e9dc561788 /]# fpm -t rpm -s tar --name uv --rpm-autoreq --rpm-os linux --rpm-summary 'An extremely fast Python package and project manager, written in Rust.' --license 'Apache 2.0' --version v0.6.9 --depends bash --maintainer 'Jose Vicente Nunez <kodegeek.com@protonmail.com>' --url https://github.com/astral-sh/uv  uv-x86_64-unknown-linux-gnu.tar.gz
+Created package {:path=>"uv-v0.6.9-1.x86_64.rpm"}
+mv uv-v0.6.9-1.x86_64.rpm /mnt/result/
+# exit the container
+exit
+```
+
+You can then install on /usr/local, using `--prefix`:
+```shell
+sudo -i
+[root@a9e9dc561788 /]# rpm --force --prefix /usr/local -ihv /mnt/result/uv-v0.6.9-1.x86_64.rpm 
+Verifying...                          ################################# [100%]
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:uv-v0.6.9-1                      ################################# [100%]
+[root@a9e9dc561788 /]# rpm -qil uv-v0.6.9-1
+Name        : uv
+Version     : v0.6.9
+Release     : 1
+Architecture: x86_64
+Install Date: Sat Mar 22 23:32:49 2025
+Group       : default
+Size        : 40524181
+License     : Apache 2.0
+Signature   : (none)
+Source RPM  : uv-v0.6.9-1.src.rpm
+Build Date  : Sat Mar 22 23:28:48 2025
+Build Host  : a9e9dc561788
+Relocations : / 
+Packager    : Jose Vicente Nunez <kodegeek.com@protonmail.com>
+Vendor      : none
+URL         : https://github.com/astral-sh/uv
+Summary     : An extremely fast Python package and project manager, written in Rust.
+Description :
+no description given
+/usr/local/usr/lib/.build-id
+/usr/local/usr/lib/.build-id/a1
+/usr/local/usr/lib/.build-id/a1/8ee308344b9bd07a1e3bb79a26cbb47ca1b8e0
+/usr/local/usr/lib/.build-id/e9
+/usr/local/usr/lib/.build-id/e9/4f273a318a0946893ee81326603b746f4ffee1
+/usr/local/uv-x86_64-unknown-linux-gnu/uv
+/usr/local/uv-x86_64-unknown-linux-gnu/uvx
+```
 
 
 ## Using UV to run everyday tools like Ansible, Glances, Flake8, Autopep8
@@ -174,6 +225,15 @@ python-downloads = "manual"
 ```
 
 Fedora managers had an interesting conversation about [how manage this policy](https://src.fedoraproject.org/rpms/uv/pull-request/18), worth reading. Or you can go and check the [used system uv.toml](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.toml) file yourself.
+
+To wrap this section, you can remove an installed python as well using uv:
+
+```shell
+[josevnz@dmaf5 docs]$ uv python uninstall 3.9
+Searching for Python versions matching: Python 3.9
+Uninstalled Python 3.9.21 in 212ms
+ - cpython-3.9.21-linux-x86_64-gnu
+```
 
 #### But this still is a lot of typing
 
