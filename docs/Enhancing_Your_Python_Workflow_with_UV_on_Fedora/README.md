@@ -69,8 +69,9 @@ no description given
 /usr/local/uv-x86_64-unknown-linux-gnu/uvx
 ```
 
+Time to move to the next section and see what uv can do to make our Python workflows faster.
 
-## Using UV to run everyday tools like Ansible, Glances, Flake8, Autopep8
+## Using UV to run everyday tools like Ansible, Glances, Autopep8
 
 One of the best things about uv is that you can download and install tools on your account with less typing.
 
