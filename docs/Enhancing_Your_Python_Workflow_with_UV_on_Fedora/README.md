@@ -6,12 +6,12 @@ If you use Python you most likely have used any or all of the following tools:
 * [Anaconda](https://www.anaconda.com/docs/tools/main) to install packages and custom Python versions and manage dependencies
 * [Poetry](https://python-poetry.org/docs/) and pipx, to manage your Python project and packaging.
 
-Why you need then another tool to manage your Python packaging or to install your favorite Python tools? For me, it was decision based on the following:
+Why do you need another tool to manage your Python packaging or install your favorite Python tools? For me, it was a decision based on the following:
 
 1) Simplicity: uv can handle all the tasks for packaging or installing tools with a very easy to use cli.
-2) Better dependency management: When there are conflicts, the tools does a great job explaining what went wrong
+2) Better dependency management: When there are conflicts, the tool does a great job explaining what went wrong
 3) Speed: If you ever used Anaconda to install multiple dependencies like PyTorch, Ansible, Pandas, etc. you will appreciate how fast uv can do those things.
-4) Easy to install: No third party dependencies to install, comes with batteries included
+4) Easy to install: No third-party dependencies to install, comes with batteries included
 5) Documentation: Yes, the online documentation is easy to follow and clear.
 
 I will show you how to tackle some common tasks using uv. You will need a few things to follow this tutorial:
@@ -56,7 +56,7 @@ mv uv-v0.6.9-1.x86_64.rpm /mnt/result/
 exit
 ```
 
-You can then install on /usr/local, using `--prefix`:
+You can then install it on /usr/local, using `--prefix`:
 ```shell
 sudo -i
 [root@a9e9dc561788 /]# rpm --force --prefix /usr/local -ihv /mnt/result/uv-v0.6.9-1.x86_64.rpm 
@@ -105,7 +105,7 @@ pip install --user glances
 glances
 ```
 
-But that will pollute my python installation with glances dependencies. So the best next thing is to isolate it on a virtual environment:
+But that will pollute my Python installation with glances dependencies. So the best next thing is to isolate it on a virtual environment:
 
 ```shell
 python -m venv ~/venv/glances
@@ -120,7 +120,7 @@ You can see now where this is going. Instead, I could do the following with uv:
 uv tool run glances
 ```
 
-OK, a single line to _run and install glances_, This creates a temporary environment which is discarded once we're done with the tool.
+OK, a single line to _run and install glances_, This creates a temporary environment which that discarded once we're done with the tool.
 
 Let me show you the equivalent command, it is called `uvx`:
 
@@ -128,13 +128,13 @@ Let me show you the equivalent command, it is called `uvx`:
 uvx --from glances glances
 ```
 
-If the command and the distribution matches then we can skip explicitly where it comes '--from':
+If the command and the distribution match then we can skip explicitly where it comes '--from':
 
 ```shell
 uvx glances
 ```
 
-_Less typing_, uv created a virtual environment for me and downloaded glaces there. Say that I want to use a different Python 3.12 to run it:
+_Less typing_, uv created a virtual environment for me and downloaded glances there. Say that I want to use a different Python 3.12 to run it:
 
 ```shell
 uvx --from glances --python 3.12 glances
@@ -142,13 +142,13 @@ uvx --from glances --python 3.12 glances
 
 If you call this command again, uvx will re-use the virtual environment it created, using the Python interpreter of your choice.
 
-We just saw how uv allow you install custom python interpreters, we will cover this topic in a little bit of more detail next.
+We just saw how uv allows you to install custom Python interpreters, we will cover this topic in a little bit of more detail next.
 
 ### It is a good idea to install custom Python interpreters?
 
-Letting developers and DevOps [install custom Python interpreters](https://docs.astral.sh/uv/concepts/python-versions/#installing-a-python-version) can be a time saver, specially if you can contain your installation using a virtual environment.
+Letting developers and DevOps [install custom Python interpreters](https://docs.astral.sh/uv/concepts/python-versions/#installing-a-python-version) can be a time-saver, especially if you can contain your installation using a virtual environment.
 
-Say than you are ready to use Python 3.13:
+Say that you are ready to use Python 3.13:
 
 ```shell
 [josevnz@dmaf5 ~]$ which uv
@@ -188,7 +188,7 @@ Installed 2 packages in 8ms
 Installed 1 executable: autopep8
 ```
 
-Did the new autopep8 installation re-used the Python3.13 we installed before? 
+Did the new autopep8 installation re-use the Python3.13 we installed before? 
 
 ```shell
 [josevnz@dmaf5 ~]$ which autopep8
@@ -199,7 +199,7 @@ Did the new autopep8 installation re-used the Python3.13 we installed before?
 lrwxrwxrwx. 1 josevnz josevnz 83 Mar 22 16:50 /home/josevnz/.local/share/uv/tools/autopep8/bin/python -> /home/josevnz/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/bin/python3.13
 ```
 
-Yes, very good, we are not wasting space with duplicate python interpreter installations. 
+Yes, very good, we are not wasting space with duplicate Python interpreter installations. 
 
 But what if we want to re-use the existing _system_ python3? If we force the installation, we will have a duplicate?
 
@@ -224,7 +224,7 @@ lrwxrwxrwx. 1 josevnz josevnz 19 Mar 22 16:56 /home/josevnz/.local/share/uv/tool
 
 It is smart enough to use the system Python.
 
-Say that you want to make this Python3 version the default for your user? There is a way to do that using the experimental flag `--preview` and `--default` (makes it python3):
+Say that you want to make this Python3 version the default for your user. There is a way to do that using the experimental flag `--preview` and `--default` (makes it python3):
 
 ```shell
 [josevnz@dmaf5 ~]$ uv python install 3.13 --default --preview
@@ -250,7 +250,7 @@ python-downloads = "manual"
 
 The Fedora managers had an interesting conversation about [how set this policy system-wide](https://src.fedoraproject.org/rpms/uv/pull-request/18), worth reading. Or you can go and check the [Fedora system uv.toml](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.toml) file yourself.
 
-To wrap this section, let me show you how can remove an installed python as well using uv:
+To wrap this section, let me show you how can remove an installed Python as well using uv:
 
 ```shell
 [josevnz@dmaf5 docs]$ uv python uninstall 3.9
@@ -259,7 +259,7 @@ Uninstalled Python 3.9.21 in 212ms
  - cpython-3.9.21-linux-x86_64-gnu
 ```
 
-Time to go back to time saving features. There is a way to type less when installing applications? Let's find out on the next section.
+Time to go back to time-saving features. There is a way to type less when installing applications? Let's find out on the next section.
 
 ### Bash to the rescue
 
@@ -309,7 +309,7 @@ which ansible-playbook
 
 Another advantage of using 'tools install' is that if they are big (like Ansible), or you have a slow network connection, you only install once and next time you call it, is there. 
 
-Last trick for this section, if you installed several python tools using uv, you can upgrade them all in one shot as well with the `--upgrade` flag:
+The last trick for this section, if you installed several Python tools using uv, you can upgrade them all in one shot as well with the `--upgrade` flag:
 
 ```shell
 [josevnz@dmaf5 ~]$ uv tool upgrade --all
@@ -321,7 +321,7 @@ Installed 1 executable: glances
 
 Pretty convenient!
 
-We have seen so far how to manage someone else's packages, what about our own? Next section explores that
+We have seen so far how to manage someone else's packages, what about our own? The next section explores that
 
 ## Managing your Python projects with UV
 
@@ -353,7 +353,7 @@ requires-python = ">=3.13"
 dependencies = []
 ```
 
-_[.python-version](grocery_stores/.python-version)_ has the version of python supported by this project.
+_[.python-version](grocery_stores/.python-version)_ has the version of Python supported by this project.
 
 The other file is `hello.py`. You can get rid of it, it has a hello world in Python. Also later, we will fill the _README.md_ with proper content.
 
