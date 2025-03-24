@@ -1,0 +1,18 @@
+[project]
+name = "grocery_stores"
+version = "0.1.0"
+description = "Grocery Stores in Connecticut"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx==0.28.1",
+    "orjson==3.10.15",
+    "textual==2.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "anyio==4.9.0",
+    "pylint==3.3.6",
+    "pytest==8.3.5"
+]

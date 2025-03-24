@@ -321,11 +321,199 @@ Installed 1 executable: glances
 
 Pretty convenient!
 
-We have seen so far how to manage someone else's packages, what about our own?
+We have seen so far how to manage someone else's packages, what about our own? Next section explores that
 
-## Managing my Python projects with UV
+## Managing your Python projects with UV
 
-**_TODO_**
+Eventually you will find yourself packaging a [Python project](https://docs.astral.sh/uv/concepts/projects/) that has multiple modules, scripts and data files. Python offers a rich ecosystem to manage this scenario and uv takes away some of the complexity.
+
+Our small demo project is an application that will use the '[Grocery Stores](https://data.ct.gov/Business/Grocery-Stores/fv3p-tf5m/about_data)' from the Connecticut Data portal
+
+I always like to start a project with a description and a name:
+
+```shell
+[josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ uv init --description 'Grocery Stores in Connecticut' grocery_stores
+Initialized project `pretty-csv` at `/home/josevnz/tutorials/docs/Enhancing_Your_Python_Workflow_with_UV_on_Fedora/grocery_stores`
+```
+
+uv created a few files here:
+```shell
+[josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ ls -a grocery_stores/
+.  ..  hello.py  pyproject.toml  .python-version  README.md
+```
+
+The most important for now is pyproject.toml. It has a full description of your project:
+```toml
+[project]
+name = "pretty-csv"
+version = "0.1.0"
+description = "Grocery Stores in Connecticut"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+```
+
+_[.python-version](grocery_stores/.python-version)_ has the version of python supported by this project.
+
+The other file is `hello.py`. You can get rid of it, it has a hello world in Python. Also later, we will fill the _README.md_ with proper content.
+
+Back to our script, we will use a TUI framework called [Textual](https://textual.textualize.io/) that will allow us to take the CSV file and show the contents as a table. Because we know that dependency, let's use uv to add it to our project:
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv add 'textual==2.1.2'
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Resolved 11 packages in 219ms
+Prepared 2 packages in 143ms
+Installed 10 packages in 47ms
+ + linkify-it-py==2.0.3
+ + markdown-it-py==3.0.0
+ + mdit-py-plugins==0.4.2
+ + mdurl==0.1.2
+ + platformdirs==4.3.7
+ + pygments==2.19.1
+ + rich==13.9.4
+ + textual==2.1.2
+ + typing-extensions==4.12.2
+ + uc-micro-py==1.0.3
+```
+
+Three things happened:
+1) We downloaded textual and their transitive dependencies
+2) pyproject.toml was updated and now the dependencies section has values
+```toml
+[project]
+name = "pretty-csv"
+version = "0.1.0"
+description = "Simple program that shows contents of a CSV file as a table on the terminal"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "textual==2.1.2",
+]
+```
+
+3) uv created an [uv.lock](uv.lock) file next to the pyproject.toml. This file has exact version of all the packages used in your project, which ensures consistency.
+```toml
+version = 1
+requires-python = ">=3.13"
+
+[[package]]
+name = "linkify-it-py"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "uc-micro-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2a/ae/bb56c6828e4797ba5a4821eec7c43b8bf40f69cda4d4f5f8c8a2810ec96a/linkify-it-py-2.0.3.tar.gz", hash = "sha256:68cda27e162e9215c17d786649d1da0021a451bdc436ef9e0fa0ba5234b9b048", size = 27946 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/1e/b832de447dee8b582cac175871d2f6c3d5077cc56d5575cadba1fd1cccfa/linkify_it_py-2.0.3-py3-none-any.whl", hash = "sha256:6bcbc417b0ac14323382aef5c5192c0075bf8a9d6b41820a2b66371eac6b6d79", size = 19820 },
+]
+...
+```
+
+You can see _uv.lock_ is very detailed, as its purpose is to be as specific and unambiguous as possible. This file is meant to be added your repository on git.
+
+In the next section we will actually write some code to have a more useful project. For now let's add also the '[httpx](https://www.python-httpx.org/)' library, so we can download the CSV grocery data.
+
+```shell
+[josevnz@dmaf5 pretty_csv]$ uv add 'httpx==0.28.1'
+Resolved 18 packages in 229ms
+Prepared 6 packages in 108ms
+Installed 7 packages in 8ms
+ + anyio==4.9.0
+ + certifi==2025.1.31
+ + h11==0.14.0
+ + httpcore==1.0.7
+ + httpx==0.28.1
+ + idna==3.10
+ + sniffio==1.3.1
+```
+
+Also, I want to add pylint amd pytest to check my code statically and to write unit tests. This is a development dependency, one that I don't want to require when installing my application:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv add --dev pylint==3.3.6 pytest==8.3.5
+Resolved 29 packages in 15ms
+Installed 10 packages in 19ms
+ + astroid==3.3.9
+ + dill==0.3.9
+ + iniconfig==2.1.0
+ + isort==6.0.1
+ + mccabe==0.7.0
+ + packaging==24.2
+ + pluggy==1.5.0
+ + pylint==3.3.6
+ + pytest==8.3.5
+ + tomlkit==0.13.2
+```
+
+This produces the following section on my pyproject.toml file:
+```toml
+[dependency-groups]
+dev = [
+    "pylint==3.3.6",
+    "pytest==8.3.5",
+]
+```
+
+
+### Writing a CSV to Table display application
+
+The first step is to have the code that loads the data, then renders the CSV as a table. I will let you read the Textual tutorial on how to do this and instead will share the bulk of the code on a file called '[app.py](grocery_stores/groceries.py)':
+
+```python
+
+```
+
+Now that we have some code and a script, let's test it first using an editable mode (similar way than pip):
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv pip install --editable . --reinstall
+Resolved 18 packages in 105ms
+   Built grocery-stores @ file:///home/josevnz/tutorials/docs/Enhancing_Your_Python_Workflow_with_UV_on_Fedora/grocery_stores
+Prepared 18 packages in 1.07s
+Uninstalled 18 packages in 87ms
+Installed 18 packages in 53ms
+ ~ anyio==4.9.0
+ ~ certifi==2025.1.31
+ ~ grocery-stores==0.1.0 (from file:///home/josevnz/tutorials/docs/Enhancing_Your_Python_Workflow_with_UV_on_Fedora/grocery_stores)
+ ~ h11==0.14.0
+ ~ httpcore==1.0.7
+ ~ httpx==0.28.1
+ ~ idna==3.10
+ ~ linkify-it-py==2.0.3
+ ~ markdown-it-py==3.0.0
+ ~ mdit-py-plugins==0.4.2
+ ~ mdurl==0.1.2
+ ~ platformdirs==4.3.7
+ ~ pygments==2.19.1
+ ~ rich==13.9.4
+ ~ sniffio==1.3.1
+ ~ textual==2.1.2
+ ~ typing-extensions==4.12.2
+ ~ uc-micro-py==1.0.3
+```
+
+Then run it:
+```shell
+uv run groceries.py
+```
+
+Running pylint:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv run --with 'pylint==3.3.6' pylint groceries.py 
+************* Module groceries
+groceries.py:15:0: C0115: Missing class docstring (missing-class-docstring)
+groceries.py:25:8: W0612: Unused variable 'table' (unused-variable)
+groceries.py:27:12: W0612: Unused variable 'response' (unused-variable)
+groceries.py:29:4: C0116: Missing function or method docstring (missing-function-docstring)
+groceries.py:10:0: W0611: Unused work imported from textual (unused-import)
+
+------------------------------------------------------------------
+Your code has been rated at 7.73/10 (previous run: 7.73/10, +0.00)
+```
+
 
 ## Learning more
 
