@@ -392,7 +392,7 @@ dependencies = [
 ]
 ```
 
-3) uv created an [uv.lock](uv.lock) file next to the pyproject.toml. This file has exact version of all the packages used in your project, which ensures consistency.
+3) uv created an [uv.lock](grocery_stores/uv.lock) file next to the pyproject.toml. This file has exact version of all the packages used in your project, which ensures consistency.
 ```toml
 version = 1
 requires-python = ">=3.13"
