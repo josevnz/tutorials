@@ -16,6 +16,9 @@ GROCERY_API_URL = "https://data.ct.gov/resource/fv3p-tf5m.json"
 
 
 class GroceryStoreApp(App):
+
+    current_sorts: set = set()
+
     def compose(self) -> ComposeResult:
         header = Header(show_clock=True)
         yield header
@@ -23,7 +26,7 @@ class GroceryStoreApp(App):
         yield table
         yield Footer()
 
-    @work()
+    @work(exclusive=True)
     async def update_grocery_data(self) -> None:
         """
         Update the Grocery data table and provide some feedback to the user
@@ -71,13 +74,27 @@ class GroceryStoreApp(App):
         )
         self.update_grocery_data()
 
+    def sort_reverse(self, sort_type: str):
+        """
+        Determine if `sort_type` is ascending or descending.
+        """
+        reverse = sort_type in self.current_sorts
+        if reverse:
+            self.current_sorts.remove(sort_type)
+        else:
+            self.current_sorts.add(sort_type)
+        return reverse
+
     @on(DataTable.HeaderSelected)
     def on_header_clicked(self, event: DataTable.HeaderSelected):
         """
         Sort rows by column header
         """
         table = event.data_table
-        table.sort(event.column_key)
+        table.sort(
+            event.column_key,
+            reverse=self.sort_reverse(event.column_key.value)
+        )
 
 
 if __name__ == "__main__":
