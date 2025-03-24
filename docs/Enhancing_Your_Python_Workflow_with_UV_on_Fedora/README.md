@@ -695,9 +695,56 @@ Successfully built dist/grocery_stores-0.1.0-py3-none-any.whl
 
 ### Uploading to a custom index
 
-I don't want to pollute the real [pypi.org](https://pypi.org/) with a test application, so instead I will set my index to be something else (in your case can be a Nexus 3 repository, an Artifactory repository, etc.)
+I don't want to pollute the real [pypi.org](https://pypi.org/) with a test application, so instead I will set my index to be something [else](https://test.pypi.org/) (in your case can be a Nexus 3 repository, an Artifactory repository, etc.)
 
-_**TODO**_
+For that, add the following to your project.toml file:
+
+```toml
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+```
+
+Also, you need to generate an application token (this varies from provider). Once you get yours, call `uv publish --index testpypi $token`:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv publish --index testpypi --token pypi-AgENdGVzdC5weXBpLm9yZwIkYzFkODg5ODMtODUxZS00ODc2LWFhYzMtZjhhNWFmNjZhODJmAAIqWzMsIjZmZGNjMzc1LTYxNmEtNDA5Zi1hNTJkLWJhMDZmNWQ3N2NlZSJdAAAGIG3wrTZdgmOBlahBlahBlah 
+warning: `uv publish` is experimental and may change without warning
+Publishing 2 files https://test.pypi.org/legacy/
+Uploading grocery_stores-0.1.0-py3-none-any.whl (2.7KiB)
+Uploading grocery_stores-0.1.0.tar.gz (2.5KiB)
+```
+
+### Things that you should have on your project.toml
+
+UV does a lot of things but doesn't do everything. There is a lot of extra Metadata that you should have on your [pyproject.toml](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) file:
+
+```toml
+[project]
+authors = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"}
+]
+maintainers = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"}
+]
+license = "MIT AND (Apache-2.0 OR BSD-2-Clause)"
+keywords = ["ct", "tui", "grocery stores", "store"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Desktop Environment",
+    "Programming Language :: Python :: 3.13",
+]
+[project.urls]
+Homepage = "https://github.com/josevnz/tutorials"
+Repository = "https://github.com/josevnz/tutorials.git"
+```
+
+A few things before wrapping this section:
+* You can see the full list of classifiers [here](https://pypi.org/classifiers/).
+* If you do not want a project to be uploaded to Pypi by accident, add the following classifier: `Private :: Do Not Upload`
 
 ## Learning more
 
