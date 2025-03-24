@@ -459,10 +459,96 @@ dev = [
 
 ### Writing a CSV to Table display application
 
-The first step is to have the code that loads the data, then renders the CSV as a table. I will let you read the Textual tutorial on how to do this and instead will share the bulk of the code on a file called '[app.py](grocery_stores/groceries.py)':
+The first step is to have the code that loads the data, then renders the Grocery store as a table. I will let you read the Textual tutorial on how to do this and instead will share the bulk of the code on a file called '[groceries.py](grocery_stores/groceries.py)':
 
 ```python
+"""
+Displays the latest Grocery Store data from
+the Connecticut Data portal.
+Author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+Press ctrl+q to exit the application.
+"""
 
+import httpx
+from httpx import HTTPStatusError
+from textual.app import App, ComposeResult
+from textual.widgets import DataTable, Header, Footer
+from textual import work, on
+from orjson import loads
+
+GROCERY_API_URL = "https://data.ct.gov/resource/fv3p-tf5m.json"
+
+
+class GroceryStoreApp(App):
+    def compose(self) -> ComposeResult:
+        header = Header(show_clock=True)
+        yield header
+        table = DataTable(id="grocery_store_table")
+        yield table
+        yield Footer()
+
+    @work()
+    async def update_grocery_data(self) -> None:
+        """
+        Update the Grocery data table and provide some feedback to the user
+        :return:
+        """
+        table = self.query_one("#grocery_store_table", DataTable)
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(GROCERY_API_URL)
+            try:
+                response.raise_for_status()
+                groceries_data = loads(response.text)
+                table.add_columns(*[key.title() for key in groceries_data[0].keys()])
+                cnt = 0
+                for row in groceries_data[1:]:
+                    table.add_row(*(row.values()))
+                    cnt += 1
+                table.loading = False
+                self.notify(
+                    message=f"Loaded {cnt} Grocery Stores",
+                    title="Data loading complete",
+                    severity="information"
+                )
+            except HTTPStatusError:
+                self.notify(
+                    message=f"HTTP code={response.status_code}, message={response.text}",
+                    title="Could not download grocery data",
+                    severity="error"
+                )
+
+    def on_mount(self) -> None:
+        """
+        Render the initial component status, show an initial loading message
+        :return:
+        """
+        table = self.query_one("#grocery_store_table", DataTable)
+        table.zebra_stripes = True
+        table.cursor_type = "row"
+        table.loading = True
+        self.notify(
+            message=f"Retrieving information from CT Data portal",
+            title="Loading data",
+            severity="information",
+            timeout=5
+        )
+        self.update_grocery_data()
+
+    @on(DataTable.HeaderSelected)
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        """
+        Sort rows by column header
+        """
+        table = event.data_table
+        table.sort(event.column_key)
+
+
+if __name__ == "__main__":
+    app = GroceryStoreApp()
+    app.title = "Grocery Stores"
+    app.sub_title = "in Connecticut"
+    app.run()
 ```
 
 Now that we have some code and a script, let's test it first using an editable mode (similar way than pip):
@@ -499,7 +585,14 @@ Then run it:
 uv run groceries.py
 ```
 
-Running pylint:
+The application looks more or less like this:
+![groceries-application.png](groceries-application.png "TUI for the Grocery application")
+
+Time to see next how we can lint and unit test our new grocery store application
+
+#### Linting code with pylint:
+
+**_TODO_**
 
 ```shell
 [josevnz@dmaf5 grocery_stores]$ uv run --with 'pylint==3.3.6' pylint groceries.py 
@@ -514,6 +607,9 @@ groceries.py:10:0: W0611: Unused work imported from textual (unused-import)
 Your code has been rated at 7.73/10 (previous run: 7.73/10, +0.00)
 ```
 
+#### Running unit tests with pytest
+
+_**TODO**_
 
 ## Learning more
 
