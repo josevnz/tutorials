@@ -8,10 +8,10 @@ If you use Python you most likely have used any or all of the following tools:
 
 Why do you need another tool to manage your Python packaging or install your favorite Python tools? For me, it was a decision based on the following:
 
-1) Simplicity: uv can handle all the tasks for packaging or installing tools with a very easy to use cli.
+1) Simplicity: uv can handle all the tasks for packaging or installing tools with a very easy-to-use CLI. 
 2) Better dependency management: When there are conflicts, the tool does a great job explaining what went wrong
 3) Speed: If you ever used Anaconda to install multiple dependencies like PyTorch, Ansible, Pandas, etc. you will appreciate how fast uv can do those things.
-4) Easy to install: No third-party dependencies to install, comes with batteries included
+4) Easy to install: No third-party dependencies to install, comes with batteries included.
 5) Documentation: Yes, the online documentation is easy to follow and clear.
 
 I will show you how to tackle some common tasks using uv. You will need a few things to follow this tutorial:
@@ -309,7 +309,7 @@ which ansible-playbook
 
 Another advantage of using 'tools install' is that if they are big (like Ansible), or you have a slow network connection, you only install once and next time you call it, is there. 
 
-The last trick for this section, if you installed several Python tools using uv, you can upgrade them all in one shot as well with the `--upgrade` flag:
+The last trick for this section, is if you installed several Python tools using uv, you can upgrade them all in one shot as well with the `--upgrade` flag:
 
 ```shell
 [josevnz@dmaf5 ~]$ uv tool upgrade --all
@@ -321,13 +321,13 @@ Installed 1 executable: glances
 
 Pretty convenient!
 
-We have seen so far how to manage someone else's packages, what about our own? The next section explores that
+We have seen so far how to manage someone else's packages, what about our own? The next section explores that.
 
 ## Managing your Python projects with UV
 
-Eventually you will find yourself packaging a [Python project](https://docs.astral.sh/uv/concepts/projects/) that has multiple modules, scripts and data files. Python offers a rich ecosystem to manage this scenario and uv takes away some of the complexity.
+Eventually, you will find yourself packaging a [Python project](https://docs.astral.sh/uv/concepts/projects/) that has multiple modules, scripts and data files. Python offers a rich ecosystem to manage this scenario and uv takes away some of the complexity.
 
-Our small demo project is an application that will use the '[Grocery Stores](https://data.ct.gov/Business/Grocery-Stores/fv3p-tf5m/about_data)' from the Connecticut Data portal
+Our small demo project is an application that will use the '[Grocery Stores](https://data.ct.gov/Business/Grocery-Stores/fv3p-tf5m/about_data)' from the Connecticut Data portal.
 
 I always like to start a project with a description and a name:
 
@@ -744,15 +744,15 @@ Repository = "https://github.com/josevnz/tutorials.git"
 
 A few things before wrapping this section:
 * You can see the full list of classifiers [here](https://pypi.org/classifiers/).
-* If you do not want a project to be uploaded to Pypi by accident, add the following classifier: `Private :: Do Not Upload`
+* If you do not want a project to be uploaded to Pypi by accident, add the following classifier: `Private :: Do Not Upload`.
 * You will need to bump the version, rebuild and upload again after making any changes, like adding keywords.
 
 ## Learning more
 
-We covered a lot of material but there is still more to learn. As everything, you will need to try to see what fits better to your style and available resources.
+We covered a lot of material but there is still more to learn. As with everything, you will need to try to see what fits better to your style and available resources.
 
 Below is a list of links I found useful and may also help you:
 
 * The official [uv](https://docs.astral.sh/uv/) documentation is very complete, and you will most likely spend your time going back and forth reading it.
 * Users of older Fedora distributions may take a look at the [UV Source RPM](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.spec). Lots of good stuff, including Bash auto-completion for UV.
-* Anaconda and [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) also have their counterparties written in rust:  [mamba and micromamba](https://mamba.readthedocs.io/en/latest/index.html). These are backwards compatible and much faster.
+* Anaconda and [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) also have their counterparties written in rust:  [mamba and micromamba](https://mamba.readthedocs.io/en/latest/index.html). These are backward compatible and much faster.
