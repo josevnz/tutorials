@@ -745,6 +745,7 @@ Repository = "https://github.com/josevnz/tutorials.git"
 A few things before wrapping this section:
 * You can see the full list of classifiers [here](https://pypi.org/classifiers/).
 * If you do not want a project to be uploaded to Pypi by accident, add the following classifier: `Private :: Do Not Upload`
+* You will need to bump the version, rebuild and upload again after making any changes, like adding keywords.
 
 ## Learning more
 
