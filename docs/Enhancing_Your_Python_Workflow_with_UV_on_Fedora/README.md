@@ -755,3 +755,4 @@ Below is a list of links I found useful and may also help you:
 
 * The official [uv](https://docs.astral.sh/uv/) documentation is very complete, and you will most likely spend your time going back and forth reading it.
 * Users of older Fedora distributions may take a look at the [UV Source RPM](https://src.fedoraproject.org/rpms/uv/blob/rawhide/f/uv.spec). Lots of good stuff, including Bash auto-completion for UV.
+* Anaconda and [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) also have their counterparties written in rust:  [mamba and micromamba](https://mamba.readthedocs.io/en/latest/index.html). These are backwards compatible and much faster.
