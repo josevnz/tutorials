@@ -10,13 +10,16 @@ from httpx import HTTPStatusError
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Header, Footer
 from textual import work, on
+# pylint: disable=no-name-in-module
 from orjson import loads
 
 GROCERY_API_URL = "https://data.ct.gov/resource/fv3p-tf5m.json"
 
 
 class GroceryStoreApp(App):
-
+    """
+    TUI application that shows grocery stores in CT
+    """
     current_sorts: set = set()
 
     def compose(self) -> ComposeResult:
@@ -67,7 +70,7 @@ class GroceryStoreApp(App):
         table.cursor_type = "row"
         table.loading = True
         self.notify(
-            message=f"Retrieving information from CT Data portal",
+            message="Retrieving information from CT Data portal",
             title="Loading data",
             severity="information",
             timeout=5

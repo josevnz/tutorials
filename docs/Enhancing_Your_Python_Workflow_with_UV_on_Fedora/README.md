@@ -609,7 +609,31 @@ Your code has been rated at 7.73/10 (previous run: 7.73/10, +0.00)
 
 #### Running unit tests with pytest
 
-_**TODO**_
+My textual app uses async so it requires a little bit of support. Not a problem:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv add --dev pytest_asyncio
+[josevnz@dmaf5 grocery_stores]$ uv run --dev pytest test_groceries.py
+======================================================================================================================= test session starts ========================================================================================================================
+platform linux -- Python 3.13.1, pytest-8.3.5, pluggy-1.5.0
+rootdir: /home/josevnz/tutorials/docs/Enhancing_Your_Python_Workflow_with_UV_on_Fedora/grocery_stores
+configfile: pyproject.toml
+plugins: anyio-4.9.0, asyncio-0.25.3
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None
+collected 1 item                                                                                                                                                                                                                                                   
+
+test_groceries.py .                                                                                                                                                                                                                                          [100%]
+
+======================================================================================================================== 1 passed in 0.43s =========================================================================================================================
+```
+
+After fixing:
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv run --with 'pylint==3.3.6' pylint groceries.py 
+
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 9.04/10, +0.96)
+```
 
 ## Learning more
 
