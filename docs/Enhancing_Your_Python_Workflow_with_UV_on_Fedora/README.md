@@ -459,7 +459,7 @@ dev = [
 
 ### Writing a CSV to Table display application
 
-The first step is to have the code that loads the data, then renders the Grocery store as a table. I will let you read the Textual tutorial on how to do this and instead will share the bulk of the code on a file called '[groceries.py](grocery_stores/groceries.py)':
+The first step is to have the code that loads the data, then renders the Grocery store as a table. I will let you read the Textual tutorial on how to do this and instead will share the bulk of the code on a file called '[groceries.py](grocery_stores/src/grocery_stores_ct/groceries.py)':
 
 ```python
 """
@@ -590,7 +590,7 @@ The application looks more or less like this:
 
 Time to see next how we can lint and unit test our new grocery store application
 
-#### Linting code with pylint:
+### Linting code with pylint:
 
 **_TODO_**
 
@@ -607,7 +607,7 @@ groceries.py:10:0: W0611: Unused work imported from textual (unused-import)
 Your code has been rated at 7.73/10 (previous run: 7.73/10, +0.00)
 ```
 
-#### Running unit tests with pytest
+### Running unit tests with pytest
 
 My textual app uses async so it requires a little bit of support. Not a problem:
 
@@ -634,6 +634,70 @@ After fixing:
 -------------------------------------------------------------------
 Your code has been rated at 10.00/10 (previous run: 9.04/10, +0.96)
 ```
+
+### Packaging and uploading to your Artifact repository
+
+It is time to package our new application. For that we build it:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv build
+Building source distribution...
+error: Multiple top-level modules discovered in a flat-layout: ['groceries', 'test_groceries'].
+
+To avoid accidental inclusion of unwanted files or directories,
+setuptools will not proceed with this build.
+...
+```
+
+Not so fast. uv is getting confused as we have 2 main modules, instead of one. The right thing to do is to setup a [src-layout](https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/).
+
+After moving groceries.py to a module called src/grocery_stores_ct and tests_groceries to test: 
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ tree
+.
+├── pyproject.toml
+├── README.md
+├── src
+│   ├── grocery_stores_ct
+│   │   ├── groceries.py
+│   │   └── __init__.py
+│   └── grocery_stores.egg-info
+│       ├── dependency_links.txt
+│       ├── PKG-INFO
+│       ├── requires.txt
+│       ├── SOURCES.txt
+│       └── top_level.txt
+├── test
+│   └── test_groceries.py
+└── uv.lock
+```
+
+Re-test it:
+```shell
+uv pip install --editable .[dev]
+uv run --dev pytest test/test_groceries.py
+uv run --with 'pylint==3.3.6' pylint src/grocery_stores_ct/groceries.py
+```
+
+Build it:
+
+```shell
+[josevnz@dmaf5 grocery_stores]$ uv build
+Building source distribution...
+running egg_info
+writing src/grocery_stores.egg-info/PKG-INFO
+writing dependency_links to src/grocery_stores.egg-info/dependency_links.txt
+removing build/bdist.linux-x86_64/wheel
+Successfully built dist/grocery_stores-0.1.0.tar.gz
+Successfully built dist/grocery_stores-0.1.0-py3-none-any.whl
+```
+
+### Uploading to a custom index
+
+I don't want to pollute the real [pypi.org](https://pypi.org/) with a test application, so instead I will set my index to be something else (in your case can be a Nexus 3 repository, an Artifactory repository, etc.)
+
+_**TODO**_
 
 ## Learning more
 
