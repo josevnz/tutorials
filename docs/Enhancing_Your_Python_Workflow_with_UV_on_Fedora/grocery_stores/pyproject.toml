@@ -1,0 +1,42 @@
+[project]
+name = "grocery_stores"
+version = "0.1.1"
+description = "Grocery Stores in Connecticut"
+authors = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"}
+]
+maintainers = [
+    {name = "Jose Vicente Nunez", email = "kodegeek.com@protonmail.com"}
+]
+license = "MIT AND (Apache-2.0 OR BSD-2-Clause)"
+keywords = ["ct", "tui", "grocery stores", "store"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Desktop Environment",
+    "Programming Language :: Python :: 3.13",
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx==0.28.1",
+    "orjson==3.10.15",
+    "textual==2.1.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/josevnz/tutorials"
+Repository = "https://github.com/josevnz/tutorials.git"
+
+[dependency-groups]
+dev = [
+    "pylint==3.3.6",
+    "pytest==8.3.5",
+    "pytest-asyncio>=0.25.3",
+]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
