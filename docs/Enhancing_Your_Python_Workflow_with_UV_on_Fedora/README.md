@@ -954,6 +954,7 @@ We call env (part of [coreutils](https://packages.fedoraproject.org/pkgs/coreuti
 [josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ chmod a+xr inline_script_metadata/groceries.py
 [josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ ./inline_script_metadata/groceries.py 
 Installed 18 packages in 29ms
+# And here the script starts running!!!
 ```
 
 It doesn't get simpler than this.
