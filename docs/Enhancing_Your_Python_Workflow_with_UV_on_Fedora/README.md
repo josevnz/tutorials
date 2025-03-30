@@ -948,7 +948,7 @@ This is the same script we wrote before, except than we use the last big of magi
 #!/usr/bin/env -S uv run --script
 ```
 
-We call env (part of coreutils) to split arguments (`-S`) to call uv with the `--script` flag. Then uv reads the inline metadata and download the required python with all the dependencies automatically:
+We call env (part of [coreutils](https://packages.fedoraproject.org/pkgs/coreutils/coreutils/)) to split arguments (`-S`) to call uv with the `--script` flag. Then uv reads the inline metadata and download the required python with all the dependencies automatically:
 
 ```shell
 [josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ chmod a+xr inline_script_metadata/groceries.py
