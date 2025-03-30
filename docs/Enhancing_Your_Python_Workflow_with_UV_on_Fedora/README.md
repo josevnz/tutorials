@@ -789,6 +789,175 @@ A few things before wrapping this section:
 * If you do not want a project to be uploaded to Pypi by accident, add the following classifier: `Private :: Do Not Upload`.
 * You will need to bump the version, rebuild and upload again after making any changes, like adding _keywords_.
 
+I saved the last cool trick for last, what if I tell you can have a script that self-installs dependencies on a virtual environment?
+
+## Inline script metadata, self contained scripts
+
+Python has a feature, [PEP-0723](https://peps.python.org/pep-0723/), that allows it to [incorporate metatada embedded in the script](https://packaging.python.org/en/latest/specifications/inline-script-metadata/), like this:
+
+```python
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#   "httpx==0.28.1",
+#   "orjson==3.10.15",
+#   "textual==2.1.2",
+# ]
+# ///
+
+# ... Omitted rest of the code
+```
+
+These 8 lines at the begining of the script tell than this is the embedded metadata.
+
+If you remember our pyproject.toml file, these are the instructions used by package managers like setuptools and uv to handle the project dependencies, like python versions and required libraries to run. This is powerful, as tools capable of reading this inlined metadata (between the `///` sections) do not need to check an extra file.
+
+Now, uv [has a flag](https://docs.astral.sh/uv/guides/scripts/#creating-a-python-script) called `--script` which allows it to interpret the inline metadata on the script. For example, this will update the dependencies for the `example` script, by reading them from ther script directly:
+
+```shell
+uv add --script example.py 'requests<3' 'rich'
+uv run example.py
+```
+
+This is convenient, now if we combine both inline dependencies and uv we can have a self executable script that can also download its own dependencies:
+
+```python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#   "httpx==0.28.1",
+#   "orjson==3.10.15",
+#   "textual==2.1.2",
+# ]
+# ///
+"""
+Displays the latest Grocery Store data from
+the Connecticut Data portal.
+Author: Jose Vicente Nunez <kodegeek.com@protonmail.com>
+This version of the script uses inline script metadata:
+  https://packaging.python.org/en/latest/specifications/inline-script-metadata/
+Press ctrl+q to exit the application.
+"""
+
+import httpx
+from httpx import HTTPStatusError
+from textual.app import App, ComposeResult
+from textual.widgets import DataTable, Header, Footer
+from textual import work, on
+# pylint: disable=no-name-in-module
+from orjson import loads
+
+GROCERY_API_URL = "https://data.ct.gov/resource/fv3p-tf5m.json"
+
+
+class GroceryStoreApp(App):
+    """
+    TUI application that shows grocery stores in CT
+    """
+    current_sorts: set = set()
+
+    def compose(self) -> ComposeResult:
+        header = Header(show_clock=True)
+        yield header
+        table = DataTable(id="grocery_store_table")
+        yield table
+        yield Footer()
+
+    @work(exclusive=True)
+    async def update_grocery_data(self) -> None:
+        """
+        Update the Grocery data table and provide some feedback to the user
+        :return:
+        """
+        table = self.query_one("#grocery_store_table", DataTable)
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(GROCERY_API_URL)
+            try:
+                response.raise_for_status()
+                groceries_data = loads(response.text)
+                table.add_columns(*[key.title() for key in groceries_data[0].keys()])
+                cnt = 0
+                for row in groceries_data[1:]:
+                    table.add_row(*(row.values()))
+                    cnt += 1
+                table.loading = False
+                self.notify(
+                    message=f"Loaded {cnt} Grocery Stores",
+                    title="Data loading complete",
+                    severity="information"
+                )
+            except HTTPStatusError:
+                self.notify(
+                    message=f"HTTP code={response.status_code}, message={response.text}",
+                    title="Could not download grocery data",
+                    severity="error"
+                )
+
+    def on_mount(self) -> None:
+        """
+        Render the initial component status
+        :return:
+        """
+        table = self.query_one("#grocery_store_table", DataTable)
+        table.zebra_stripes = True
+        table.cursor_type = "row"
+        table.loading = True
+        self.notify(
+            message="Retrieving information from CT Data portal",
+            title="Loading data",
+            severity="information",
+            timeout=5
+        )
+        self.update_grocery_data()
+
+    def sort_reverse(self, sort_type: str):
+        """
+        Determine if `sort_type` is ascending or descending.
+        """
+        reverse = sort_type in self.current_sorts
+        if reverse:
+            self.current_sorts.remove(sort_type)
+        else:
+            self.current_sorts.add(sort_type)
+        return reverse
+
+    @on(DataTable.HeaderSelected)
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        """
+        Sort rows by column header
+        """
+        table = event.data_table
+        table.sort(
+            event.column_key,
+            reverse=self.sort_reverse(event.column_key.value)
+        )
+
+
+if __name__ == "__main__":
+    app = GroceryStoreApp()
+    app.title = "Grocery Stores"
+    app.sub_title = "in Connecticut"
+    app.run()
+```
+
+This is the same script we wrote before, except than we use the last big of magic here:
+
+```shell
+#!/usr/bin/env -S uv run --script
+```
+
+We call env (part of coreutils) to split arguments (`-S`) to call uv with the `--script` flag. Then uv reads the inline metadata and download the required python with all the dependencies automatically:
+
+```shell
+[josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ chmod a+xr inline_script_metadata/groceries.py
+[josevnz@dmaf5 Enhancing_Your_Python_Workflow_with_UV_on_Fedora]$ ./inline_script_metadata/groceries.py 
+Installed 18 packages in 29ms
+```
+
+It doesn't get simpler than this.
+
 ## Learning more
 
 We covered a lot of material but there is still more to learn. As with everything, you will need to try to see what fits better to your style and available resources.
